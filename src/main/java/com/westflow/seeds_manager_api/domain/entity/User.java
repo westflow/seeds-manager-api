@@ -1,5 +1,6 @@
 package com.westflow.seeds_manager_api.domain.entity;
 
+import com.westflow.seeds_manager_api.domain.enums.AccessLevel;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -16,8 +17,9 @@ public class User {
     private String name;
     private String position;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "access_level")
-    private String accessLevel;
+    private AccessLevel accessLevel;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

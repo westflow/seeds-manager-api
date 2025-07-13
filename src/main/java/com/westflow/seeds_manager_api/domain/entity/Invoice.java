@@ -1,5 +1,7 @@
 package com.westflow.seeds_manager_api.domain.entity;
 
+import com.westflow.seeds_manager_api.domain.enums.LotCategory;
+import com.westflow.seeds_manager_api.domain.enums.OperationType;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -23,9 +25,11 @@ public class Invoice {
     private Seed cultivar;
 
     private BigDecimal totalKg;
-    private String operationType;
+    @Enumerated(EnumType.STRING)
+    private OperationType operationType;
     private String authNumber;
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private LotCategory category;
     private BigDecimal purity;
     private String harvest;
     private String productionState;

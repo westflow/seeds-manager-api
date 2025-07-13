@@ -1,5 +1,6 @@
 package com.westflow.seeds_manager_api.domain.entity;
 
+import com.westflow.seeds_manager_api.domain.enums.LotStatus;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -22,7 +23,8 @@ public class LotReservation {
     @Column(name = "reservation_date")
     private LocalDate reservationDate;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private LotStatus status;
 
     @ManyToOne
     @JoinColumn(name = "client_id")

@@ -1,5 +1,8 @@
 package com.westflow.seeds_manager_api.domain.entity;
 
+import com.westflow.seeds_manager_api.domain.enums.LotCategory;
+import com.westflow.seeds_manager_api.domain.enums.LotType;
+import com.westflow.seeds_manager_api.domain.enums.SeedType;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -16,14 +19,17 @@ public class Lot {
     @Column(name = "lot_number", unique = true)
     private String lotNumber;
 
-    private String lotType;
+    @Enumerated(EnumType.STRING)
+    private LotType lotType;
 
     @ManyToOne
     @JoinColumn(name = "cultivar_id")
     private Seed cultivar;
 
-    private String seedType;
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private SeedType seedType;
+    @Enumerated(EnumType.STRING)
+    private LotCategory category;
     private BigDecimal bagWeight;
     private BigDecimal balance;
     private String analysisBulletin;

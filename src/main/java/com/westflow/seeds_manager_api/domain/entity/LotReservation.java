@@ -1,42 +1,55 @@
 package com.westflow.seeds_manager_api.domain.entity;
 
 import com.westflow.seeds_manager_api.domain.enums.LotStatus;
-import jakarta.persistence.*;
+import com.westflow.seeds_manager_api.domain.exception.ValidationException;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "lot_reservations")
+@Getter
 public class LotReservation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "lot_id")
-    private Lot lot;
-
-    private BigDecimal quantity;
-
-    @Column(name = "reservation_date")
-    private LocalDate reservationDate;
-
-    @Enumerated(EnumType.STRING)
+    private final Long id;
+    private final Lot lot;
+    private final BigDecimal quantity;
+    private final LocalDate reservationDate;
     private LotStatus status;
+    private final Client client;
+    private final User user;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+    public LotReservation(Long id, Lot lot, BigDecimal quantity, LocalDate reservationDate,
+                          LotStatus status, Client client, User user) {
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+        if (lot == null || client == null || user == null)
+            throw new ValidationException("Lot, client and user must be specified");
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+        if (reservationDate == null)
+            throw new ValidationException("Reservation date must not be null");
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+        if (quantity == null || quantity.compareTo(BigDecimal.ZERO) <= 0)
+            throw new ValidationException("Quantity must be greater than zero");
+
+        this.id = id;
+        this.lot = lot;
+        this.quantity = quantity;
+        this.reservationDate = reservationDate;
+        this.status = status;
+        this.client = client;
+        this.user = user;
+    }
+
+    public void confirm() {
+        if (status != LotStatus.PENDING) {
+            throw new ValidationException("Only pending reservations can be confirmed");
+        }
+        status = LotStatus.CONFIRMED;
+    }
+
+    public void cancel() {
+        if (status == LotStatus.CANCELLED) {
+            throw new ValidationException("Reservation is already cancelled");
+        }
+        status = LotStatus.CANCELLED;
+    }
 }

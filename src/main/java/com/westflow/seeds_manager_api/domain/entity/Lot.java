@@ -3,49 +3,59 @@ package com.westflow.seeds_manager_api.domain.entity;
 import com.westflow.seeds_manager_api.domain.enums.LotCategory;
 import com.westflow.seeds_manager_api.domain.enums.LotType;
 import com.westflow.seeds_manager_api.domain.enums.SeedType;
-import jakarta.persistence.*;
+import com.westflow.seeds_manager_api.domain.exception.InsufficientLotBalanceException;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "lots")
+@Getter
 public class Lot {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "lot_number", unique = true)
-    private String lotNumber;
-
-    @Enumerated(EnumType.STRING)
-    private LotType lotType;
-
-    @ManyToOne
-    @JoinColumn(name = "cultivar_id")
-    private Seed cultivar;
-
-    @Enumerated(EnumType.STRING)
-    private SeedType seedType;
-    @Enumerated(EnumType.STRING)
-    private LotCategory category;
-    private BigDecimal bagWeight;
+    private final Long id;
+    private final String lotNumber;
+    private final LotType lotType;
+    private final Seed cultivar;
+    private final SeedType seedType;
+    private final LotCategory category;
+    private final BigDecimal bagWeight;
     private BigDecimal balance;
-    private String analysisBulletin;
-    private LocalDate bulletinDate;
+    private final String analysisBulletin;
+    private final LocalDate bulletinDate;
+    private final Invoice invoice;
+    private final String bagType;
+    private final LocalDate validityDate;
+    private final Integer seedScore;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "invoice_id")
-    private Invoice invoice;
+    public Lot(Long id, String lotNumber, LotType lotType, Seed cultivar, SeedType seedType,
+               LotCategory category, BigDecimal bagWeight, BigDecimal balance,
+               String analysisBulletin, LocalDate bulletinDate, Invoice invoice,
+               String bagType, LocalDate validityDate, Integer seedScore,
+               LocalDateTime createdAt, LocalDateTime updatedAt) {
 
-    private String bagType;
-    private LocalDate validityDate;
-    private Integer seedScore;
+        this.id = id;
+        this.lotNumber = lotNumber;
+        this.lotType = lotType;
+        this.cultivar = cultivar;
+        this.seedType = seedType;
+        this.category = category;
+        this.bagWeight = bagWeight;
+        this.balance = balance;
+        this.analysisBulletin = analysisBulletin;
+        this.bulletinDate = bulletinDate;
+        this.invoice = invoice;
+        this.bagType = bagType;
+        this.validityDate = validityDate;
+        this.seedScore = seedScore;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    public void withdraw(BigDecimal amount) {
+        if (balance.compareTo(amount) < 0)
+            throw new InsufficientLotBalanceException(lotNumber, balance.doubleValue(), amount.doubleValue());
+        this.balance = this.balance.subtract(amount);
+    }
 }

@@ -1,33 +1,42 @@
 package com.westflow.seeds_manager_api.domain.entity;
 
-import jakarta.persistence.*;
+import com.westflow.seeds_manager_api.domain.exception.ValidationException;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "withdrawals")
+@Getter
 public class LotWithdrawal {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "lot_id")
-    private Lot lot;
+    private final Long id;
+    private final Lot lot;
+    private final String invoiceNumber;
+    private final BigDecimal quantity;
+    private final LocalDate withdrawalDate;
+    private final String state;
+    private final Client client;
+    private final LocalDateTime createdAt;
 
-    @Column(name = "invoice_number")
-    private String invoiceNumber;
+    public LotWithdrawal(Long id, Lot lot, String invoiceNumber, BigDecimal quantity,
+                         LocalDate withdrawalDate, String state, Client client, LocalDateTime createdAt) {
 
-    private BigDecimal quantity;
-    private LocalDate withdrawalDate;
-    private String state;
+        if (lot == null || quantity == null || withdrawalDate == null)
+            throw new ValidationException("Lot, quantity and withdrawal date are required");
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+        if (quantity.compareTo(BigDecimal.ZERO) <= 0)
+            throw new ValidationException("Withdrawal quantity must be positive");
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+        this.id = id;
+        this.lot = lot;
+        this.invoiceNumber = invoiceNumber;
+        this.quantity = quantity;
+        this.withdrawalDate = withdrawalDate;
+        this.state = state;
+        this.client = client;
+        this.createdAt = createdAt;
+
+        lot.withdraw(quantity);
+    }
 }

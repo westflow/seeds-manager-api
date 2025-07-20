@@ -5,7 +5,9 @@ import com.westflow.seeds_manager_api.domain.repository.LotReservationRepository
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.LotReservationEntity;
 import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.LotReservationPersistenceMapper;
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaLotReservationRepository;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LotReservationRepositoryAdapter implements LotReservationRepository {
     private final JpaLotReservationRepository jpaRepository;
     private final LotReservationPersistenceMapper mapper;

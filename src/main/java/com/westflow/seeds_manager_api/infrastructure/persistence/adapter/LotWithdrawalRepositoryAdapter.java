@@ -5,7 +5,9 @@ import com.westflow.seeds_manager_api.domain.repository.LotWithdrawalRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.LotWithdrawalEntity;
 import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.LotWithdrawalPersistenceMapper;
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaLotWithdrawalRepository;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LotWithdrawalRepositoryAdapter implements LotWithdrawalRepository {
     private final JpaLotWithdrawalRepository jpaRepository;
     private final LotWithdrawalPersistenceMapper mapper;

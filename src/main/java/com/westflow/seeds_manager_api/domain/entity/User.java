@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 public class User {
     private final Long id;
-    private final String username;
+    private final String email;
     private final String password;
     private final String name;
     private final String position;
@@ -18,15 +18,15 @@ public class User {
     private final LocalDateTime updatedAt;
     private LocalDateTime lastLogin;
 
-    public User(Long id, String username, String password, String name, String position,
+    public User(Long id, String email, String password, String name, String position,
                 AccessLevel accessLevel, LocalDateTime createdAt,
                 LocalDateTime updatedAt, LocalDateTime lastLogin) {
 
-        if (username == null || password == null || accessLevel == null)
-            throw new ValidationException("Username, password and access level are required");
+        if (email == null || password == null || accessLevel == null)
+            throw new ValidationException("Email, password and access level are required");
 
         this.id = id;
-        this.username = username;
+        this.email = email;
         this.password = password;
         this.name = name;
         this.position = position;

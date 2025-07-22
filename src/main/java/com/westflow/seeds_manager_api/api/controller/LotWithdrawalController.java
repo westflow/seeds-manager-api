@@ -8,6 +8,7 @@ import com.westflow.seeds_manager_api.domain.entity.LotWithdrawal;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ public class LotWithdrawalController {
         this.lotWithdrawalMapper = lotWithdrawalMapper;
     }
 
-    //@PreAuthorize("hasAnyRole('ADMIN', 'STANDARD')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
     public ResponseEntity<LotWithdrawalResponse> withdraw(@Valid @RequestBody LotWithdrawalRequest request) {
 

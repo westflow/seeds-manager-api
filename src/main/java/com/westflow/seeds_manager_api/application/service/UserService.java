@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface UserService {
     User register(User user);
-    public Optional<User> getByEmail(String email);
+    Optional<User> getByEmail(String email);
 }

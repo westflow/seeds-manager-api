@@ -24,8 +24,8 @@ public class LotEntity {
     private LotType lotType;
 
     @ManyToOne
-    @JoinColumn(name = "cultivar_id")
-    private SeedEntity cultivar;
+    @JoinColumn(name = "seed_id")
+    private SeedEntity seed;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "seed_type")

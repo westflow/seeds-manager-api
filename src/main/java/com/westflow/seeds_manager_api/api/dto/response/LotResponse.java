@@ -5,12 +5,14 @@ import com.westflow.seeds_manager_api.domain.enums.LotType;
 import com.westflow.seeds_manager_api.domain.enums.SeedType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class LotResponse {
 
     private Long id;

@@ -20,8 +20,8 @@ public class InvoiceEntity {
     private String producerName;
 
     @ManyToOne
-    @JoinColumn(name = "cultivar_id")
-    private SeedEntity cultivar;
+    @JoinColumn(name = "seed_id")
+    private SeedEntity seed;
 
     @Column(name = "total_kg")
     private BigDecimal totalKg;

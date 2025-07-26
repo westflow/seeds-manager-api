@@ -2,6 +2,7 @@ package com.westflow.seeds_manager_api.infrastructure.persistence.entity;
 
 import com.westflow.seeds_manager_api.domain.enums.AccessLevel;
 import jakarta.persistence.*;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 

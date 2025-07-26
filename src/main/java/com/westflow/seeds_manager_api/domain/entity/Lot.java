@@ -15,7 +15,7 @@ public class Lot {
     private final Long id;
     private final String lotNumber;
     private final LotType lotType;
-    private final Seed cultivar;
+    private final Seed seed;
     private final SeedType seedType;
     private final LotCategory category;
     private final BigDecimal bagWeight;
@@ -29,7 +29,7 @@ public class Lot {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public Lot(Long id, String lotNumber, LotType lotType, Seed cultivar, SeedType seedType,
+    public Lot(Long id, String lotNumber, LotType lotType, Seed seed, SeedType seedType,
                LotCategory category, BigDecimal bagWeight, BigDecimal balance,
                String analysisBulletin, LocalDate bulletinDate, Invoice invoice,
                String bagType, LocalDate validityDate, Integer seedScore,
@@ -38,7 +38,7 @@ public class Lot {
         this.id = id;
         this.lotNumber = lotNumber;
         this.lotType = lotType;
-        this.cultivar = cultivar;
+        this.seed = seed;
         this.seedType = seedType;
         this.category = category;
         this.bagWeight = bagWeight;

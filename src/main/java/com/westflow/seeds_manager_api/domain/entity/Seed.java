@@ -14,14 +14,17 @@ public class Seed {
     private Long id;
     private String species;
     private String cultivar;
+    private boolean isProtected;
 
-    public Seed(Long id, String species, String cultivar) {
+    public Seed(Long id, String species, String cultivar, boolean isProtected) {
         if (species == null || cultivar == null) {
             throw new ValidationException("Species and cultivar must be provided");
         }
+
         this.id = id;
         this.species = species;
         this.cultivar = cultivar;
+        this.isProtected = isProtected;
     }
 
 }

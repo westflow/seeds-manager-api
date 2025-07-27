@@ -14,4 +14,5 @@ public class SeedResponse {
     private Long id;
     private String species;
     private String cultivar;
+    private boolean isProtected;
 }

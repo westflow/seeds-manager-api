@@ -2,7 +2,8 @@
 CREATE TABLE seeds (
     id BIGSERIAL PRIMARY KEY,
     species VARCHAR(100) NOT NULL,
-    cultivar VARCHAR(100) NOT NULL
+    cultivar VARCHAR(100) NOT NULL,
+    is_protected BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- Tabela de Clientes

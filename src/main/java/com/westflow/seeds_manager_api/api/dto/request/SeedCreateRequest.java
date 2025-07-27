@@ -13,4 +13,6 @@ public class SeedCreateRequest {
 
     @NotBlank(message = "Cultivar é obrigatória")
     private String cultivar;
+
+    private boolean isProtected;
 }

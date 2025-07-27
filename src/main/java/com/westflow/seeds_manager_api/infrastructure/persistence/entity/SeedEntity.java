@@ -19,4 +19,5 @@ public class SeedEntity {
 
     private String species;
     private String cultivar;
+    private boolean isProtected;
 }

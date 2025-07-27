@@ -1,23 +1,29 @@
 package com.westflow.seeds_manager_api.domain.entity;
 
 import com.westflow.seeds_manager_api.domain.exception.ValidationException;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@Builder
 public class LotWithdrawal {
 
-    private final Long id;
-    private final Lot lot;
-    private final String invoiceNumber;
-    private final BigDecimal quantity;
-    private final LocalDate withdrawalDate;
-    private final String state;
-    private final Client client;
-    private final LocalDateTime createdAt;
+    private Long id;
+    private Lot lot;
+    private String invoiceNumber;
+    private BigDecimal quantity;
+    private LocalDate withdrawalDate;
+    private String state;
+    private Client client;
+    private LocalDateTime createdAt;
 
     public LotWithdrawal(Long id, Lot lot, String invoiceNumber, BigDecimal quantity,
                          LocalDate withdrawalDate, String state, Client client, LocalDateTime createdAt) {

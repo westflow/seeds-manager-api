@@ -1,27 +1,33 @@
 package com.westflow.seeds_manager_api.domain.entity;
 
 import com.westflow.seeds_manager_api.domain.enums.OperationType;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@Builder
 public class Invoice {
-    private final Long id;
-    private final String invoiceNumber;
-    private final String producerName;
-    private final Seed seed;
-    private final BigDecimal totalKg;
-    private final OperationType operationType;
-    private final String authNumber;
-    private final String category;
-    private final BigDecimal purity;
-    private final String harvest;
-    private final String productionState;
-    private final BigDecimal plantedArea;
-    private final BigDecimal approvedArea;
-    private final LocalDateTime createdAt;
+    private Long id;
+    private String invoiceNumber;
+    private String producerName;
+    private Seed seed;
+    private BigDecimal totalKg;
+    private OperationType operationType;
+    private String authNumber;
+    private String category;
+    private BigDecimal purity;
+    private String harvest;
+    private String productionState;
+    private BigDecimal plantedArea;
+    private BigDecimal approvedArea;
+    private LocalDateTime createdAt;
 
     public Invoice(Long id, String invoiceNumber, String producerName, Seed seed,
                    BigDecimal totalKg, OperationType operationType, String authNumber,

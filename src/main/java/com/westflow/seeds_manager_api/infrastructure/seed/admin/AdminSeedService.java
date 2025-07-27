@@ -3,7 +3,6 @@ package com.westflow.seeds_manager_api.infrastructure.seed.admin;
 import com.westflow.seeds_manager_api.domain.entity.User;
 import com.westflow.seeds_manager_api.domain.enums.AccessLevel;
 import com.westflow.seeds_manager_api.domain.repository.UserRepository;
-import com.westflow.seeds_manager_api.infrastructure.persistence.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -33,6 +31,11 @@ public class AdminSeedService {
     public void seedAdmin() {
         if (!isSeedEnabled) {
             log.warn("[AdminSeedService] Seed ADMIN desativado por configuração.");
+            return;
+        }
+
+        if (seedEmail == null || seedEmail.isBlank() || seedPassword == null || seedPassword.isBlank()) {
+            log.error("[AdminSeedService] Propriedades 'admin.seed.email' ou 'admin.seed.password' não definidas ou vazias.");
             return;
         }
 

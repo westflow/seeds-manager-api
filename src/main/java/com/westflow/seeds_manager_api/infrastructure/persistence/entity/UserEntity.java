@@ -2,10 +2,14 @@ package com.westflow.seeds_manager_api.infrastructure.persistence.entity;
 
 import com.westflow.seeds_manager_api.domain.enums.AccessLevel;
 import jakarta.persistence.*;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class UserEntity {

@@ -1,19 +1,25 @@
 package com.westflow.seeds_manager_api.domain.entity;
 
 import com.westflow.seeds_manager_api.domain.exception.ValidationException;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@Builder
 public class Client {
-    private final Long id;
-    private final String number;
-    private final String name;
-    private final String email;
-    private final String phone;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    private Long id;
+    private String number;
+    private String name;
+    private String email;
+    private String phone;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public Client(Long id, String number, String name, String email, String phone,
                   LocalDateTime createdAt, LocalDateTime updatedAt) {

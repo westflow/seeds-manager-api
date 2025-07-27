@@ -4,30 +4,36 @@ import com.westflow.seeds_manager_api.domain.enums.LotCategory;
 import com.westflow.seeds_manager_api.domain.enums.LotType;
 import com.westflow.seeds_manager_api.domain.enums.SeedType;
 import com.westflow.seeds_manager_api.domain.exception.InsufficientLotBalanceException;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@Builder
 public class Lot {
-    private final Long id;
-    private final String lotNumber;
-    private final LotType lotType;
-    private final Seed seed;
-    private final SeedType seedType;
-    private final LotCategory category;
-    private final BigDecimal bagWeight;
+    private Long id;
+    private String lotNumber;
+    private LotType lotType;
+    private Seed seed;
+    private SeedType seedType;
+    private LotCategory category;
+    private BigDecimal bagWeight;
     private BigDecimal balance;
-    private final String analysisBulletin;
-    private final LocalDate bulletinDate;
-    private final Invoice invoice;
-    private final String bagType;
-    private final LocalDate validityDate;
-    private final Integer seedScore;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    private String analysisBulletin;
+    private LocalDate bulletinDate;
+    private Invoice invoice;
+    private String bagType;
+    private LocalDate validityDate;
+    private Integer seedScore;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public Lot(Long id, String lotNumber, LotType lotType, Seed seed, SeedType seedType,
                LotCategory category, BigDecimal bagWeight, BigDecimal balance,

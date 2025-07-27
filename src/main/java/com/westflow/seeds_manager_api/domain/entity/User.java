@@ -2,20 +2,26 @@ package com.westflow.seeds_manager_api.domain.entity;
 
 import com.westflow.seeds_manager_api.domain.enums.AccessLevel;
 import com.westflow.seeds_manager_api.domain.exception.ValidationException;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@Builder
 public class User {
-    private final Long id;
-    private final String email;
-    private final String password;
-    private final String name;
-    private final String position;
-    private final AccessLevel accessLevel;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    private Long id;
+    private String email;
+    private String password;
+    private String name;
+    private String position;
+    private AccessLevel accessLevel;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private LocalDateTime lastLogin;
 
     public User(Long id, String email, String password, String name, String position,

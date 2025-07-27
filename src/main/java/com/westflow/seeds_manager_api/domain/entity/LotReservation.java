@@ -2,21 +2,27 @@ package com.westflow.seeds_manager_api.domain.entity;
 
 import com.westflow.seeds_manager_api.domain.enums.LotStatus;
 import com.westflow.seeds_manager_api.domain.exception.ValidationException;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@Builder
 public class LotReservation {
 
-    private final Long id;
-    private final Lot lot;
-    private final BigDecimal quantity;
-    private final LocalDate reservationDate;
+    private Long id;
+    private Lot lot;
+    private BigDecimal quantity;
+    private LocalDate reservationDate;
     private LotStatus status;
-    private final Client client;
-    private final User user;
+    private Client client;
+    private User user;
 
     public LotReservation(Long id, Lot lot, BigDecimal quantity, LocalDate reservationDate,
                           LotStatus status, Client client, User user) {

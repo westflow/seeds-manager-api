@@ -2,10 +2,18 @@ package com.westflow.seeds_manager_api.infrastructure.persistence.entity;
 
 import com.westflow.seeds_manager_api.domain.enums.OperationType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "invoices")
 public class InvoiceEntity {

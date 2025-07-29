@@ -1,12 +1,14 @@
 package com.westflow.seeds_manager_api.api.security;
 
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
@@ -26,13 +28,14 @@ public class JwtTokenProvider {
                 .setSubject(userDetails.getUsername()) // geralmente o e-mail
                 .setIssuedAt(now)
                 .setExpiration(expiry)
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(getSigningKey())
                 .compact();
     }
 
     public String getEmailFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(jwtSecret)
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
@@ -44,12 +47,17 @@ public class JwtTokenProvider {
     }
 
     private boolean isTokenExpired(String token) {
-        Date expiration = Jwts.parser()
-                .setSigningKey(jwtSecret)
+        Date expiration = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getExpiration();
 
         return expiration.before(new Date());
+    }
+
+    private SecretKey getSigningKey() {
+        return Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
 }

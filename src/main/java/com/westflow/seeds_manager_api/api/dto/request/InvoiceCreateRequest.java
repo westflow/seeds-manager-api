@@ -27,12 +27,12 @@ public class InvoiceCreateRequest {
     @DecimalMin("0.01")
     private BigDecimal totalKg;
 
-    @NotBlank(message = "Tipo de operação é obrigatório")
+    @NotNull(message = "Tipo de operação é obrigatório")
     private OperationType operationType;
 
     private String authNumber;
 
-    @NotBlank(message = "Categoria é obrigatória")
+    @NotNull(message = "Categoria é obrigatória")
     private LotCategory category;
 
     @NotNull(message = "Pureza é obrigatória")
@@ -45,9 +45,7 @@ public class InvoiceCreateRequest {
     @NotBlank(message = "UF de produção é obrigatória")
     private String productionState;
 
-    @NotNull(message = "Área plantada é obrigatória")
     private BigDecimal plantedArea;
 
-    @NotNull(message = "Área aprovada é obrigatória")
     private BigDecimal approvedArea;
 }

@@ -5,6 +5,8 @@ import com.westflow.seeds_manager_api.domain.entity.Seed;
 import com.westflow.seeds_manager_api.domain.repository.SeedRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class SeedServiceImpl implements SeedService {
 
@@ -17,5 +19,10 @@ public class SeedServiceImpl implements SeedService {
     @Override
     public Seed register(Seed seed) {
         return seedRepository.save(seed);
+    }
+
+    @Override
+    public Optional<Seed> findById(Long id) {
+        return seedRepository.findById(id);
     }
 }

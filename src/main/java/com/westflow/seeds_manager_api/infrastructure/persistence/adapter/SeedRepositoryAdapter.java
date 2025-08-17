@@ -7,6 +7,8 @@ import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.SeedPers
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaSeedRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class SeedRepositoryAdapter implements SeedRepository {
     private final JpaSeedRepository jpaRepository;
@@ -23,4 +25,9 @@ public class SeedRepositoryAdapter implements SeedRepository {
         return mapper.toDomain(jpaRepository.save(entity));
     }
 
+    @Override
+    public Optional<Seed> findById(Long id) {
+        return jpaRepository.findById(id)
+                .map(mapper::toDomain);
+    }
 }

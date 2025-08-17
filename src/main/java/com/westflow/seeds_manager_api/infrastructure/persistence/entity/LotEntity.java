@@ -66,6 +66,10 @@ public class LotEntity {
     @Column(name = "seed_score")
     private Integer seedScore;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

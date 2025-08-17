@@ -7,6 +7,8 @@ import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.InvoiceP
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaInvoiceRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class InvoiceRepositoryAdapter implements InvoiceRepository {
     private final JpaInvoiceRepository jpaRepository;
@@ -21,5 +23,16 @@ public class InvoiceRepositoryAdapter implements InvoiceRepository {
     public Invoice save(Invoice invoice) {
         InvoiceEntity entity = mapper.toEntity(invoice);
         return mapper.toDomain(jpaRepository.save(entity));
+    }
+
+    @Override
+    public Optional<Invoice> findById(Long id) {
+        return jpaRepository.findById(id)
+                .map(mapper::toDomain);
+    }
+
+    @Override
+    public boolean existsByInvoiceNumber(String number) {
+        return jpaRepository.existsByInvoiceNumber(number);
     }
 }

@@ -33,7 +33,7 @@ CREATE TABLE users (
 -- Tabela de Notas Fiscais
 CREATE TABLE invoices (
     id BIGSERIAL PRIMARY KEY,
-    invoice_number VARCHAR(50) NOT NULL,
+    invoice_number VARCHAR(50) NOT NULL UNIQUE,
     producer_name VARCHAR(100) NOT NULL,
     seed_id BIGINT REFERENCES seeds(id),
     total_kg DECIMAL(10,2) NOT NULL,

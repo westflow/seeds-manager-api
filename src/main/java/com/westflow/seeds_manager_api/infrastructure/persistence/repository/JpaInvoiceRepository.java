@@ -4,4 +4,5 @@ import com.westflow.seeds_manager_api.infrastructure.persistence.entity.InvoiceE
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JpaInvoiceRepository extends JpaRepository<InvoiceEntity,Long> {
+    boolean existsByInvoiceNumber(String invoiceNumber);
 }

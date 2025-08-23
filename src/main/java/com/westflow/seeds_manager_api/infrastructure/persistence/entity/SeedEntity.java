@@ -17,7 +17,9 @@ public class SeedEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "species", nullable = false)
     private String species;
+    @Column(name = "cultivar", nullable = false)
     private String cultivar;
     private boolean isProtected;
 }

@@ -1,5 +1,7 @@
 package com.westflow.seeds_manager_api.application.service.impl;
 
+import com.westflow.seeds_manager_api.api.dto.request.InvoiceCreateRequest;
+import com.westflow.seeds_manager_api.api.mapper.InvoiceMapper;
 import com.westflow.seeds_manager_api.application.service.InvoiceService;
 import com.westflow.seeds_manager_api.application.service.SeedService;
 import com.westflow.seeds_manager_api.domain.entity.Invoice;
@@ -16,25 +18,28 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
     private final SeedService seedService;
+    private final InvoiceMapper invoiceMapper;
 
     public InvoiceServiceImpl(InvoiceRepository invoiceRepository,
-                              SeedService seedService) {
+                              SeedService seedService,
+                              InvoiceMapper invoiceMapper) {
         this.invoiceRepository = invoiceRepository;
         this.seedService = seedService;
+        this.invoiceMapper = invoiceMapper;
     }
 
     @Override
-    public Invoice register(Invoice invoice) {
-        long seedId = invoice.getSeed().getId();
+    public Invoice register(InvoiceCreateRequest request) {
+        Long seedId = request.getSeedId();
 
-        if (invoiceRepository.existsByInvoiceNumber(invoice.getInvoiceNumber())) {
-            throw new DuplicateInvoiceNumberException(invoice.getInvoiceNumber());
+        if (invoiceRepository.existsByInvoiceNumber(request.getInvoiceNumber())) {
+            throw new DuplicateInvoiceNumberException(request.getInvoiceNumber());
         }
 
         Seed seed = seedService.findById(seedId)
                 .orElseThrow(() -> new ResourceNotFoundException("Semente", seedId));
-        invoice.setSeed(seed);
 
+        Invoice invoice = invoiceMapper.toDomain(request, seed);
         return invoiceRepository.save(invoice);
     }
 

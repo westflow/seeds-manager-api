@@ -4,37 +4,29 @@ import com.westflow.seeds_manager_api.domain.enums.LotStatus;
 import com.westflow.seeds_manager_api.domain.exception.ValidationException;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
-@Setter
-@NoArgsConstructor
-@Builder
 public class LotReservation {
 
-    private Long id;
-    private Lot lot;
-    private BigDecimal quantity;
-    private LocalDate reservationDate;
+    private final Long id;
+    private final Lot lot;
+    private final BigDecimal quantity;
+    private final LocalDate reservationDate;
     private LotStatus status;
-    private Client client;
-    private User user;
+    private final User user;
+    private final Client client;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
+    @Builder
     public LotReservation(Long id, Lot lot, BigDecimal quantity, LocalDate reservationDate,
-                          LotStatus status, Client client, User user) {
-
-        if (lot == null || client == null || user == null)
-            throw new ValidationException("Lot, client and user must be specified");
-
-        if (reservationDate == null)
-            throw new ValidationException("Reservation date must not be null");
-
-        if (quantity == null || quantity.compareTo(BigDecimal.ZERO) <= 0)
-            throw new ValidationException("Quantity must be greater than zero");
+                          LotStatus status, Client client, User user,
+                          LocalDateTime createdAt, LocalDateTime updatedAt) {
+        validate(lot, quantity, reservationDate, status, user);
 
         this.id = id;
         this.lot = lot;
@@ -43,19 +35,40 @@ public class LotReservation {
         this.status = status;
         this.client = client;
         this.user = user;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
-    public void confirm() {
-        if (status != LotStatus.PENDING) {
-            throw new ValidationException("Only pending reservations can be confirmed");
+    private void validate(Lot lot, BigDecimal quantity, LocalDate reservationDate,
+                          LotStatus status, User user) {
+        if (lot == null) {
+            throw new ValidationException("O lote deve ser informado");
         }
-        status = LotStatus.CONFIRMED;
+
+        if (quantity == null || quantity.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new ValidationException("A quantidade deve ser maior que zero");
+        }
+
+        if (reservationDate == null) {
+            throw new ValidationException("A data da reserva não pode ser nula");
+        }
+
+        if (status == null) {
+            throw new ValidationException("O status da reserva é obrigatório");
+        }
+
+        if (user == null) {
+            throw new ValidationException("O usuário deve ser informado");
+        }
+    }
+
+    public void reserved() {
+        this.status = LotStatus.RESERVED;
     }
 
     public void cancel() {
-        if (status == LotStatus.CANCELLED) {
-            throw new ValidationException("Reservation is already cancelled");
-        }
-        status = LotStatus.CANCELLED;
+        if (status == LotStatus.CANCELLED)
+            throw new ValidationException("A reserva já está cancelada");
+        this.status = LotStatus.CANCELLED;
     }
 }

@@ -1,5 +1,6 @@
 package com.westflow.seeds_manager_api.api.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.constraints.NotBlank;
@@ -28,7 +29,7 @@ public class SeedCreateRequest {
     private String cultivar;
 
     @Schema(
-            description = "Indica se a semente é protegida pelo sistema",
+            description = "Indica se a semente é protegida",
             example = "false",
             requiredMode = RequiredMode.REQUIRED
     )

@@ -19,16 +19,19 @@ public class UserEntity {
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+    @Column(name = "password", nullable = false)
     private String password;
+    @Column(name = "name", nullable = false)
     private String name;
     private String position;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "access_level")
+    @Column(name = "access_level", nullable = false)
     private AccessLevel accessLevel;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

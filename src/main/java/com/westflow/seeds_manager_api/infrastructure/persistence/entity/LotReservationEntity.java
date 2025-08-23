@@ -23,27 +23,29 @@ public class LotReservationEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "lot_id")
+    @JoinColumn(name = "lot_id", nullable = false)
     private LotEntity lot;
 
+    @Column(name = "quantity", nullable = false)
     private BigDecimal quantity;
 
-    @Column(name = "reservation_date")
+    @Column(name = "reservation_date", nullable = false)
     private LocalDate reservationDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private LotStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
 
     @ManyToOne
     @JoinColumn(name = "client_id")
     private ClientEntity client;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
-
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

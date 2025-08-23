@@ -21,31 +21,34 @@ public class InvoiceEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "invoice_number")
+    @Column(name = "invoice_number", nullable = false, unique = true)
     private String invoiceNumber;
 
-    @Column(name = "producer_name")
+    @Column(name = "producer_name", nullable = false)
     private String producerName;
 
     @ManyToOne
-    @JoinColumn(name = "seed_id")
+    @JoinColumn(name = "seed_id", nullable = false)
     private SeedEntity seed;
 
-    @Column(name = "total_kg")
+    @Column(name = "total_kg", nullable = false)
     private BigDecimal totalKg;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "operation_type")
+    @Column(name = "operation_type", nullable = false)
     private OperationType operationType;
 
     @Column(name = "auth_number")
     private String authNumber;
 
+    @Column(name = "category", nullable = false)
     private String category;
+    @Column(name = "purity", nullable = false)
     private BigDecimal purity;
+    @Column(name = "harvest", nullable = false)
     private String harvest;
 
-    @Column(name = "production_state")
+    @Column(name = "production_state", nullable = false)
     private String productionState;
 
     @Column(name = "planted_area")
@@ -55,5 +58,8 @@ public class InvoiceEntity {
     private BigDecimal approvedArea;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

@@ -1,10 +1,16 @@
 package com.westflow.seeds_manager_api.api.controller;
 
+import com.westflow.seeds_manager_api.api.config.CurrentUser;
 import com.westflow.seeds_manager_api.api.dto.request.LotReservationRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotReservationResponse;
 import com.westflow.seeds_manager_api.api.mapper.LotReservationMapper;
 import com.westflow.seeds_manager_api.application.service.LotReservationService;
 import com.westflow.seeds_manager_api.domain.entity.LotReservation;
+import com.westflow.seeds_manager_api.domain.entity.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "LotReservations", description = "Operações de reserva de lotes")
 @RestController
 @RequestMapping("/api/reservations")
 public class LotReservationController {
@@ -26,9 +33,18 @@ public class LotReservationController {
         this.lotReservationMapper = lotReservationMapper;
     }
 
+    @Operation(
+            summary = "Cria uma nova reserva de lote",
+            description = "Valida e registra uma nova reserva de lote vinculado ao usuário logado",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Reserva de lote criada com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Dados inválidos")
+            }
+    )
     @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD')")
     @PostMapping
-    public ResponseEntity<LotReservationResponse> reserve(@Valid @RequestBody LotReservationRequest request) {
+    public ResponseEntity<LotReservationResponse> reserve(@Valid @RequestBody LotReservationRequest request,
+                                                          @Parameter(hidden = true) @CurrentUser User user) {
 
         LotReservation reservation = lotReservationMapper.toDomain(request);
         LotReservation saved = lotReservationService.reserve(reservation);

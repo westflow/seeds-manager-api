@@ -1,7 +1,9 @@
 package com.westflow.seeds_manager_api.application.service;
 
+import com.westflow.seeds_manager_api.api.dto.request.LotCreateRequest;
 import com.westflow.seeds_manager_api.domain.entity.Lot;
+import com.westflow.seeds_manager_api.domain.entity.User;
 
 public interface LotService {
-    Lot register(Lot lot);
+    Lot register(LotCreateRequest request, User user);
 }

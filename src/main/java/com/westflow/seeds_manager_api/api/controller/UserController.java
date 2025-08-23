@@ -5,6 +5,9 @@ import com.westflow.seeds_manager_api.api.dto.response.UserResponse;
 import com.westflow.seeds_manager_api.api.mapper.UserMapper;
 import com.westflow.seeds_manager_api.application.service.UserService;
 import com.westflow.seeds_manager_api.domain.entity.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Users", description = "Operações de usuários")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
     private final UserService userService;
     private final UserMapper userMapper;
 
@@ -25,10 +30,17 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
+    @Operation(
+            summary = "Cria um novo usuário",
+            description = "Valida e registra um novo usuário no sistema",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Dados inválidos")
+            }
+    )
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<UserResponse> create(@Valid @RequestBody UserCreateRequest request) {
-
         User domainUser = userMapper.toDomain(request);
         User savedUser = userService.register(domainUser);
         UserResponse response = userMapper.toResponse(savedUser);

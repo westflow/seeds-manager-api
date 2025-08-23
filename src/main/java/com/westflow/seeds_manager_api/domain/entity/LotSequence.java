@@ -38,26 +38,4 @@ public class LotSequence {
             throw new ValidationException("Último número deve ser não negativo");
         }
     }
-
-    public LotSequence increment() {
-        return LotSequence.builder()
-                .id(this.id)
-                .year(this.year)
-                .lastNumber(this.lastNumber + 1)
-                .resetDone(this.resetDone)
-                .resetDate(this.resetDate)
-                .createdAt(this.createdAt)
-                .build();
-    }
-
-    public LotSequence reset() {
-        return LotSequence.builder()
-                .id(this.id)
-                .year(this.year)
-                .lastNumber(0)
-                .resetDone(true)
-                .resetDate(LocalDateTime.now())
-                .createdAt(this.createdAt)
-                .build();
-    }
 }

@@ -5,7 +5,6 @@ import com.westflow.seeds_manager_api.domain.enums.LotType;
 import com.westflow.seeds_manager_api.domain.enums.SeedType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,28 +50,56 @@ public class LotCreateRequest {
     private LotCategory category;
 
     @Schema(
-            description = "Peso da sacaria em kg",
-            example = "10.00",
+            description = "Tamanho da sacaria",
+            example = "1",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    @NotNull(message = "O peso da sacaria é obrigatório")
-    @DecimalMin(value = "0.01", message = "O peso deve ser maior que zero")
-    private BigDecimal bagWeight;
+    @NotNull(message = "O tamanho da sacaria é obrigatório")
+    private Long bagWeightId;
 
     @Schema(
-            description = "Saldo disponível do lote em kg",
+            description = "Tipo da sacaria",
+            example = "1",
+            requiredMode = Schema.RequiredMode.REQUIRED
+    )
+    @NotNull(message = "Tipo da sacaria é obrigatória")
+    private Long bagTypeId;
+
+    @Schema(
+            description = "Quantidade total do lote em kg",
             example = "1000.00",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    @NotNull(message = "Saldo do lote é obrigatório")
-    @DecimalMin(value = "0.00", message = "O saldo do lote não pode ser negativo")
-    private BigDecimal balance;
+    @NotNull(message = "Quantidade total é obrigatório")
+    @DecimalMin(value = "0.01", message = "A quantidade total do lote deve ser maior que zero")
+    private BigDecimal quantityTotal;
+
+    @Schema(description = "Ordem de produção do lote", example = "OP-2025-001")
+    private String productionOrder;
 
     @Schema(description = "Número do boletim de análise", example = "BA-2025-001")
     private String analysisBulletin;
 
     @Schema(description = "Data do boletim de análise", example = "2025-07-27")
     private LocalDate bulletinDate;
+
+    @Schema(description = "Quantidade de sementes duras", example = "0")
+    private Integer hardSeeds = 0;
+
+    @Schema(description = "Quantidade de sementes silvestres", example = "0")
+    private Integer wildSeeds = 0;
+
+    @Schema(description = "Quantidade de outras espécies cultivadas", example = "0")
+    private Integer otherCultivatedSpecies = 0;
+
+    @Schema(description = "Quantidade de sementes toleradas", example = "0")
+    private Integer tolerated = 0;
+
+    @Schema(description = "Quantidade de sementes proibidas", example = "0")
+    private Integer prohibited = 0;
+
+    @Schema(description = "Laboratório", example = "1")
+    private Long LabId;
 
     @Schema(
             description = "ID da nota fiscal associada",
@@ -81,14 +108,6 @@ public class LotCreateRequest {
     )
     @NotNull(message = "Nota fiscal é obrigatória")
     private Long invoiceId;
-
-    @Schema(
-            description = "Tipo de sacaria utilizada",
-            example = "Casa da Lavoura",
-            requiredMode = Schema.RequiredMode.REQUIRED
-    )
-    @NotNull(message = "Sacaria é obrigatória")
-    private String bagType;
 
     @Schema(description = "Data de validade do lote", example = "2026-07-27")
     private LocalDate validityDate;

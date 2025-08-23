@@ -23,12 +23,20 @@ public class LotResponse {
     private Long seedId;
     private SeedType seedType;
     private LotCategory category;
-    private BigDecimal bagWeight;
+    private Long bagWeightId;
+    private Long bagTypeId;
+    private BigDecimal quantityTotal;
     private BigDecimal balance;
+    private String productionOrder;
     private String analysisBulletin;
     private LocalDate bulletinDate;
+    private Integer hardSeeds;
+    private Integer wildSeeds;
+    private Integer otherCultivatedSpecies;
+    private Integer tolerated;
+    private Integer prohibited;
+    private Long labId;
     private Long invoiceId;
-    private String bagType;
     private LocalDate validityDate;
     private Integer seedScore;
 }

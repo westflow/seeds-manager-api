@@ -20,26 +20,36 @@ public class Lot {
     private final Seed seed;
     private final SeedType seedType;
     private final LotCategory category;
-    private final BigDecimal bagWeight;
+    private final BagWeight bagWeight;
+    private final BagType bagType;
+    private final BigDecimal quantityTotal;
     private BigDecimal balance;
+    private final String productionOrder;
     private final String analysisBulletin;
     private final LocalDate bulletinDate;
+    private final Integer hardSeeds;
+    private final Integer wildSeeds;
+    private final Integer otherCultivatedSpecies;
+    private final Integer tolerated;
+    private final Integer prohibited;
     private final Invoice invoice;
-    private final String bagType;
     private final LocalDate validityDate;
     private final Integer seedScore;
+    private final Lab lab;
     private final User user;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
     @Builder
     public Lot(Long id, String lotNumber, LotType lotType, Seed seed, SeedType seedType,
-               LotCategory category, BigDecimal bagWeight, BigDecimal balance,
-               String analysisBulletin, LocalDate bulletinDate, Invoice invoice,
-               String bagType, LocalDate validityDate, Integer seedScore,
-               User user, LocalDateTime createdAt, LocalDateTime updatedAt) {
+               LotCategory category, BagWeight bagWeight, BagType bagType, BigDecimal quantityTotal,
+               BigDecimal balance, String analysisBulletin, LocalDate bulletinDate,
+               Invoice invoice, LocalDate validityDate, Integer seedScore, User user,
+               LocalDateTime createdAt, LocalDateTime updatedAt,
+               Lab lab, String productionOrder, Integer hardSeeds, Integer wildSeeds,
+               Integer otherCultivatedSpecies, Integer tolerated, Integer prohibited) {
 
-        validate(lotNumber, lotType, seed, seedType, category, bagWeight, balance, invoice, bagType);
+        validate(lotNumber, lotType, seed, seedType, category, bagWeight, bagType, quantityTotal, invoice);
 
         this.id = id;
         this.lotNumber = lotNumber;
@@ -48,21 +58,29 @@ public class Lot {
         this.seedType = seedType;
         this.category = category;
         this.bagWeight = bagWeight;
+        this.bagType = bagType;
+        this.quantityTotal = quantityTotal;
         this.balance = balance;
+        this.productionOrder = productionOrder;
         this.analysisBulletin = analysisBulletin;
         this.bulletinDate = bulletinDate;
         this.invoice = invoice;
-        this.bagType = bagType;
         this.validityDate = validityDate;
         this.seedScore = seedScore;
+        this.lab = lab;
         this.user = user;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.hardSeeds = hardSeeds;
+        this.wildSeeds = wildSeeds;
+        this.otherCultivatedSpecies = otherCultivatedSpecies;
+        this.tolerated = tolerated;
+        this.prohibited = prohibited;
     }
 
     private void validate(String lotNumber, LotType lotType, Seed seed, SeedType seedType,
-                          LotCategory category, BigDecimal bagWeight, BigDecimal balance,
-                          Invoice invoice, String bagType) {
+                          LotCategory category, BagWeight bagWeight, BagType bagType,
+                          BigDecimal balance, Invoice invoice) {
 
         if (lotNumber == null || lotNumber.isBlank()) {
             throw new ValidationException("Número do lote é obrigatório");
@@ -84,8 +102,8 @@ public class Lot {
             throw new ValidationException("Categoria é obrigatória");
         }
 
-        if (bagWeight == null || bagWeight.compareTo(BigDecimal.valueOf(0.01)) < 0) {
-            throw new ValidationException("Peso da sacaria deve ser maior que zero");
+        if (bagWeight == null) {
+            throw new ValidationException("Peso da sacaria é obrigatória");
         }
 
         if (balance == null || balance.compareTo(BigDecimal.ZERO) < 0) {
@@ -96,7 +114,7 @@ public class Lot {
             throw new ValidationException("Nota fiscal é obrigatória");
         }
 
-        if (bagType == null || bagType.isBlank()) {
+        if (bagType == null) {
             throw new ValidationException("Tipo de sacaria é obrigatório");
         }
     }

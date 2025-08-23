@@ -2,10 +2,7 @@ package com.westflow.seeds_manager_api.api.mapper;
 
 import com.westflow.seeds_manager_api.api.dto.request.LotCreateRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotResponse;
-import com.westflow.seeds_manager_api.domain.entity.Invoice;
-import com.westflow.seeds_manager_api.domain.entity.Lot;
-import com.westflow.seeds_manager_api.domain.entity.Seed;
-import com.westflow.seeds_manager_api.domain.entity.User;
+import com.westflow.seeds_manager_api.domain.entity.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -16,23 +13,34 @@ public abstract class LotMapper {
 
     @Mapping(source = "seed.id", target = "seedId")
     @Mapping(source = "invoice.id", target = "invoiceId")
+    @Mapping(source = "bagWeight.id", target = "bagWeightId")
+    @Mapping(source = "bagType.id", target = "bagTypeId")
+    @Mapping(source = "lab.id", target = "labId")
     public abstract LotResponse toResponse(Lot lot);
 
-    public Lot toDomain(LotCreateRequest request, Seed seed, Invoice invoice, User user, String lotNumber) {
+    public Lot toDomain(LotCreateRequest request, Seed seed, Invoice invoice, BagWeight bagWeight, BagType bagType, Lab lab,User user, String lotNumber) {
         return Lot.builder()
                 .lotNumber(lotNumber)
                 .lotType(request.getLotType())
                 .seed(seed)
                 .seedType(request.getSeedType())
                 .category(request.getCategory())
-                .bagWeight(request.getBagWeight())
-                .balance(request.getBalance())
+                .bagWeight(bagWeight)
+                .bagType(bagType)
+                .quantityTotal(request.getQuantityTotal())
+                .balance(request.getQuantityTotal())
+                .productionOrder(request.getProductionOrder())
                 .analysisBulletin(request.getAnalysisBulletin())
                 .bulletinDate(request.getBulletinDate())
+                .hardSeeds(request.getHardSeeds())
+                .wildSeeds(request.getWildSeeds())
+                .otherCultivatedSpecies(request.getOtherCultivatedSpecies())
+                .tolerated(request.getTolerated())
+                .prohibited(request.getProhibited())
                 .invoice(invoice)
-                .bagType(request.getBagType())
                 .validityDate(request.getValidityDate())
                 .seedScore(request.getSeedScore())
+                .lab(lab)
                 .user(user)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())

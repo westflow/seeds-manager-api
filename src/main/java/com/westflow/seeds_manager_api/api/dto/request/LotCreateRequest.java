@@ -6,11 +6,13 @@ import com.westflow.seeds_manager_api.domain.enums.SeedType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -102,12 +104,13 @@ public class LotCreateRequest {
     private Long LabId;
 
     @Schema(
-            description = "ID da nota fiscal associada",
-            example = "12",
+            description = "Lista de IDs das notas fiscais associadas ao lote",
+            example = "[1, 2]",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    @NotNull(message = "Nota fiscal é obrigatória")
-    private Long invoiceId;
+    @NotNull(message = "Notas fiscais são obrigatórias")
+    @Size(min = 1, message = "O lote deve conter pelo menos uma nota fiscal")
+    private List<Long> invoiceIds;
 
     @Schema(description = "Data de validade do lote", example = "2026-07-27")
     private LocalDate validityDate;

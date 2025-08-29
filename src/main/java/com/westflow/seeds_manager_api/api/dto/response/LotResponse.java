@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -36,7 +37,7 @@ public class LotResponse {
     private Integer tolerated;
     private Integer prohibited;
     private Long labId;
-    private Long invoiceId;
+    private List<Long> invoiceIds;
     private LocalDate validityDate;
     private Integer seedScore;
 }

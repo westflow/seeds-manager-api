@@ -10,6 +10,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 public class Lot {
@@ -32,7 +33,7 @@ public class Lot {
     private final Integer otherCultivatedSpecies;
     private final Integer tolerated;
     private final Integer prohibited;
-    private final Invoice invoice;
+    private final List<Invoice> invoices;
     private final LocalDate validityDate;
     private final Integer seedScore;
     private final Lab lab;
@@ -44,12 +45,12 @@ public class Lot {
     public Lot(Long id, String lotNumber, LotType lotType, Seed seed, SeedType seedType,
                LotCategory category, BagWeight bagWeight, BagType bagType, BigDecimal quantityTotal,
                BigDecimal balance, String analysisBulletin, LocalDate bulletinDate,
-               Invoice invoice, LocalDate validityDate, Integer seedScore, User user,
+               List<Invoice> invoices, LocalDate validityDate, Integer seedScore, User user,
                LocalDateTime createdAt, LocalDateTime updatedAt,
                Lab lab, String productionOrder, Integer hardSeeds, Integer wildSeeds,
                Integer otherCultivatedSpecies, Integer tolerated, Integer prohibited) {
 
-        validate(lotNumber, lotType, seed, seedType, category, bagWeight, bagType, quantityTotal, invoice);
+        validate(lotNumber, lotType, seed, seedType, category, bagWeight, bagType, quantityTotal, invoices);
 
         this.id = id;
         this.lotNumber = lotNumber;
@@ -64,7 +65,7 @@ public class Lot {
         this.productionOrder = productionOrder;
         this.analysisBulletin = analysisBulletin;
         this.bulletinDate = bulletinDate;
-        this.invoice = invoice;
+        this.invoices = invoices;
         this.validityDate = validityDate;
         this.seedScore = seedScore;
         this.lab = lab;
@@ -80,7 +81,7 @@ public class Lot {
 
     private void validate(String lotNumber, LotType lotType, Seed seed, SeedType seedType,
                           LotCategory category, BagWeight bagWeight, BagType bagType,
-                          BigDecimal balance, Invoice invoice) {
+                          BigDecimal balance, List<Invoice> invoices) {
 
         if (lotNumber == null || lotNumber.isBlank()) {
             throw new ValidationException("Número do lote é obrigatório");
@@ -110,7 +111,7 @@ public class Lot {
             throw new ValidationException("Saldo do lote não pode ser negativo");
         }
 
-        if (invoice == null) {
+        if (invoices == null) {
             throw new ValidationException("Nota fiscal é obrigatória");
         }
 

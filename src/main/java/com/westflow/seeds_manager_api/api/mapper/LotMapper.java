@@ -7,18 +7,19 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public abstract class LotMapper {
 
     @Mapping(source = "seed.id", target = "seedId")
-    @Mapping(source = "invoice.id", target = "invoiceId")
+    @Mapping(source = "invoices", target = "invoiceIds")
     @Mapping(source = "bagWeight.id", target = "bagWeightId")
     @Mapping(source = "bagType.id", target = "bagTypeId")
     @Mapping(source = "lab.id", target = "labId")
     public abstract LotResponse toResponse(Lot lot);
 
-    public Lot toDomain(LotCreateRequest request, Seed seed, Invoice invoice, BagWeight bagWeight, BagType bagType, Lab lab,User user, String lotNumber) {
+    public Lot toDomain(LotCreateRequest request, Seed seed, List<Invoice> invoices, BagWeight bagWeight, BagType bagType, Lab lab, User user, String lotNumber) {
         return Lot.builder()
                 .lotNumber(lotNumber)
                 .lotType(request.getLotType())
@@ -37,7 +38,7 @@ public abstract class LotMapper {
                 .otherCultivatedSpecies(request.getOtherCultivatedSpecies())
                 .tolerated(request.getTolerated())
                 .prohibited(request.getProhibited())
-                .invoice(invoice)
+                .invoices(invoices)
                 .validityDate(request.getValidityDate())
                 .seedScore(request.getSeedScore())
                 .lab(lab)
@@ -45,5 +46,11 @@ public abstract class LotMapper {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
+    }
+
+    protected List<Long> mapInvoiceToIds(List<Invoice> invoices) {
+        return invoices.stream()
+                .map(Invoice::getId)
+                .toList();
     }
 }

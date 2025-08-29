@@ -12,6 +12,8 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -81,9 +83,13 @@ public class LotEntity {
     @Column(name = "prohibited", nullable = false)
     private Integer prohibited = 0;
 
-    @ManyToOne
-    @JoinColumn(name = "invoice_id", nullable = false)
-    private InvoiceEntity invoice;
+    @ManyToMany
+    @JoinTable(
+            name = "lot_invoices",
+            joinColumns = @JoinColumn(name = "lot_id"),
+            inverseJoinColumns = @JoinColumn(name = "invoice_id")
+    )
+    private List<InvoiceEntity> invoices = new ArrayList<>();
 
     @Column(name = "validity_date")
     private LocalDate validityDate;

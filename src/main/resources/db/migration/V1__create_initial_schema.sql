@@ -101,13 +101,20 @@ CREATE TABLE lots (
     other_cultivated_species INTEGER NOT NULL DEFAULT 0,
     tolerated INTEGER NOT NULL DEFAULT 0,
     prohibited INTEGER NOT NULL DEFAULT 0,
-    invoice_id BIGINT NOT NULL REFERENCES invoices(id),
     validity_date DATE,
     seed_score INTEGER NOT NULL,
-    lab_id BIGINT NOT NULL REFERENCES labs(id),
+    lab_id BIGINT REFERENCES labs(id),
     user_id BIGINT NOT NULL REFERENCES users(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
+);
+
+-- Tabela Lotes com notas fiscais
+CREATE TABLE lot_invoices (
+    id BIGSERIAL PRIMARY KEY,
+    lot_id BIGINT NOT NULL REFERENCES lots(id) ON DELETE CASCADE,
+    invoice_id BIGINT NOT NULL REFERENCES invoices(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Tabela de Baixas de Lotes
@@ -160,7 +167,6 @@ CREATE INDEX idx_invoices_producer_name ON invoices(producer_name);
 -- Índices para lots
 CREATE INDEX idx_lots_lot_number ON lots(lot_number);
 CREATE INDEX idx_lots_seed_id ON lots(seed_id);
-CREATE INDEX idx_lots_invoice_id ON lots(invoice_id);
 CREATE INDEX idx_lots_lab_id ON lots(lab_id);
 CREATE INDEX idx_lots_user_id ON lots(user_id);
 CREATE INDEX idx_lots_bag_type_id ON lots(bag_type_id);
@@ -194,3 +200,6 @@ CREATE INDEX idx_lot_reservations_client_id ON lot_reservations(client_id);
 CREATE INDEX idx_lot_reservations_status ON lot_reservations(status);
 CREATE INDEX idx_lot_reservations_reservation_date ON lot_reservations(reservation_date);
 
+-- Índices para lot_invoices
+CREATE INDEX idx_lot_invoices_lot_id ON lot_invoices(lot_id);
+CREATE INDEX idx_lot_invoices_invoice_id ON lot_invoices(invoice_id);

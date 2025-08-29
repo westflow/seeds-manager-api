@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -56,6 +58,14 @@ public class InvoiceEntity {
 
     @Column(name = "approved_area")
     private BigDecimal approvedArea;
+
+    @ManyToMany
+    @JoinTable(
+            name = "lot_invoices",
+            joinColumns = @JoinColumn(name = "invoice_id"),
+            inverseJoinColumns = @JoinColumn(name = "lot_id")
+    )
+    private List<LotEntity> invoices = new ArrayList<>();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();

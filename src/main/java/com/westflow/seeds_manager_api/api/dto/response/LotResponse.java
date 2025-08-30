@@ -40,4 +40,5 @@ public class LotResponse {
     private List<Long> invoiceIds;
     private LocalDate validityDate;
     private Integer seedScore;
+    private BigDecimal purity;
 }

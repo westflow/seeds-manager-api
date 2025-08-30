@@ -117,4 +117,7 @@ public class LotCreateRequest {
 
     @Schema(description = "Pontuação da semente", example = "85")
     private Integer seedScore;
+
+    @Schema(description = "Pureza da semente", example = "90.5")
+    private BigDecimal purity;
 }

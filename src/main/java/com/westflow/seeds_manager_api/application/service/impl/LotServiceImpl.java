@@ -13,6 +13,7 @@ import com.westflow.seeds_manager_api.domain.repository.LotRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class LotServiceImpl implements LotService {
@@ -71,7 +72,7 @@ public class LotServiceImpl implements LotService {
             lab = labService.findById(labId)
                     .orElseThrow(() -> new ResourceNotFoundException("Laboratório", labId));
         }
-        validateInvoices(invoices);
+        validateInvoices(invoices, request);
 
         String lotNumber = lotSequenceService.generateNextFormattedNumber();
 
@@ -79,7 +80,7 @@ public class LotServiceImpl implements LotService {
         return lotRepository.save(lot);
     }
 
-    private void validateInvoices(List<Invoice> invoices) {
+    private void validateInvoices(List<Invoice> invoices, LotCreateRequest request) {
         if (invoices.isEmpty()) {
             throw new ValidationException("É necessário informar ao menos uma nota fiscal.");
         }
@@ -97,6 +98,11 @@ public class LotServiceImpl implements LotService {
 
         if (!mesmaSafra) {
             throw new BusinessException("Todas as notas fiscais devem pertencer à mesma safra.");
+        }
+
+        if (invoices.stream().anyMatch(i -> i.getOperationType() == OperationType.REPACKAGING &&
+                Objects.equals(i.getPurity(), request.getPurity()))) {
+            throw new BusinessException("Notas com tipo de operação de reembalo a pureza deve ser a mesma da nota fiscal.");
         }
     }
 }

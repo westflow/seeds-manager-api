@@ -96,6 +96,8 @@ public class LotEntity {
 
     @Column(name = "seed_score")
     private Integer seedScore;
+    @Column(name = "purity", nullable = false)
+    private BigDecimal purity;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

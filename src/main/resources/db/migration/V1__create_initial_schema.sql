@@ -1,9 +1,15 @@
+-- Ativa a extensão unaccent
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
 -- Tabela de Sementes
 CREATE TABLE seeds (
     id BIGSERIAL PRIMARY KEY,
     species VARCHAR(100) NOT NULL,
     cultivar VARCHAR(100) NOT NULL,
-    is_protected BOOLEAN NOT NULL DEFAULT FALSE
+    normalized_species VARCHAR(100),
+    normalized_cultivar VARCHAR(100),
+    is_protected BOOLEAN NOT NULL DEFAULT FALSE,
+    CONSTRAINT unique_seed_entry UNIQUE (normalized_species, normalized_cultivar)
 );
 
 -- Tabela de Clientes
@@ -202,3 +208,18 @@ CREATE INDEX idx_lot_reservations_reservation_date ON lot_reservations(reservati
 -- Índices para lot_invoices
 CREATE INDEX idx_lot_invoices_lot_id ON lot_invoices(lot_id);
 CREATE INDEX idx_lot_invoices_invoice_id ON lot_invoices(invoice_id);
+
+-- Criação do trigger normalização sementes
+CREATE OR REPLACE FUNCTION normalize_seed_fields()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.normalized_species := LOWER(unaccent(TRIM(NEW.species)));
+  NEW.normalized_cultivar := UPPER(unaccent(TRIM(NEW.cultivar)));
+RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_normalize_seed
+    BEFORE INSERT OR UPDATE ON seeds
+                         FOR EACH ROW
+                         EXECUTE FUNCTION normalize_seed_fields();

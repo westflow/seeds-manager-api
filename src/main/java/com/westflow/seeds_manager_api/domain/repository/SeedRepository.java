@@ -7,4 +7,5 @@ import java.util.Optional;
 public interface SeedRepository {
     Seed save(Seed seed);
     Optional<Seed> findById(Long id);
+    Optional<Seed> findByNormalizedSpeciesAndNormalizedCultivar(String normalizedSpecies, String normalizedCultivar);
 }

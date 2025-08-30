@@ -30,4 +30,11 @@ public class SeedRepositoryAdapter implements SeedRepository {
         return jpaRepository.findById(id)
                 .map(mapper::toDomain);
     }
+
+    @Override
+    public Optional<Seed> findByNormalizedSpeciesAndNormalizedCultivar(String normalizedSpecies, String normalizedCultivar) {
+        return jpaRepository.findByNormalizedSpeciesAndNormalizedCultivar(normalizedSpecies, normalizedCultivar)
+                .map(mapper::toDomain);
+    }
+
 }

@@ -2,6 +2,7 @@ package com.westflow.seeds_manager_api.application.service.impl;
 
 import com.westflow.seeds_manager_api.application.service.SeedService;
 import com.westflow.seeds_manager_api.domain.entity.Seed;
+import com.westflow.seeds_manager_api.domain.exception.BusinessException;
 import com.westflow.seeds_manager_api.domain.repository.SeedRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,14 @@ public class SeedServiceImpl implements SeedService {
 
     @Override
     public Seed register(Seed seed) {
+
+        Optional<Seed> existing = seedRepository.findByNormalizedSpeciesAndNormalizedCultivar(
+                seed.getNormalizedSpecies(), seed.getNormalizedCultivar()
+        );
+        if (existing.isPresent()) {
+            throw new BusinessException("Já existe uma semente com essa espécie e cultivar.");
+        }
+
         return seedRepository.save(seed);
     }
 

@@ -21,5 +21,9 @@ public class SeedEntity {
     private String species;
     @Column(name = "cultivar", nullable = false)
     private String cultivar;
+    @Column(name = "normalized_species")
+    private String normalizedSpecies;
+    @Column(name = "normalized_cultivar", nullable = false)
+    private String normalizedCultivar;
     private boolean isProtected;
 }

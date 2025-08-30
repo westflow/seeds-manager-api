@@ -100,9 +100,11 @@ public class LotServiceImpl implements LotService {
             throw new BusinessException("Todas as notas fiscais devem pertencer à mesma safra.");
         }
 
-        if (invoices.stream().anyMatch(i -> i.getOperationType() == OperationType.REPACKAGING &&
-                Objects.equals(i.getPurity(), request.getPurity()))) {
-            throw new BusinessException("Notas com tipo de operação de reembalo a pureza deve ser a mesma da nota fiscal.");
+        if (invoices.stream().anyMatch(i ->
+                i.getOperationType() == OperationType.REPACKAGING &&
+                        i.getPurity().compareTo(request.getPurity()) != 0
+        )) {
+            throw new BusinessException("Notas com tipo de operação de reembalo: a pureza deve ser a mesma da nota fiscal.");
         }
     }
 }

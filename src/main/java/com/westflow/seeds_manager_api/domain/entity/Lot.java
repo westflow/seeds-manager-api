@@ -121,8 +121,8 @@ public class Lot {
             throw new ValidationException("Tipo de sacaria é obrigatório");
         }
 
-        if (purity == null || purity.compareTo(BigDecimal.ZERO) < 0) {
-            throw new ValidationException("Pureza é obrigatória");
+        if (purity == null || purity.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new ValidationException("Pureza é obrigatória e deve ser positiva");
         }
     }
 

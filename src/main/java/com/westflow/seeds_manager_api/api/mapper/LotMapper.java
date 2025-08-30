@@ -41,6 +41,7 @@ public abstract class LotMapper {
                 .invoices(invoices)
                 .validityDate(request.getValidityDate())
                 .seedScore(request.getSeedScore())
+                .purity(request.getPurity())
                 .lab(lab)
                 .user(user)
                 .createdAt(LocalDateTime.now())

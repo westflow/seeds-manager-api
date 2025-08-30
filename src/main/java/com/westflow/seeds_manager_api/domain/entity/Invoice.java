@@ -83,8 +83,8 @@ public class Invoice {
             throw new ValidationException("Categoria é obrigatória");
         }
 
-        if (purity == null || purity.compareTo(BigDecimal.ZERO) < 0) {
-            throw new ValidationException("Pureza é obrigatória e deve ser não negativa");
+        if (purity == null || purity.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new ValidationException("Pureza é obrigatória e deve ser positiva");
         }
 
         if (harvest == null || harvest.isBlank()) {

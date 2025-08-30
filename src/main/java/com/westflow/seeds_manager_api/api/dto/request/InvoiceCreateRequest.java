@@ -44,7 +44,7 @@ public class InvoiceCreateRequest {
     @NotNull(message = "Categoria é obrigatória")
     private LotCategory category;
 
-    @Schema(description = "Pureza da semente em porcentagem", example = "98.5", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Pureza da semente", example = "98.5", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "Pureza é obrigatória")
     @DecimalMin("0.00")
     private BigDecimal purity;

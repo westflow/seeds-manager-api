@@ -12,18 +12,16 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public abstract class LotMapper {
 
-    @Mapping(source = "seed.id", target = "seedId")
     @Mapping(source = "invoices", target = "invoiceIds")
     @Mapping(source = "bagWeight.id", target = "bagWeightId")
     @Mapping(source = "bagType.id", target = "bagTypeId")
     @Mapping(source = "lab.id", target = "labId")
     public abstract LotResponse toResponse(Lot lot);
 
-    public Lot toDomain(LotCreateRequest request, Seed seed, List<Invoice> invoices, BagWeight bagWeight, BagType bagType, Lab lab, User user, String lotNumber) {
+    public Lot toDomain(LotCreateRequest request, List<Invoice> invoices, BagWeight bagWeight, BagType bagType, Lab lab, User user, String lotNumber) {
         return Lot.builder()
                 .lotNumber(lotNumber)
                 .lotType(request.getLotType())
-                .seed(seed)
                 .seedType(request.getSeedType())
                 .category(request.getCategory())
                 .bagWeight(bagWeight)

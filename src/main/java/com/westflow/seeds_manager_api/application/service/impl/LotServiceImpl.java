@@ -4,7 +4,6 @@ import com.westflow.seeds_manager_api.api.dto.request.LotCreateRequest;
 import com.westflow.seeds_manager_api.api.mapper.LotMapper;
 import com.westflow.seeds_manager_api.application.service.*;
 import com.westflow.seeds_manager_api.domain.entity.*;
-import com.westflow.seeds_manager_api.domain.enums.LotType;
 import com.westflow.seeds_manager_api.domain.enums.OperationType;
 import com.westflow.seeds_manager_api.domain.exception.BusinessException;
 import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
@@ -13,13 +12,11 @@ import com.westflow.seeds_manager_api.domain.repository.LotRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class LotServiceImpl implements LotService {
 
     private final LotRepository lotRepository;
-    private final SeedService seedService;
     private final InvoiceService invoiceService;
     private final LotMapper lotMapper;
     private final LotSequenceService lotSequenceService;
@@ -28,7 +25,6 @@ public class LotServiceImpl implements LotService {
     private final LabService labService;
 
     public LotServiceImpl(LotRepository lotRepository,
-                          SeedService seedService,
                           InvoiceService invoiceService,
                           LotMapper lotMapper,
                           LotSequenceService lotSequenceService,
@@ -36,7 +32,6 @@ public class LotServiceImpl implements LotService {
                           BagTypeService bagTypeService,
                           LabService labService) {
         this.lotRepository = lotRepository;
-        this.seedService = seedService;
         this.invoiceService = invoiceService;
         this.lotMapper = lotMapper;
         this.lotSequenceService = lotSequenceService;
@@ -47,14 +42,10 @@ public class LotServiceImpl implements LotService {
 
     @Override
     public Lot register(LotCreateRequest request, User user) {
-        Long seedId = request.getSeedId();
         Long bagWeightId = request.getBagWeightId();
         Long bagTypeId = request.getBagTypeId();
         Long labId = request.getLabId();
         List<Long> invoiceIds = request.getInvoiceIds();
-
-        Seed seed = seedService.findById(seedId)
-                .orElseThrow(() -> new ResourceNotFoundException("Semente", seedId));
 
         List<Invoice> invoices = invoiceIds.stream()
                 .map(id -> invoiceService.findById(id)
@@ -76,7 +67,7 @@ public class LotServiceImpl implements LotService {
 
         String lotNumber = lotSequenceService.generateNextFormattedNumber();
 
-        Lot lot = lotMapper.toDomain(request, seed, invoices, bagWeight, bagType, lab, user, lotNumber);
+        Lot lot = lotMapper.toDomain(request, invoices, bagWeight, bagType, lab, user, lotNumber);
         return lotRepository.save(lot);
     }
 
@@ -91,12 +82,18 @@ public class LotServiceImpl implements LotService {
             throw new BusinessException("Notas fiscais com o tipo de operação reembalo devem conter exatamente uma nota fiscal.");
         }
 
-        boolean mesmaSafra = invoices.stream()
+        if (!(invoices.stream()
+                .map(Invoice::getSeed)
+                .distinct()
+                .count() == 1)) {
+            throw new BusinessException("Todas as notas fiscais devem conter a mesma semente.");
+        }
+
+
+        if (!(invoices.stream()
                 .map(Invoice::getHarvest)
                 .distinct()
-                .count() == 1;
-
-        if (!mesmaSafra) {
+                .count() == 1)) {
             throw new BusinessException("Todas as notas fiscais devem pertencer à mesma safra.");
         }
 

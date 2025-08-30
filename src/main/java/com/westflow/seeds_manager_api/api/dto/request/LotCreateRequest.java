@@ -28,14 +28,6 @@ public class LotCreateRequest {
     private LotType lotType;
 
     @Schema(
-            description = "ID da semente associada",
-            example = "5",
-            requiredMode = Schema.RequiredMode.REQUIRED
-    )
-    @NotNull(message = "Semente é obrigatório")
-    private Long seedId;
-
-    @Schema(
             description = "Tipo de semente",
             example = "CONVENTIONAL",
             requiredMode = Schema.RequiredMode.REQUIRED

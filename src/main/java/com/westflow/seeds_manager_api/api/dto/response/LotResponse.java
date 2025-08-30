@@ -21,7 +21,6 @@ public class LotResponse {
     private Long id;
     private String lotNumber;
     private LotType lotType;
-    private Long seedId;
     private SeedType seedType;
     private LotCategory category;
     private Long bagWeightId;

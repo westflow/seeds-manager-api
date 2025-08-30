@@ -86,7 +86,6 @@ CREATE TABLE lots (
     id BIGSERIAL PRIMARY KEY,
     lot_number VARCHAR(50) NOT NULL UNIQUE,
     lot_type VARCHAR(20) NOT NULL, -- INTERNAL_SALE, EXPORT
-    seed_id BIGINT NOT NULL REFERENCES seeds(id),
     seed_type VARCHAR(30) NOT NULL, -- COATED, GRAPHITE, COATED_GRAPHITE, CONVENTIONAL
     category VARCHAR(10) NOT NULL, -- S1, S2
     bag_weight_id BIGINT NOT NULL REFERENCES bag_weights(id),
@@ -167,7 +166,6 @@ CREATE INDEX idx_invoices_producer_name ON invoices(producer_name);
 
 -- Índices para lots
 CREATE INDEX idx_lots_lot_number ON lots(lot_number);
-CREATE INDEX idx_lots_seed_id ON lots(seed_id);
 CREATE INDEX idx_lots_lab_id ON lots(lab_id);
 CREATE INDEX idx_lots_user_id ON lots(user_id);
 CREATE INDEX idx_lots_bag_type_id ON lots(bag_type_id);

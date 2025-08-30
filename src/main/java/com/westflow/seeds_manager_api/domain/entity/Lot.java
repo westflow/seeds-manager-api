@@ -18,7 +18,6 @@ public class Lot {
     private final Long id;
     private final String lotNumber;
     private final LotType lotType;
-    private final Seed seed;
     private final SeedType seedType;
     private final LotCategory category;
     private final BagWeight bagWeight;
@@ -43,7 +42,7 @@ public class Lot {
     private final LocalDateTime updatedAt;
 
     @Builder
-    public Lot(Long id, String lotNumber, LotType lotType, Seed seed, SeedType seedType,
+    public Lot(Long id, String lotNumber, LotType lotType, SeedType seedType,
                LotCategory category, BagWeight bagWeight, BagType bagType, BigDecimal quantityTotal,
                BigDecimal balance, String analysisBulletin, LocalDate bulletinDate, List<Invoice> invoices,
                LocalDate validityDate, Integer seedScore, BigDecimal purity,
@@ -51,12 +50,11 @@ public class Lot {
                Lab lab, String productionOrder, Integer hardSeeds, Integer wildSeeds,
                Integer otherCultivatedSpecies, Integer tolerated, Integer prohibited) {
 
-        validate(lotNumber, lotType, seed, seedType, category, bagWeight, bagType, quantityTotal, purity, invoices);
+        validate(lotNumber, lotType, seedType, category, bagWeight, bagType, quantityTotal, purity, invoices);
 
         this.id = id;
         this.lotNumber = lotNumber;
         this.lotType = lotType;
-        this.seed = seed;
         this.seedType = seedType;
         this.category = category;
         this.bagWeight = bagWeight;
@@ -81,7 +79,7 @@ public class Lot {
         this.prohibited = prohibited;
     }
 
-    private void validate(String lotNumber, LotType lotType, Seed seed, SeedType seedType,
+    private void validate(String lotNumber, LotType lotType, SeedType seedType,
                           LotCategory category, BagWeight bagWeight, BagType bagType,
                           BigDecimal balance, BigDecimal purity, List<Invoice> invoices) {
 
@@ -91,10 +89,6 @@ public class Lot {
 
         if (lotType == null) {
             throw new ValidationException("Tipo de lote é obrigatório");
-        }
-
-        if (seed == null) {
-            throw new ValidationException("Semente é obrigatória");
         }
 
         if (seedType == null) {

@@ -33,10 +33,6 @@ public class LotEntity {
     @Column(name = "lot_type", nullable = false)
     private LotType lotType;
 
-    @ManyToOne
-    @JoinColumn(name = "seed_id", nullable = false)
-    private SeedEntity seed;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "seed_type", nullable = false)
     private SeedType seedType;

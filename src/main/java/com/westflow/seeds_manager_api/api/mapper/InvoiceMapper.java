@@ -21,6 +21,7 @@ public abstract class InvoiceMapper {
                 .producerName(request.getProducerName())
                 .seed(seed)
                 .totalKg(request.getTotalKg())
+                .balance(request.getTotalKg())
                 .operationType(request.getOperationType())
                 .authNumber(request.getAuthNumber())
                 .category(request.getCategory())

@@ -3,10 +3,7 @@ package com.westflow.seeds_manager_api.api.dto.response;
 import com.westflow.seeds_manager_api.domain.enums.LotCategory;
 import com.westflow.seeds_manager_api.domain.enums.LotType;
 import com.westflow.seeds_manager_api.domain.enums.SeedType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Setter
 public class LotResponse {
 
     private Long id;
@@ -36,7 +34,7 @@ public class LotResponse {
     private Integer tolerated;
     private Integer prohibited;
     private Long labId;
-    private List<Long> invoiceIds;
+    private List<InvoiceAllocationResponse> invoiceAllocations;
     private LocalDate validityDate;
     private Integer seedScore;
     private BigDecimal purity;

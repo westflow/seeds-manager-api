@@ -36,6 +36,9 @@ public class InvoiceEntity {
     @Column(name = "total_kg", nullable = false)
     private BigDecimal totalKg;
 
+    @Column(name = "balance", nullable = false)
+    private BigDecimal balance;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "operation_type", nullable = false)
     private OperationType operationType;

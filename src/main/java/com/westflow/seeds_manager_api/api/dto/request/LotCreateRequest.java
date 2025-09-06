@@ -95,14 +95,10 @@ public class LotCreateRequest {
     @Schema(description = "Laboratório", example = "1")
     private Long LabId;
 
-    @Schema(
-            description = "Lista de IDs das notas fiscais associadas ao lote",
-            example = "[1, 2]",
-            requiredMode = Schema.RequiredMode.REQUIRED
-    )
+    @Schema(description = "Notas fiscais e respectivas quantidades a serem descontadas")
     @NotNull(message = "Notas fiscais são obrigatórias")
     @Size(min = 1, message = "O lote deve conter pelo menos uma nota fiscal")
-    private List<Long> invoiceIds;
+    private List<InvoiceAllocationRequest> invoiceAllocations;
 
     @Schema(description = "Data de validade do lote", example = "2026-07-27")
     private LocalDate validityDate;

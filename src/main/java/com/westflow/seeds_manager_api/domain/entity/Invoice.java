@@ -17,6 +17,7 @@ public class Invoice {
     private final String producerName;
     private final Seed seed;
     private final BigDecimal totalKg;
+    private BigDecimal balance;
     private final OperationType operationType;
     private final String authNumber;
     private final LotCategory category;
@@ -30,7 +31,7 @@ public class Invoice {
 
     @Builder
     public Invoice(Long id, String invoiceNumber, String producerName, Seed seed,
-                   BigDecimal totalKg, OperationType operationType, String authNumber,
+                   BigDecimal totalKg, BigDecimal balance, OperationType operationType, String authNumber,
                    LotCategory category, BigDecimal purity, String harvest,
                    String productionState, BigDecimal plantedArea,
                    BigDecimal approvedArea, LocalDateTime createdAt, LocalDateTime updatedAt) {
@@ -42,6 +43,7 @@ public class Invoice {
         this.producerName = producerName;
         this.seed = seed;
         this.totalKg = totalKg;
+        this.balance = balance;
         this.operationType = operationType;
         this.authNumber = authNumber;
         this.category = category;

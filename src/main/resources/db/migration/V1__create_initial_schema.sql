@@ -43,6 +43,7 @@ CREATE TABLE invoices (
     producer_name VARCHAR(100) NOT NULL,
     seed_id BIGINT NOT NULL REFERENCES seeds(id),
     total_kg DECIMAL(10,2) NOT NULL,
+    balance DECIMAL(10,2) NOT NULL,
     operation_type VARCHAR(50) NOT NULL, -- REPACKAGING, TRANSFER
     auth_number VARCHAR(50),
     category VARCHAR(20) NOT NULL,
@@ -120,6 +121,7 @@ CREATE TABLE lot_invoices (
     id BIGSERIAL PRIMARY KEY,
     lot_id BIGINT NOT NULL REFERENCES lots(id) ON DELETE CASCADE,
     invoice_id BIGINT NOT NULL REFERENCES invoices(id) ON DELETE CASCADE,
+    allocated_quantity DECIMAL(10,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

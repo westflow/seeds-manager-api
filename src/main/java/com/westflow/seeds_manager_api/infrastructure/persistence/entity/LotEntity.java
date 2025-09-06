@@ -79,13 +79,8 @@ public class LotEntity {
     @Column(name = "prohibited", nullable = false)
     private Integer prohibited = 0;
 
-    @ManyToMany
-    @JoinTable(
-            name = "lot_invoices",
-            joinColumns = @JoinColumn(name = "lot_id"),
-            inverseJoinColumns = @JoinColumn(name = "invoice_id")
-    )
-    private List<InvoiceEntity> invoices = new ArrayList<>();
+    @OneToMany(mappedBy = "lot", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LotInvoiceEntity> lotInvoices = new ArrayList<>();
 
     @Column(name = "validity_date")
     private LocalDate validityDate;

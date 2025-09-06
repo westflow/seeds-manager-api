@@ -107,10 +107,6 @@ public class Lot {
             throw new ValidationException("Saldo do lote não pode ser negativo");
         }
 
-        if (invoices == null) {
-            throw new ValidationException("Nota fiscal é obrigatória");
-        }
-
         if (bagType == null) {
             throw new ValidationException("Tipo de sacaria é obrigatório");
         }

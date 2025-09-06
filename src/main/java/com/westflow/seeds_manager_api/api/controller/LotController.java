@@ -5,7 +5,6 @@ import com.westflow.seeds_manager_api.api.dto.request.LotCreateRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotResponse;
 import com.westflow.seeds_manager_api.api.mapper.LotMapper;
 import com.westflow.seeds_manager_api.application.service.LotService;
-import com.westflow.seeds_manager_api.domain.entity.Lot;
 import com.westflow.seeds_manager_api.domain.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,11 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class LotController {
 
     private final LotService lotService;
-    private final LotMapper lotMapper;
 
-    public LotController(LotService lotService, LotMapper lotMapper) {
+    public LotController(LotService lotService) {
         this.lotService = lotService;
-        this.lotMapper = lotMapper;
     }
 
     @Operation(
@@ -45,8 +42,7 @@ public class LotController {
     @PostMapping
     public ResponseEntity<LotResponse> create(@Valid @RequestBody LotCreateRequest request,
                                               @Parameter(hidden = true) @CurrentUser User user) {
-        Lot saved = lotService.register(request, user);
-        LotResponse response = lotMapper.toResponse(saved);
+        LotResponse response = lotService.register(request, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

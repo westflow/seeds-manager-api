@@ -12,7 +12,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public abstract class LotMapper {
 
-    @Mapping(source = "invoices", target = "invoiceIds")
     @Mapping(source = "bagWeight.id", target = "bagWeightId")
     @Mapping(source = "bagType.id", target = "bagTypeId")
     @Mapping(source = "lab.id", target = "labId")

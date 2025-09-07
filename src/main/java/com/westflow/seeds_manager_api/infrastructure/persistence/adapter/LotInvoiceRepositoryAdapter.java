@@ -22,10 +22,15 @@ public class LotInvoiceRepositoryAdapter implements LotInvoiceRepository {
     }
 
     @Override
-    public void saveAll(List<LotInvoice> lotInvoices) {
-        List<LotInvoiceEntity> entities = lotInvoices.stream()
-                .map(mapper::toEntity)
-                .toList();
-        jpaRepository.saveAll(entities);
+    public List<LotInvoice> saveAll(List<LotInvoice> lotInvoices) {
+        List<LotInvoice> saved = new java.util.ArrayList<>();
+        for (LotInvoice lotInvoice : lotInvoices) {
+            LotInvoiceEntity entity = mapper.toEntity(lotInvoice);
+            LotInvoiceEntity savedEntity = jpaRepository.save(entity);
+            jpaRepository.flush(); // Força o flush para o banco imediatamente
+            System.out.println("LotInvoice salvo com ID: " + savedEntity.getId());
+            saved.add(mapper.toDomain(savedEntity));
+        }
+        return saved;
     }
 }

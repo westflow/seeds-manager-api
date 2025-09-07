@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface InvoiceService {
     Invoice register(InvoiceCreateRequest request);
     Optional<Invoice> findById(Long id);
+    Invoice save(Invoice invoice);
 }

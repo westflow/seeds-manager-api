@@ -1,7 +1,5 @@
 package com.westflow.seeds_manager_api.api.dto.response;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

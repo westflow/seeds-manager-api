@@ -51,7 +51,6 @@ public class LotServiceImpl implements LotService {
     }
 
     @Override
-    @Transactional
     public LotResponse register(LotCreateRequest request, User user) {
         Long bagWeightId = request.getBagWeightId();
         Long bagTypeId = request.getBagTypeId();
@@ -84,6 +83,11 @@ public class LotServiceImpl implements LotService {
         Lot lot = lotMapper.toDomain(request, invoices, bagWeight, bagType, lab, user, lotNumber);
         Lot savedLot = lotRepository.save(lot);
         List<LotInvoice> savedLotInvoices = lotInvoiceService.createLotInvoices(savedLot, invoices, allocationMap);
+        for (Invoice invoice : invoices) {
+            BigDecimal allocated = allocationMap.get(invoice.getId());
+            Invoice updatedInvoice = invoice.withUpdatedBalance(allocated);
+            invoiceService.save(updatedInvoice);
+        }
         List<InvoiceAllocationResponse> allocationResponses = savedLotInvoices.stream()
                 .map(li -> InvoiceAllocationResponse.builder()
                         .invoiceId(li.getInvoice().getId())
@@ -142,7 +146,7 @@ public class LotServiceImpl implements LotService {
         for (Invoice invoice : invoices) {
             BigDecimal allocated = allocationMap.get(invoice.getId());
             if (allocated.compareTo(invoice.getBalance()) > 0) {
-                throw new BusinessException("Saldo insuficiente na nota fiscal " + invoice.getId());
+                throw new BusinessException("Saldo insuficiente na nota fiscal " + invoice.getInvoiceNumber());
             }
         }
     }

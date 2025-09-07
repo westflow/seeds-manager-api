@@ -37,7 +37,6 @@ public class LotInvoiceServiceImpl implements LotInvoiceService {
             ));
         }
 
-        lotInvoiceRepository.saveAll(lotInvoices);
-        return lotInvoices;
+        return lotInvoiceRepository.saveAll(lotInvoices);
     }
 }

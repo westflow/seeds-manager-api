@@ -3,7 +3,6 @@ package com.westflow.seeds_manager_api.api.controller;
 import com.westflow.seeds_manager_api.api.config.CurrentUser;
 import com.westflow.seeds_manager_api.api.dto.request.LotCreateRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotResponse;
-import com.westflow.seeds_manager_api.api.mapper.LotMapper;
 import com.westflow.seeds_manager_api.application.service.LotService;
 import com.westflow.seeds_manager_api.domain.entity.User;
 import io.swagger.v3.oas.annotations.Operation;

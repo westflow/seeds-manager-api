@@ -97,4 +97,15 @@ public class Invoice {
             throw new ValidationException("UF de produção é obrigatória");
         }
     }
+
+    public Invoice withUpdatedBalance(BigDecimal allocated) {
+        if (allocated == null || allocated.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new ValidationException("Quantidade alocada deve ser maior que zero");
+        }
+        if (this.balance.compareTo(allocated) < 0) {
+            throw new ValidationException("Quantidade alocada excede o saldo da nota fiscal");
+        }
+        this.balance = this.balance.subtract(allocated);
+        return this;
+    }
 }

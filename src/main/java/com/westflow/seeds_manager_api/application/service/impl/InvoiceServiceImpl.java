@@ -47,4 +47,9 @@ public class InvoiceServiceImpl implements InvoiceService {
     public Optional<Invoice> findById(Long id) {
         return invoiceRepository.findById(id);
     }
+
+    @Override
+    public Invoice save(Invoice invoice) {
+        return invoiceRepository.save(invoice);
+    }
 }

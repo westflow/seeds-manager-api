@@ -20,8 +20,16 @@ public class LotWithdrawalRequest {
             example = "15",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    @NotNull(message = "O ID do lote é obrigatório")
+    @NotNull(message = "O lote é obrigatório")
     private Long lotId;
+
+    @Schema(
+            description = "Número da nota fiscal de saída",
+            example = "NF123456",
+            requiredMode = Schema.RequiredMode.REQUIRED
+    )
+    @NotBlank(message = "O número da nota fiscal de saída é obrigatório")
+    private String invoiceNumber;
 
     @Schema(
             description = "Quantidade retirada em kg",
@@ -54,6 +62,6 @@ public class LotWithdrawalRequest {
             example = "7",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    @NotNull(message = "O ID do cliente é obrigatório")
+    @NotNull(message = "O cliente é obrigatório")
     private Long clientId;
 }

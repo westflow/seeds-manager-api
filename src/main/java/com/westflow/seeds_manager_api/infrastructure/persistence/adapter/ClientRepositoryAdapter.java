@@ -7,6 +7,8 @@ import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.ClientPe
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaClientRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class ClientRepositoryAdapter implements ClientRepository {
     private final JpaClientRepository jpaRepository;
@@ -21,5 +23,10 @@ public class ClientRepositoryAdapter implements ClientRepository {
     public Client save(Client client) {
         ClientEntity entity = mapper.toEntity(client);
         return mapper.toDomain(jpaRepository.save(entity));
+    }
+
+    @Override
+    public Optional<Client> findById(Long id) {
+        return jpaRepository.findById(id).map(mapper::toDomain);
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +30,28 @@ public class LotServiceImpl implements LotService {
     private final BagTypeService bagTypeService;
     private final LabService labService;
     private final LotInvoiceService lotInvoiceService;
+
+    private final LotValidator lotValidator;
+
+    public LotServiceImpl(LotRepository lotRepository,
+                          InvoiceService invoiceService,
+                          LotMapper lotMapper,
+                          LotSequenceService lotSequenceService,
+                          BagWeightService bagWeightService,
+                          BagTypeService bagTypeService,
+                          LabService labService,
+                          LotInvoiceService lotInvoiceService,
+                          LotValidator lotValidator) {
+        this.lotRepository = lotRepository;
+        this.invoiceService = invoiceService;
+        this.lotMapper = lotMapper;
+        this.lotSequenceService = lotSequenceService;
+        this.bagWeightService = bagWeightService;
+        this.bagTypeService = bagTypeService;
+        this.labService = labService;
+        this.lotInvoiceService = lotInvoiceService;
+        this.lotValidator = lotValidator;
+    }
 
     @Override
     @Transactional
@@ -54,7 +77,7 @@ public class LotServiceImpl implements LotService {
 
         List<LotInvoice> savedLotInvoices = lotInvoiceService.createLotInvoices(savedLot, invoices, allocationMap);
 
-        atualizarSaldosInvoices(invoices, allocationMap);
+        updateInvoiceBalances(invoices, allocationMap);
 
         List<InvoiceAllocationResponse> allocationResponses = savedLotInvoices.stream()
                 .map(li -> InvoiceAllocationResponse.builder()
@@ -68,26 +91,15 @@ public class LotServiceImpl implements LotService {
         return response;
     }
 
-    private final LotValidator lotValidator;
+    @Override
+    public Optional<Lot> findById(Long id) {
+        return lotRepository.findById(id);
+    }
 
-    public LotServiceImpl(LotRepository lotRepository,
-                          InvoiceService invoiceService,
-                          LotMapper lotMapper,
-                          LotSequenceService lotSequenceService,
-                          BagWeightService bagWeightService,
-                          BagTypeService bagTypeService,
-                          LabService labService,
-                          LotInvoiceService lotInvoiceService,
-                          LotValidator lotValidator) {
-        this.lotRepository = lotRepository;
-        this.invoiceService = invoiceService;
-        this.lotMapper = lotMapper;
-        this.lotSequenceService = lotSequenceService;
-        this.bagWeightService = bagWeightService;
-        this.bagTypeService = bagTypeService;
-        this.labService = labService;
-        this.lotInvoiceService = lotInvoiceService;
-        this.lotValidator = lotValidator;
+    @Override
+    public void updateBalance(Lot lot, BigDecimal allocated) {
+        lot.withUpdatedBalance(allocated);
+        lotRepository.save(lot);
     }
 
     private List<Invoice> fetchInvoices(Map<Long, BigDecimal> allocationMap) {
@@ -112,11 +124,10 @@ public class LotServiceImpl implements LotService {
                 .orElseThrow(() -> new ResourceNotFoundException("Laboratório", labId));
     }
 
-    private void atualizarSaldosInvoices(List<Invoice> invoices, Map<Long, BigDecimal> allocationMap) {
+    private void updateInvoiceBalances(List<Invoice> invoices, Map<Long, BigDecimal> allocationMap) {
         for (Invoice invoice : invoices) {
             BigDecimal allocated = allocationMap.get(invoice.getId());
-            Invoice updatedInvoice = invoice.withUpdatedBalance(allocated);
-            invoiceService.save(updatedInvoice);
+            invoiceService.updateBalance(invoice, allocated);
         }
     }
 }

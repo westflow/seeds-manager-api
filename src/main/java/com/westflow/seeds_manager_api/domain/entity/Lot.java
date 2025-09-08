@@ -116,15 +116,15 @@ public class Lot {
         }
     }
 
-    public void withdraw(BigDecimal amount) {
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+    public void withUpdatedBalance(BigDecimal allocated) {
+        if (allocated == null || allocated.compareTo(BigDecimal.ZERO) <= 0) {
             throw new ValidationException("Quantidade de retirada deve ser maior que zero");
         }
 
-        if (balance.compareTo(amount) < 0) {
-            throw new InsufficientLotBalanceException(lotNumber, balance.doubleValue(), amount.doubleValue());
+        if (balance.compareTo(allocated) < 0) {
+            throw new InsufficientLotBalanceException(lotNumber, balance.doubleValue(), allocated.doubleValue());
         }
 
-        this.balance = this.balance.subtract(amount);
+        this.balance = this.balance.subtract(allocated);
     }
 }

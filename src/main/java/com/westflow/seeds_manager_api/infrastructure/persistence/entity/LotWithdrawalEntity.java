@@ -25,8 +25,12 @@ public class LotWithdrawalEntity {
     @JoinColumn(name = "lot_id",  nullable = false)
     private LotEntity lot;
 
+    @Column(name = "invoice_number", nullable = false)
+    private String invoiceNumber;
+
     @Column(name = "quantity", nullable = false)
     private BigDecimal quantity;
+
 
     @Column(name = "withdrawal_date", nullable = false)
     private LocalDate withdrawalDate;
@@ -37,6 +41,10 @@ public class LotWithdrawalEntity {
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private ClientEntity client;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();

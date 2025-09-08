@@ -98,7 +98,7 @@ public class Invoice {
         }
     }
 
-    public Invoice withUpdatedBalance(BigDecimal allocated) {
+    public void withUpdatedBalance(BigDecimal allocated) {
         if (allocated == null || allocated.compareTo(BigDecimal.ZERO) <= 0) {
             throw new ValidationException("Quantidade alocada deve ser maior que zero");
         }
@@ -106,6 +106,5 @@ public class Invoice {
             throw new ValidationException("Quantidade alocada excede o saldo da nota fiscal");
         }
         this.balance = this.balance.subtract(allocated);
-        return this;
     }
 }

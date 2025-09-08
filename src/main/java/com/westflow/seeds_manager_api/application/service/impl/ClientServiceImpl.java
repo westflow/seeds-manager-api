@@ -5,6 +5,8 @@ import com.westflow.seeds_manager_api.domain.entity.Client;
 import com.westflow.seeds_manager_api.domain.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ClientServiceImpl implements ClientService {
 
@@ -17,5 +19,10 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Client register(Client client) {
         return clientRepository.save(client);
+    }
+
+    @Override
+    public Optional<Client> findById(Long id) {
+        return clientRepository.findById(id);
     }
 }

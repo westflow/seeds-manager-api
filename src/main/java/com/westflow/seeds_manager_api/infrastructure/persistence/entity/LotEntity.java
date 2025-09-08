@@ -94,8 +94,8 @@ public class LotEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @ManyToOne
-    @JoinColumn(name = "lab_id", nullable = false)
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "lab_id")
     private LabEntity lab;
 
     @Column(name = "created_at")

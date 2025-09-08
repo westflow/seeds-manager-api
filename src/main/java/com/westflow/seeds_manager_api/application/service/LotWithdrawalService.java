@@ -1,7 +1,9 @@
 package com.westflow.seeds_manager_api.application.service;
 
-import com.westflow.seeds_manager_api.domain.entity.LotWithdrawal;
+import com.westflow.seeds_manager_api.api.dto.request.LotWithdrawalRequest;
+import com.westflow.seeds_manager_api.api.dto.response.LotWithdrawalResponse;
+import com.westflow.seeds_manager_api.domain.entity.User;
 
 public interface LotWithdrawalService {
-    LotWithdrawal withdraw(LotWithdrawal withdrawal);
+    LotWithdrawalResponse withdraw(LotWithdrawalRequest request, User user);
 }

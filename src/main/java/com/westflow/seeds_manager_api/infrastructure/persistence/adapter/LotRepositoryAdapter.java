@@ -7,6 +7,8 @@ import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.LotPersi
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaLotRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class LotRepositoryAdapter implements LotRepository {
     private final JpaLotRepository jpaRepository;
@@ -21,5 +23,10 @@ public class LotRepositoryAdapter implements LotRepository {
     public Lot save(Lot lot) {
         LotEntity entity = mapper.toEntity(lot);
         return mapper.toDomain(jpaRepository.save(entity));
+    }
+
+    @Override
+    public Optional<Lot> findById(Long id) {
+        return jpaRepository.findById(id).map(mapper::toDomain);
     }
 }

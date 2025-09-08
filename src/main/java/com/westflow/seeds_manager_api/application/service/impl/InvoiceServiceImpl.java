@@ -11,6 +11,7 @@ import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException
 import com.westflow.seeds_manager_api.domain.repository.InvoiceRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -51,5 +52,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public Invoice save(Invoice invoice) {
         return invoiceRepository.save(invoice);
+    }
+
+    @Override
+    public void updateBalance(Invoice invoice, BigDecimal allocated) {
+        invoice.withUpdatedBalance(allocated);
+        invoiceRepository.save(invoice);
     }
 }

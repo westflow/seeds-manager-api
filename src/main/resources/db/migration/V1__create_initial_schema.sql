@@ -131,7 +131,6 @@ CREATE TABLE lot_withdrawals (
     lot_id BIGINT NOT NULL REFERENCES lots(id),
     invoice_number VARCHAR(50),
     quantity DECIMAL(10,2) NOT NULL,
-    seed_score INTEGER NOT NULL,
     withdrawal_date DATE NOT NULL,
     state VARCHAR(2) NOT NULL,
     user_id BIGINT NOT NULL REFERENCES users(id),

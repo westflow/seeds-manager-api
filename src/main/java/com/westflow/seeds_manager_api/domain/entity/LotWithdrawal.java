@@ -13,6 +13,7 @@ public class LotWithdrawal {
 
     private final Long id;
     private final Lot lot;
+    private final String invoiceNumber;
     private final BigDecimal quantity;
     private final LocalDate withdrawalDate;
     private final String state;
@@ -22,14 +23,15 @@ public class LotWithdrawal {
     private final LocalDateTime updatedAt;
 
     @Builder
-    public LotWithdrawal(Long id, Lot lot, BigDecimal quantity,
-                         LocalDate withdrawalDate, String state, User user,
-                         Client client, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public LotWithdrawal(Long id, Lot lot, String invoiceNumber,
+                         BigDecimal quantity, LocalDate withdrawalDate, String state,
+                         User user, Client client, LocalDateTime createdAt, LocalDateTime updatedAt) {
 
-        validate(lot, quantity, withdrawalDate, state, user, client);
+        validate(lot, invoiceNumber, quantity, withdrawalDate, state, user, client);
 
         this.id = id;
         this.lot = lot;
+        this.invoiceNumber = invoiceNumber;
         this.quantity = quantity;
         this.withdrawalDate = withdrawalDate;
         this.state = state;
@@ -37,17 +39,19 @@ public class LotWithdrawal {
         this.client = client;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-
-        lot.withdraw(quantity);
     }
 
-    private void validate(Lot lot, BigDecimal quantity, LocalDate withdrawalDate, String state, User user, Client client) {
+    private void validate(Lot lot, String invoiceNumber, BigDecimal quantity, LocalDate withdrawalDate, String state, User user, Client client) {
         if (lot == null) {
             throw new ValidationException("O lote deve ser informado");
         }
 
         if (user == null) {
             throw new ValidationException("O usuário deve ser informado");
+        }
+
+        if (invoiceNumber == null || invoiceNumber.isBlank()) {
+            throw new ValidationException("O número da nota fiscal de saída é obrigatório");
         }
 
         if (quantity == null || quantity.compareTo(BigDecimal.ZERO) <= 0) {

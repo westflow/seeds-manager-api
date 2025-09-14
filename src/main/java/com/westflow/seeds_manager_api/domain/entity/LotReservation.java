@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,8 +13,9 @@ public class LotReservation {
 
     private final Long id;
     private final Lot lot;
+    private final String identification;
     private final BigDecimal quantity;
-    private final LocalDate reservationDate;
+    private final LocalDateTime reservationDate;
     private LotStatus status;
     private final User user;
     private final Client client;
@@ -23,13 +23,14 @@ public class LotReservation {
     private final LocalDateTime updatedAt;
 
     @Builder
-    public LotReservation(Long id, Lot lot, BigDecimal quantity, LocalDate reservationDate,
-                          LotStatus status, Client client, User user,
+    public LotReservation(Long id, Lot lot, String identification, BigDecimal quantity,
+                          LocalDateTime reservationDate, LotStatus status, Client client, User user,
                           LocalDateTime createdAt, LocalDateTime updatedAt) {
         validate(lot, quantity, reservationDate, status, user);
 
         this.id = id;
         this.lot = lot;
+        this.identification = identification;
         this.quantity = quantity;
         this.reservationDate = reservationDate;
         this.status = status;
@@ -39,7 +40,7 @@ public class LotReservation {
         this.updatedAt = updatedAt;
     }
 
-    private void validate(Lot lot, BigDecimal quantity, LocalDate reservationDate,
+    private void validate(Lot lot, BigDecimal quantity, LocalDateTime reservationDate,
                           LotStatus status, User user) {
         if (lot == null) {
             throw new ValidationException("O lote deve ser informado");
@@ -60,10 +61,6 @@ public class LotReservation {
         if (user == null) {
             throw new ValidationException("O usuário deve ser informado");
         }
-    }
-
-    public void reserved() {
-        this.status = LotStatus.RESERVED;
     }
 
     public void cancel() {

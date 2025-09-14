@@ -42,7 +42,6 @@ public abstract class LotMapper {
                 .lab(lab)
                 .user(user)
                 .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .build();
     }
 

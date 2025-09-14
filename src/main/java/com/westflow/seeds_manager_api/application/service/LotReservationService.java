@@ -1,7 +1,10 @@
 package com.westflow.seeds_manager_api.application.service;
 
+import com.westflow.seeds_manager_api.api.dto.request.LotReservationRequest;
+import com.westflow.seeds_manager_api.api.dto.response.LotReservationResponse;
 import com.westflow.seeds_manager_api.domain.entity.LotReservation;
+import com.westflow.seeds_manager_api.domain.entity.User;
 
 public interface LotReservationService {
-    LotReservation reserve(LotReservation reservation);
+    LotReservationResponse reserve(LotReservationRequest request, User user);
 }

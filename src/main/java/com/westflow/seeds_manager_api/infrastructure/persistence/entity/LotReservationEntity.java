@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -26,11 +25,14 @@ public class LotReservationEntity {
     @JoinColumn(name = "lot_id", nullable = false)
     private LotEntity lot;
 
+    @Column(name = "identification")
+    private String identification;
+
     @Column(name = "quantity", nullable = false)
     private BigDecimal quantity;
 
     @Column(name = "reservation_date", nullable = false)
-    private LocalDate reservationDate;
+    private LocalDateTime reservationDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

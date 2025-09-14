@@ -3,9 +3,7 @@ package com.westflow.seeds_manager_api.api.controller;
 import com.westflow.seeds_manager_api.api.config.CurrentUser;
 import com.westflow.seeds_manager_api.api.dto.request.LotReservationRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotReservationResponse;
-import com.westflow.seeds_manager_api.api.mapper.LotReservationMapper;
 import com.westflow.seeds_manager_api.application.service.LotReservationService;
-import com.westflow.seeds_manager_api.domain.entity.LotReservation;
 import com.westflow.seeds_manager_api.domain.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,12 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/reservations")
 public class LotReservationController {
     private final LotReservationService lotReservationService;
-    private final LotReservationMapper lotReservationMapper;
 
-    public LotReservationController(LotReservationService lotReservationService,
-                                    LotReservationMapper lotReservationMapper) {
+    public LotReservationController(LotReservationService lotReservationService) {
         this.lotReservationService = lotReservationService;
-        this.lotReservationMapper = lotReservationMapper;
     }
 
     @Operation(
@@ -46,9 +41,7 @@ public class LotReservationController {
     public ResponseEntity<LotReservationResponse> reserve(@Valid @RequestBody LotReservationRequest request,
                                                           @Parameter(hidden = true) @CurrentUser User user) {
 
-        LotReservation reservation = lotReservationMapper.toDomain(request);
-        LotReservation saved = lotReservationService.reserve(reservation);
-        LotReservationResponse response = lotReservationMapper.toResponse(saved);
+        LotReservationResponse response = lotReservationService.reserve(request, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

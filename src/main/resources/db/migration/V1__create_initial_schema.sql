@@ -146,8 +146,8 @@ CREATE TABLE lot_reservations (
     lot_id BIGINT NOT NULL REFERENCES lots(id),
     quantity DECIMAL(10,2) NOT NULL,
     identification VARCHAR(50),
-    reservation_date DATE NOT NULL,
-    status VARCHAR(20) NOT NULL, -- CONFIRMED, WITHDRAWAL, CANCELLED
+    reservation_date TIMESTAMP NOT NULL,
+    status VARCHAR(20) NOT NULL, -- RESERVED, WITHDRAWAL, CANCELLED
     user_id BIGINT NOT NULL REFERENCES users(id),
     client_id BIGINT REFERENCES clients(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

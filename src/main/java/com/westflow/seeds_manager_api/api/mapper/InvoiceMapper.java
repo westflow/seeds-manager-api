@@ -31,7 +31,6 @@ public abstract class InvoiceMapper {
                 .plantedArea(request.getPlantedArea())
                 .approvedArea(request.getApprovedArea())
                 .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .build();
     }
 }

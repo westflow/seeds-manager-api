@@ -2,6 +2,8 @@ package com.westflow.seeds_manager_api.application.service.impl;
 
 import com.westflow.seeds_manager_api.application.service.BagTypeService;
 import com.westflow.seeds_manager_api.domain.entity.BagType;
+import com.westflow.seeds_manager_api.domain.exception.BusinessException;
+import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.repository.BagTypeRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaBagTypeRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.BagTypeEntity;
@@ -40,9 +42,9 @@ public class BagTypeServiceImpl implements BagTypeService {
     @Override
     public void delete(Long id) {
         BagTypeEntity entity = jpaBagTypeRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Tipo de sacaria não encontrado."));
+            .orElseThrow(() -> new ResourceNotFoundException("Tipo de sacaria", id));
         if (!entity.isActive()) {
-            throw new RuntimeException("Tipo de sacaria já está inativo.");
+            throw new BusinessException("Tipo de sacaria já está deletado.");
         }
         entity.setActive(false);
         jpaBagTypeRepository.save(entity);
@@ -58,7 +60,7 @@ public class BagTypeServiceImpl implements BagTypeService {
     @Override
     public BagType update(Long id, BagType bagType) {
         BagTypeEntity entity = jpaBagTypeRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Tipo de sacaria não encontrado."));
+            .orElseThrow(() -> new ResourceNotFoundException("Tipo de sacaria", id));
         entity.setName(bagType.getName());
         BagTypeEntity updated = jpaBagTypeRepository.save(entity);
         return bagTypePersistenceMapper.toDomain(updated);

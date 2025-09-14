@@ -3,6 +3,7 @@ package com.westflow.seeds_manager_api.application.service.impl;
 import com.westflow.seeds_manager_api.application.service.SeedService;
 import com.westflow.seeds_manager_api.domain.entity.Seed;
 import com.westflow.seeds_manager_api.domain.exception.BusinessException;
+import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.repository.SeedRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaSeedRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.SeedEntity;
@@ -53,7 +54,7 @@ public class SeedServiceImpl implements SeedService {
     @Override
     public Seed update(Long id, Seed seed) {
         Seed existing = seedRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("Semente não encontrada."));
+                .orElseThrow(() -> new ResourceNotFoundException("Semente", id));
 
         Optional<Seed> duplicate = seedRepository.findByNormalizedSpeciesAndNormalizedCultivar(
                 seed.getNormalizedSpecies(), seed.getNormalizedCultivar()
@@ -74,7 +75,7 @@ public class SeedServiceImpl implements SeedService {
     @Override
     public void delete(Long id) {
         SeedEntity entity = jpaSeedRepository.findById(id)
-            .orElseThrow(() -> new BusinessException("Semente não encontrada."));
+            .orElseThrow(() -> new ResourceNotFoundException("Semente", id));
         if (!entity.isActive()) {
             throw new BusinessException("Semente já está inativa.");
         }

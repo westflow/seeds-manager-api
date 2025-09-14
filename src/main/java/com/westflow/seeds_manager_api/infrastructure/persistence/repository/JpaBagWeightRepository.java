@@ -4,5 +4,9 @@ import com.westflow.seeds_manager_api.infrastructure.persistence.entity.BagWeigh
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.math.BigDecimal;
+import java.util.Optional;
+
 public interface JpaBagWeightRepository extends JpaRepository<BagWeightEntity, Long>, JpaSpecificationExecutor<BagWeightEntity> {
+    Optional<BagWeightEntity> findByWeight(BigDecimal weight);
 }

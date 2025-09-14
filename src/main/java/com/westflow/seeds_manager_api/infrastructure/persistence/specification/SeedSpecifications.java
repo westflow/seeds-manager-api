@@ -12,7 +12,7 @@ public class SeedSpecifications {
     }
 
     public static Specification<SeedEntity> isActive() {
-        return (root, query, cb) -> cb.isTrue(root.get("ativo"));
+        return (root, query, cb) -> cb.isTrue(root.get("active"));
     }
 
     public static Specification<SeedEntity> filter(Boolean isProtected) {

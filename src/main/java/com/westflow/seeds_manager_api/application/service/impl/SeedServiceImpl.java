@@ -45,7 +45,8 @@ public class SeedServiceImpl implements SeedService {
 
     @Override
     public Page<Seed> findAll(Boolean isProtected, Pageable pageable) {
-        Specification<SeedEntity> spec = SeedSpecifications.hasProtected(isProtected);
+        Specification<SeedEntity> spec = SeedSpecifications.hasProtected(isProtected)
+                .and(SeedSpecifications.isActive());
         return seedRepository.findAll(spec, pageable);
     }
 

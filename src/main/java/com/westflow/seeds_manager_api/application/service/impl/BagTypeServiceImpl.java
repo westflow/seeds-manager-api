@@ -6,6 +6,7 @@ import com.westflow.seeds_manager_api.domain.repository.BagTypeRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaBagTypeRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.BagTypeEntity;
 import com.westflow.seeds_manager_api.infrastructure.persistence.specification.BagTypeSpecifications;
+import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.BagTypePersistenceMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,10 +19,12 @@ public class BagTypeServiceImpl implements BagTypeService {
 
     private final BagTypeRepository bagTypeRepository;
     private final JpaBagTypeRepository jpaBagTypeRepository;
+    private final BagTypePersistenceMapper bagTypePersistenceMapper;
 
-    public BagTypeServiceImpl(BagTypeRepository bagTypeRepository, JpaBagTypeRepository jpaBagTypeRepository) {
+    public BagTypeServiceImpl(BagTypeRepository bagTypeRepository, JpaBagTypeRepository jpaBagTypeRepository, BagTypePersistenceMapper bagTypePersistenceMapper) {
         this.bagTypeRepository = bagTypeRepository;
         this.jpaBagTypeRepository = jpaBagTypeRepository;
+        this.bagTypePersistenceMapper = bagTypePersistenceMapper;
     }
 
     @Override
@@ -34,6 +37,7 @@ public class BagTypeServiceImpl implements BagTypeService {
         return bagTypeRepository.findById(id);
     }
 
+    @Override
     public void delete(Long id) {
         BagTypeEntity entity = jpaBagTypeRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Tipo de sacaria não encontrado."));
@@ -44,8 +48,19 @@ public class BagTypeServiceImpl implements BagTypeService {
         jpaBagTypeRepository.save(entity);
     }
 
-    public Page<BagTypeEntity> findAll(Pageable pageable) {
+    @Override
+    public Page<BagType> findAll(Pageable pageable) {
         Specification<BagTypeEntity> spec = BagTypeSpecifications.isActive();
-        return jpaBagTypeRepository.findAll(spec, pageable);
+        return jpaBagTypeRepository.findAll(spec, pageable)
+                .map(bagTypePersistenceMapper::toDomain);
+    }
+
+    @Override
+    public BagType update(Long id, BagType bagType) {
+        BagTypeEntity entity = jpaBagTypeRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Tipo de sacaria não encontrado."));
+        entity.setName(bagType.getName());
+        BagTypeEntity updated = jpaBagTypeRepository.save(entity);
+        return bagTypePersistenceMapper.toDomain(updated);
     }
 }

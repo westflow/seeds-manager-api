@@ -121,7 +121,8 @@ CREATE TABLE lot_invoices (
     id BIGSERIAL PRIMARY KEY,
     lot_id BIGINT NOT NULL REFERENCES lots(id) ON DELETE CASCADE,
     invoice_id BIGINT NOT NULL REFERENCES invoices(id) ON DELETE CASCADE,
-    allocated_quantity DECIMAL(10,2) NOT NULL,
+    allocated_quantity_lot DECIMAL(10,2) NOT NULL,
+    allocated_quantity_invoice DECIMAL(10,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

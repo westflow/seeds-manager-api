@@ -56,13 +56,6 @@ public class LotValidator {
         if (totalAllocated.compareTo(request.getQuantityTotal()) != 0) {
             throw new BusinessException("A soma das quantidades alocadas não corresponde à quantidade total do lote.");
         }
-
-        for (Invoice invoice : invoices) {
-            BigDecimal allocated = allocationMap.get(invoice.getId());
-            if (allocated.compareTo(invoice.getBalance()) > 0) {
-                throw new BusinessException("Saldo insuficiente na nota fiscal " + invoice.getInvoiceNumber());
-            }
-        }
     }
 }
 

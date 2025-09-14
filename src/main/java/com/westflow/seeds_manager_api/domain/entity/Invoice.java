@@ -103,7 +103,7 @@ public class Invoice {
             throw new ValidationException("Quantidade alocada deve ser maior que zero");
         }
         if (this.balance.compareTo(allocated) < 0) {
-            throw new ValidationException("Quantidade alocada excede o saldo da nota fiscal");
+            throw new ValidationException("Quantidade alocada excede o saldo da nota fiscal " + this.invoiceNumber);
         }
         this.balance = this.balance.subtract(allocated);
     }

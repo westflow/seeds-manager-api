@@ -27,8 +27,6 @@ public class LotInvoiceRepositoryAdapter implements LotInvoiceRepository {
         for (LotInvoice lotInvoice : lotInvoices) {
             LotInvoiceEntity entity = mapper.toEntity(lotInvoice);
             LotInvoiceEntity savedEntity = jpaRepository.save(entity);
-            jpaRepository.flush(); // Força o flush para o banco imediatamente
-            System.out.println("LotInvoice salvo com ID: " + savedEntity.getId());
             saved.add(mapper.toDomain(savedEntity));
         }
         return saved;

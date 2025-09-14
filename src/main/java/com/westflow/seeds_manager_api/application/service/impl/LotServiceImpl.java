@@ -77,12 +77,10 @@ public class LotServiceImpl implements LotService {
 
         List<LotInvoice> savedLotInvoices = lotInvoiceService.createLotInvoices(savedLot, invoices, allocationMap);
 
-        updateInvoiceBalances(invoices, allocationMap);
-
         List<InvoiceAllocationResponse> allocationResponses = savedLotInvoices.stream()
                 .map(li -> InvoiceAllocationResponse.builder()
                         .invoiceId(li.getInvoice().getId())
-                        .quantity(li.getAllocatedQuantity())
+                        .quantity(li.getAllocatedQuantityLot())
                         .build())
                 .toList();
 
@@ -122,12 +120,5 @@ public class LotServiceImpl implements LotService {
     private Lab fetchLab(Long labId) {
         return labService.findById(labId)
                 .orElseThrow(() -> new ResourceNotFoundException("Laboratório", labId));
-    }
-
-    private void updateInvoiceBalances(List<Invoice> invoices, Map<Long, BigDecimal> allocationMap) {
-        for (Invoice invoice : invoices) {
-            BigDecimal allocated = allocationMap.get(invoice.getId());
-            invoiceService.updateBalance(invoice, allocated);
-        }
     }
 }

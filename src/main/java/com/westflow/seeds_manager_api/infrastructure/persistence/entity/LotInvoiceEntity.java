@@ -29,8 +29,11 @@ public class LotInvoiceEntity {
     @JoinColumn(name = "invoice_id", nullable = false)
     private InvoiceEntity invoice;
 
-    @Column(name = "allocated_quantity", nullable = false)
-    private BigDecimal allocatedQuantity;
+    @Column(name = "allocated_quantity_lot", nullable = false)
+    private BigDecimal allocatedQuantityLot;
+
+    @Column(name = "allocated_quantity_invoice", nullable = false)
+    private BigDecimal allocatedQuantityInvoice;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 }

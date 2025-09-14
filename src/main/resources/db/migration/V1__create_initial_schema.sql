@@ -9,6 +9,7 @@ CREATE TABLE seeds (
     normalized_species VARCHAR(100),
     normalized_cultivar VARCHAR(100),
     is_protected BOOLEAN NOT NULL DEFAULT FALSE,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
     CONSTRAINT unique_seed_entry UNIQUE (normalized_species, normalized_cultivar)
 );
 
@@ -20,7 +21,8 @@ CREATE TABLE clients (
      email VARCHAR(100),
      phone VARCHAR(20),
      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-     updated_at TIMESTAMP
+     updated_at TIMESTAMP,
+     active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 -- Tabela de Usuários
@@ -33,7 +35,8 @@ CREATE TABLE users (
     access_level VARCHAR(20) NOT NULL, -- ADMIN, STANDARD, READ_ONLY
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
-    last_login TIMESTAMP
+    last_login TIMESTAMP,
+    active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 -- Tabela de Notas Fiscais de entrada
@@ -53,7 +56,8 @@ CREATE TABLE invoices (
     planted_area DECIMAL(10,2),
     approved_area DECIMAL(10,2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 -- Tabela auxiliar para lot_number
@@ -69,13 +73,15 @@ CREATE TABLE lot_sequences (
 -- Tabela Sacaria
 CREATE TABLE bag_types (
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE
+    name VARCHAR(100) NOT NULL UNIQUE,
+    active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 --Tabela peso da sacaria
 CREATE TABLE bag_weights (
     id BIGSERIAL PRIMARY KEY,
-    weight DECIMAL(10,2) NOT NULL UNIQUE -- Ex: 1, 5, 10, 15, 20, 25, 600, 800, 1000
+    weight DECIMAL(10,2) NOT NULL UNIQUE, -- Ex: 1, 5, 10, 15, 20, 25, 600, 800, 1000
+    active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 -- Tabela de laboratórios
@@ -85,7 +91,8 @@ CREATE TABLE labs (
     state VARCHAR(2) NOT NULL,
     renasem_code VARCHAR(30) NOT NULL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 -- Tabela de Lotes
@@ -113,7 +120,8 @@ CREATE TABLE lots (
     lab_id BIGINT REFERENCES labs(id),
     user_id BIGINT NOT NULL REFERENCES users(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 -- Tabela Lotes com notas fiscais
@@ -158,19 +166,23 @@ CREATE TABLE lot_reservations (
 -- Índices para seeds
 CREATE INDEX idx_seeds_species ON seeds(species);
 CREATE INDEX idx_seeds_cultivar ON seeds(cultivar);
+CREATE INDEX idx_seeds_active ON seeds(active);
 
 -- Índices para clients
 CREATE INDEX idx_clients_name ON clients(name);
 CREATE INDEX idx_clients_number ON clients(number);
+CREATE INDEX idx_clients_active ON clients(active);
 
 -- Índices para users
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_access_level ON users(access_level);
+CREATE INDEX idx_users_active ON users(active);
 
 -- Índices para invoices
 CREATE INDEX idx_invoices_invoice_number ON invoices(invoice_number);
 CREATE INDEX idx_invoices_seed_id ON invoices(seed_id);
 CREATE INDEX idx_invoices_producer_name ON invoices(producer_name);
+CREATE INDEX idx_invoices_active ON invoices(active);
 
 -- Índices para lots
 CREATE INDEX idx_lots_lot_number ON lots(lot_number);
@@ -180,20 +192,20 @@ CREATE INDEX idx_lots_bag_type_id ON lots(bag_type_id);
 CREATE INDEX idx_lots_bag_weight_id ON lots(bag_weight_id);
 CREATE INDEX idx_lots_category ON lots(category);
 CREATE INDEX idx_lots_validity_date ON lots(validity_date);
-
--- Índices para lot_sequences
-CREATE INDEX idx_lot_sequences_year ON lot_sequences(year);
-CREATE INDEX idx_lot_sequences_reset_done ON lot_sequences(reset_done);
+CREATE INDEX idx_lots_active ON lots(active);
 
 -- Índices para bag_types
 CREATE INDEX idx_bag_types_name ON bag_types(name);
+CREATE INDEX idx_bag_types_active ON bag_types(active);
 
 -- Índices para bag_weights
 CREATE INDEX idx_bag_weights_weight ON bag_weights(weight);
+CREATE INDEX idx_bag_weights_active ON bag_weights(active);
 
 -- Índices para labs
 CREATE INDEX idx_labs_name ON labs(name);
 CREATE INDEX idx_labs_renasem_code ON labs(renasem_code);
+CREATE INDEX idx_labs_active ON labs(active);
 
 -- Índices para lot_withdrawals
 CREATE INDEX idx_lot_withdrawals_lot_id ON lot_withdrawals(lot_id);

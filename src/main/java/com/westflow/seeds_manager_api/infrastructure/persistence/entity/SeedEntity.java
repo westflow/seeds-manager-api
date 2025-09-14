@@ -26,4 +26,7 @@ public class SeedEntity {
     @Column(name = "normalized_cultivar", nullable = false)
     private String normalizedCultivar;
     private boolean isProtected;
+
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
 }

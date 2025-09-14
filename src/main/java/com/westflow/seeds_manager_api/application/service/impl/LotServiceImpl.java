@@ -10,7 +10,13 @@ import com.westflow.seeds_manager_api.application.validation.LotValidator;
 import com.westflow.seeds_manager_api.domain.entity.*;
 import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.repository.LotRepository;
+import com.westflow.seeds_manager_api.infrastructure.persistence.entity.LotEntity;
+import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaLotRepository;
+import com.westflow.seeds_manager_api.infrastructure.persistence.specification.LotSpecifications;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -32,6 +38,7 @@ public class LotServiceImpl implements LotService {
     private final LotInvoiceService lotInvoiceService;
 
     private final LotValidator lotValidator;
+    private final JpaLotRepository jpaLotRepository;
 
     public LotServiceImpl(LotRepository lotRepository,
                           InvoiceService invoiceService,
@@ -41,7 +48,8 @@ public class LotServiceImpl implements LotService {
                           BagTypeService bagTypeService,
                           LabService labService,
                           LotInvoiceService lotInvoiceService,
-                          LotValidator lotValidator) {
+                          LotValidator lotValidator,
+                          JpaLotRepository jpaLotRepository) {
         this.lotRepository = lotRepository;
         this.invoiceService = invoiceService;
         this.lotMapper = lotMapper;
@@ -51,6 +59,7 @@ public class LotServiceImpl implements LotService {
         this.labService = labService;
         this.lotInvoiceService = lotInvoiceService;
         this.lotValidator = lotValidator;
+        this.jpaLotRepository = jpaLotRepository;
     }
 
     @Override
@@ -120,5 +129,20 @@ public class LotServiceImpl implements LotService {
     private Lab fetchLab(Long labId) {
         return labService.findById(labId)
                 .orElseThrow(() -> new ResourceNotFoundException("Laboratório", labId));
+    }
+
+    public void delete(Long id) {
+        LotEntity entity = jpaLotRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Lote não encontrado."));
+        if (!entity.isActive()) {
+            throw new RuntimeException("Lote já está inativo.");
+        }
+        entity.setActive(false);
+        jpaLotRepository.save(entity);
+    }
+
+    public Page<LotEntity> findAll(Pageable pageable) {
+        Specification<LotEntity> spec = LotSpecifications.isActive();
+        return jpaLotRepository.findAll(spec, pageable);
     }
 }

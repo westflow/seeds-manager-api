@@ -1,6 +1,7 @@
 package com.westflow.seeds_manager_api.api.mapper;
 
 import com.westflow.seeds_manager_api.api.dto.request.SeedCreateRequest;
+import com.westflow.seeds_manager_api.api.dto.request.SeedUpdateRequest;
 import com.westflow.seeds_manager_api.api.dto.response.SeedResponse;
 import com.westflow.seeds_manager_api.domain.entity.Seed;
 import org.mapstruct.Mapper;
@@ -11,6 +12,8 @@ public interface SeedMapper {
 
     @Mapping(source = "protected", target = "isProtected")
     Seed toDomain(SeedCreateRequest request);
+
+    Seed toDomain(SeedUpdateRequest request, Long id);
 
     SeedResponse toResponse(Seed seed);
 }

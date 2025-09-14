@@ -21,4 +21,7 @@ public class BagWeightEntity {
 
     @Column(name = "weight", nullable = false)
     private BigDecimal weight;
+
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
 }

@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 public class BagWeight {
     private final Long id;
     private final BigDecimal weight;
+    private boolean isActive = true;
 
     @Builder
     public BagWeight(Long id, BigDecimal weight) {
@@ -22,5 +23,12 @@ public class BagWeight {
         if (weight == null || weight.compareTo(BigDecimal.ZERO) <= 0) {
             throw new ValidationException("Peso da sacaria deve ser maior que zero");
         }
+    }
+
+    public void deactivate() {
+        if (!isActive) {
+            throw new ValidationException("O peso da sacaria já está deletado.");
+        }
+        this.isActive = false;
     }
 }

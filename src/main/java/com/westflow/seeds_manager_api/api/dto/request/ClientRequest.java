@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Schema(name = "ClientCreateRequest", description = "Payload para criação de cliente")
-public class ClientCreateRequest {
+public class ClientRequest {
 
     @Schema(
             description = "Número identificador do cliente",

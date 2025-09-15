@@ -10,6 +10,7 @@ public class Seed {
     private final String species;
     private final String cultivar;
     private final boolean isProtected;
+    private boolean isActive = true;
 
     private final String normalizedSpecies;
     private final String normalizedCultivar;
@@ -38,5 +39,12 @@ public class Seed {
         return java.text.Normalizer.normalize(input.trim(), java.text.Normalizer.Form.NFD)
                 .replaceAll("\\p{InCombiningDiacriticalMarks}", "")
                 .toLowerCase();
+    }
+
+    public void deactivate() {
+        if (!isActive) {
+            throw new ValidationException("A semente já está deletada.");
+        }
+        this.isActive = false;
     }
 }

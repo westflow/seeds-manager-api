@@ -16,7 +16,7 @@ CREATE TABLE seeds (
 -- Tabela de Clientes
 CREATE TABLE clients (
      id BIGSERIAL PRIMARY KEY,
-     number VARCHAR(20) NOT NULL,
+     number VARCHAR(20) UNIQUE,
      name VARCHAR(100) NOT NULL,
      email VARCHAR(100),
      phone VARCHAR(20),

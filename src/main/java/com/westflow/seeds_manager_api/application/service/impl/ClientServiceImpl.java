@@ -2,30 +2,28 @@ package com.westflow.seeds_manager_api.application.service.impl;
 
 import com.westflow.seeds_manager_api.application.service.ClientService;
 import com.westflow.seeds_manager_api.domain.entity.Client;
+import com.westflow.seeds_manager_api.domain.exception.BusinessException;
+import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.repository.ClientRepository;
-import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaClientRepository;
-import com.westflow.seeds_manager_api.infrastructure.persistence.entity.ClientEntity;
-import com.westflow.seeds_manager_api.infrastructure.persistence.specification.ClientSpecifications;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
-    private final JpaClientRepository jpaClientRepository;
-
-    public ClientServiceImpl(ClientRepository clientRepository, JpaClientRepository jpaClientRepository) {
-        this.clientRepository = clientRepository;
-        this.jpaClientRepository = jpaClientRepository;
-    }
 
     @Override
     public Client register(Client client) {
+        clientRepository.findByNumber(client.getNumber())
+            .ifPresent(existing -> {
+                throw new BusinessException("Já existe um cliente cadastrado com esse número.");
+            });
         return clientRepository.save(client);
     }
 
@@ -34,18 +32,44 @@ public class ClientServiceImpl implements ClientService {
         return clientRepository.findById(id);
     }
 
-    public void delete(Long id) {
-        ClientEntity entity = jpaClientRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
-        if (!entity.isActive()) {
-            throw new RuntimeException("Cliente já está inativo.");
-        }
-        entity.setActive(false);
-        jpaClientRepository.save(entity);
+    @Override
+    public Page<Client> findAll(Pageable pageable) {
+        return clientRepository.findAll(pageable);
     }
 
-    public Page<ClientEntity> findAll(Pageable pageable) {
-        Specification<ClientEntity> spec = ClientSpecifications.isActive();
-        return jpaClientRepository.findAll(spec, pageable);
+    @Override
+    public Client update(Long id, Client client) {
+        Client existing = findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Cliente", id));
+
+        if (!existing.isActive()) {
+            throw new BusinessException("Cliente está inativo e não pode ser atualizado.");
+        }
+
+        if (!existing.getNumber().equals(client.getNumber())) {
+            clientRepository.findByNumber(client.getNumber())
+                .ifPresent(duplicate -> {
+                    throw new BusinessException("Já existe um cliente cadastrado com esse número.");
+                });
+        }
+
+        Client updated = Client.builder()
+            .id(existing.getId())
+            .name(client.getName())
+            .number(client.getNumber())
+            .phone(client.getPhone())
+            .email(client.getEmail())
+            .build();
+
+        return clientRepository.save(updated);
+    }
+
+    @Override
+    public void delete(Long id) {
+        Client client = findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Cliente", id));
+
+        client.deactivate();
+        clientRepository.save(client);
     }
 }

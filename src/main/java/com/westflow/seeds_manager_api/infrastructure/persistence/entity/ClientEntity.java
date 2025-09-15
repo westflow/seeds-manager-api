@@ -19,7 +19,7 @@ public class ClientEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "number", nullable = false)
+    @Column(name = "number", unique = true)
     private String number;
 
     @Column(name = "name", nullable = false)

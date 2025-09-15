@@ -4,5 +4,8 @@ import com.westflow.seeds_manager_api.infrastructure.persistence.entity.ClientEn
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.Optional;
+
 public interface JpaClientRepository extends JpaRepository<ClientEntity, Long>, JpaSpecificationExecutor<ClientEntity> {
+    Optional<ClientEntity> findByNumber(String number);
 }

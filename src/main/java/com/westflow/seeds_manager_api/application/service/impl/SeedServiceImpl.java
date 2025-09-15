@@ -5,26 +5,18 @@ import com.westflow.seeds_manager_api.domain.entity.Seed;
 import com.westflow.seeds_manager_api.domain.exception.BusinessException;
 import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.repository.SeedRepository;
-import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaSeedRepository;
-import com.westflow.seeds_manager_api.infrastructure.persistence.entity.SeedEntity;
-import com.westflow.seeds_manager_api.infrastructure.persistence.specification.SeedSpecifications;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class SeedServiceImpl implements SeedService {
 
     private final SeedRepository seedRepository;
-    private final JpaSeedRepository jpaSeedRepository;
-
-    public SeedServiceImpl(SeedRepository seedRepository, JpaSeedRepository jpaSeedRepository) {
-        this.seedRepository = seedRepository;
-        this.jpaSeedRepository = jpaSeedRepository;
-    }
 
     @Override
     public Seed register(Seed seed) {
@@ -46,15 +38,17 @@ public class SeedServiceImpl implements SeedService {
 
     @Override
     public Page<Seed> findAll(Boolean isProtected, Pageable pageable) {
-        Specification<SeedEntity> spec = SeedSpecifications.hasProtected(isProtected)
-                .and(SeedSpecifications.isActive());
-        return seedRepository.findAll(spec, pageable);
+        return seedRepository.findAll(isProtected, pageable);
     }
 
     @Override
     public Seed update(Long id, Seed seed) {
-        Seed existing = seedRepository.findById(id)
+        Seed existing = findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Semente", id));
+
+        if (!existing.isActive()) {
+            throw new BusinessException("Semente está inativa e não pode ser atualizada.");
+        }
 
         Optional<Seed> duplicate = seedRepository.findByNormalizedSpeciesAndNormalizedCultivar(
                 seed.getNormalizedSpecies(), seed.getNormalizedCultivar()
@@ -74,12 +68,10 @@ public class SeedServiceImpl implements SeedService {
 
     @Override
     public void delete(Long id) {
-        SeedEntity entity = jpaSeedRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Semente", id));
-        if (!entity.isActive()) {
-            throw new BusinessException("Semente já está inativa.");
-        }
-        entity.setActive(false);
-        jpaSeedRepository.save(entity);
+        Seed seed = findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Semente", id));
+
+        seed.deactivate();
+        seedRepository.save(seed);
     }
 }

@@ -16,6 +16,7 @@ public class Client {
     private final String phone;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+    private boolean isActive = true;
 
     @Builder
     public Client(Long id, String number, String name, String email, String phone,
@@ -38,5 +39,12 @@ public class Client {
         if (name == null || name.isBlank()) {
             throw new ValidationException("Nome do cliente é obrigatório");
         }
+    }
+
+    public void deactivate() {
+        if (!this.isActive) {
+            throw new ValidationException("Cliente já está inativo.");
+        }
+        this.isActive = false;
     }
 }

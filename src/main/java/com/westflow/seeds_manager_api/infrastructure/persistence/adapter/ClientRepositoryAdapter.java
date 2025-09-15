@@ -5,6 +5,10 @@ import com.westflow.seeds_manager_api.domain.repository.ClientRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.ClientEntity;
 import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.ClientPersistenceMapper;
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaClientRepository;
+import com.westflow.seeds_manager_api.infrastructure.persistence.specification.ClientSpecifications;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -28,5 +32,16 @@ public class ClientRepositoryAdapter implements ClientRepository {
     @Override
     public Optional<Client> findById(Long id) {
         return jpaRepository.findById(id).map(mapper::toDomain);
+    }
+
+    @Override
+    public Optional<Client> findByNumber(String number) {
+        return jpaRepository.findByNumber(number).map(mapper::toDomain);
+    }
+
+    @Override
+    public Page<Client> findAll(Pageable pageable) {
+        Specification<ClientEntity> spec = ClientSpecifications.isActive();
+        return jpaRepository.findAll(spec, pageable).map(mapper::toDomain);
     }
 }

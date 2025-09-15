@@ -5,6 +5,7 @@ import com.westflow.seeds_manager_api.domain.repository.SeedRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.SeedEntity;
 import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.SeedPersistenceMapper;
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaSeedRepository;
+import com.westflow.seeds_manager_api.infrastructure.persistence.specification.SeedSpecifications;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -41,12 +42,11 @@ public class SeedRepositoryAdapter implements SeedRepository {
     }
 
     @Override
-    public void deleteById(Long id) {
-        jpaRepository.deleteById(id);
-    }
+    public Page<Seed> findAll(Boolean isProtected, Pageable pageable) {
 
-    @Override
-    public Page<Seed> findAll(Specification<SeedEntity> spec, Pageable pageable) {
+        Specification<SeedEntity> spec = SeedSpecifications.hasProtected(isProtected)
+                .and(SeedSpecifications.isActive());
+
         return jpaRepository.findAll(spec, pageable).map(mapper::toDomain);
     }
 

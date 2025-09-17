@@ -1,7 +1,6 @@
 package com.westflow.seeds_manager_api.api.controller;
 
-import com.westflow.seeds_manager_api.api.dto.request.SeedCreateRequest;
-import com.westflow.seeds_manager_api.api.dto.request.SeedUpdateRequest;
+import com.westflow.seeds_manager_api.api.dto.request.SeedRequest;
 import com.westflow.seeds_manager_api.api.dto.response.SeedResponse;
 import com.westflow.seeds_manager_api.api.mapper.SeedMapper;
 import com.westflow.seeds_manager_api.application.service.SeedService;
@@ -41,7 +40,7 @@ public class SeedController {
     )
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<SeedResponse> register(@Valid @RequestBody SeedCreateRequest request) {
+    public ResponseEntity<SeedResponse> register(@Valid @RequestBody SeedRequest request) {
 
         Seed seed = seedMapper.toDomain(request);
         Seed saved = seedService.register(seed);
@@ -102,7 +101,7 @@ public class SeedController {
     )
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<SeedResponse> update(@PathVariable Long id, @Valid @RequestBody SeedUpdateRequest request) {
+    public ResponseEntity<SeedResponse> update(@PathVariable Long id, @Valid @RequestBody SeedRequest request) {
         try {
             Seed updated = seedService.update(id, seedMapper.toDomain(request, id));
             return ResponseEntity.ok(seedMapper.toResponse(updated));

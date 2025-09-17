@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Schema(name = "BagTypeCreateRequest", description = "Payload para criação de tipo de sacaria")
+@Schema(name = "BagTypeRequest", description = "Payload para criação de tipo de sacaria")
 public class BagTypeRequest {
 
     @Schema(description = "Nome do tipo de sacaria", example = "Casa da Lavraria", requiredMode = Schema.RequiredMode.REQUIRED)

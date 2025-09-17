@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@Schema(name = "BagWeightCreateRequest", description = "Payload para criação de peso de sacaria")
+@Schema(name = "BagWeightRequest", description = "Payload para criação de peso de sacaria")
 public class BagWeightRequest {
 
     @Schema(description = "Peso da sacaria", example = "25.00", requiredMode = Schema.RequiredMode.REQUIRED)

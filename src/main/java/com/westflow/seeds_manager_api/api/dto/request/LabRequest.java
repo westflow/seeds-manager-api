@@ -7,8 +7,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Schema(name = "LabCreateRequest", description = "Payload para criação de laboratório credenciado")
-public class LabCreateRequest {
+@Schema(name = "LabRequest", description = "Payload para criação de laboratório credenciado")
+public class LabRequest {
 
     @Schema(description = "Nome do laboratório", example = "Plante Bem Lab. de Análise de Sementes Ltda", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "Nome do laboratório é obrigatório")

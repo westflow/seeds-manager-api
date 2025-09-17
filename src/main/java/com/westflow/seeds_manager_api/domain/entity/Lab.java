@@ -14,6 +14,7 @@ public class Lab {
     private final String renasemCode;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+    private boolean isActive = true;
 
     @Builder
     public Lab(Long id, String name, String state, String renasemCode,
@@ -37,5 +38,12 @@ public class Lab {
         if (renasemCode == null || renasemCode.isBlank()) {
             throw new ValidationException("Código RENASEM é obrigatório");
         }
+    }
+
+    public void deactivate() {
+        if (!this.isActive) {
+            throw new ValidationException("Laboratório já está inativo.");
+        }
+        this.isActive = false;
     }
 }

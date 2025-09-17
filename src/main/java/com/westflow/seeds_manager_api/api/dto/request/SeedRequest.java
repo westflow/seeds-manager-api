@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@Schema(name = "SeedCreateRequest", description = "Payload para criação de semente")
+@Schema(name = "SeedRequest", description = "Payload para criação de semente")
 public class SeedRequest {
 
     @Schema(

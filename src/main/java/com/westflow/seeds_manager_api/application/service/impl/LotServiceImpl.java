@@ -117,12 +117,13 @@ public class LotServiceImpl implements LotService {
     }
 
     private BagWeight fetchBagWeight(Long bagWeightId) {
-        return bagWeightService.findById(bagWeightId)
+        return bagWeightService.findEntityById(bagWeightId)
                 .orElseThrow(() -> new ResourceNotFoundException("Tamanho da sacaria", bagWeightId));
     }
 
     private BagType fetchBagType(Long bagTypeId) {
-        return bagTypeService.findEntityById(bagTypeId);
+        return bagTypeService.findEntityById(bagTypeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Tipo de sacaria", bagTypeId));
     }
 
     private Lab fetchLab(Long labId) {

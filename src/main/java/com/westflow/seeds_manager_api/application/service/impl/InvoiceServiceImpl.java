@@ -9,8 +9,8 @@ import com.westflow.seeds_manager_api.domain.entity.Seed;
 import com.westflow.seeds_manager_api.domain.exception.DuplicateInvoiceNumberException;
 import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.repository.InvoiceRepository;
-import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaInvoiceRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.InvoiceEntity;
+import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaInvoiceRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.specification.InvoiceSpecifications;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,7 +46,8 @@ public class InvoiceServiceImpl implements InvoiceService {
             throw new DuplicateInvoiceNumberException(request.getInvoiceNumber());
         }
 
-        Seed seed = seedService.findEntityById(seedId);
+        Seed seed = seedService.findEntityById(seedId)
+                .orElseThrow(() -> new ResourceNotFoundException("Semente",seedId));
 
         Invoice invoice = invoiceMapper.toDomain(request, seed);
         return invoiceRepository.save(invoice);

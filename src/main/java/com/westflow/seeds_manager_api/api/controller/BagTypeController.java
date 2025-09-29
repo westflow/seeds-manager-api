@@ -2,9 +2,7 @@ package com.westflow.seeds_manager_api.api.controller;
 
 import com.westflow.seeds_manager_api.api.dto.request.BagTypeRequest;
 import com.westflow.seeds_manager_api.api.dto.response.BagTypeResponse;
-import com.westflow.seeds_manager_api.api.mapper.BagTypeMapper;
 import com.westflow.seeds_manager_api.application.service.BagTypeService;
-import com.westflow.seeds_manager_api.domain.entity.BagType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;

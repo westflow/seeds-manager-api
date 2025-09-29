@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface SeedService {
     SeedResponse register(SeedRequest request);
     SeedResponse findById(Long id);
-    Seed findEntityById(Long id);
+    Optional<Seed> findEntityById(Long id);
     Page<SeedResponse> findAll(Boolean isProtected, Pageable pageable);
     SeedResponse update(Long id, SeedRequest request);
     void delete(Long id);

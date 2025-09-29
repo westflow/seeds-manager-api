@@ -34,8 +34,8 @@ public class BagTypeServiceImpl implements BagTypeService {
     }
 
     @Override
-    public BagType findEntityById(Long id) {
-        return getBagTypeById(id);
+    public Optional<BagType> findEntityById(Long id) {
+        return bagTypeRepository.findById(id);
     }
 
     @Override

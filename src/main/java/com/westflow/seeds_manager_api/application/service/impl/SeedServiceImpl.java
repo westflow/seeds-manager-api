@@ -43,8 +43,8 @@ public class SeedServiceImpl implements SeedService {
     }
 
     @Override
-    public Seed findEntityById(Long id) {
-        return getSeedById(id);
+    public Optional<Seed> findEntityById(Long id) {
+        return seedRepository.findById(id);
     }
 
     @Override

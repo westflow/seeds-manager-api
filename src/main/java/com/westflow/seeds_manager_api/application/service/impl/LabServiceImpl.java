@@ -1,11 +1,14 @@
 package com.westflow.seeds_manager_api.application.service.impl;
 
+import com.westflow.seeds_manager_api.api.dto.request.LabRequest;
+import com.westflow.seeds_manager_api.api.dto.response.LabResponse;
+import com.westflow.seeds_manager_api.api.mapper.LabMapper;
 import com.westflow.seeds_manager_api.application.service.LabService;
 import com.westflow.seeds_manager_api.domain.entity.Lab;
 import com.westflow.seeds_manager_api.domain.exception.BusinessException;
 import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.repository.LabRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,34 +17,39 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class LabServiceImpl implements LabService {
 
     private final LabRepository labRepository;
+    private final LabMapper mapper;
 
     @Override
-    public Lab register(Lab lab) {
+    public LabResponse register(LabRequest request) {
+        Lab lab = mapper.toDomain(request);
+        
         labRepository.findByRenasemCode(lab.getRenasemCode())
             .ifPresent(existing -> {
                 throw new BusinessException("Já existe um laboratório com esse código RENASEM.");
             });
-        return labRepository.save(lab);
+            
+        Lab saved = labRepository.save(lab);
+        return mapper.toResponse(saved);
     }
 
     @Override
-    public Optional<Lab> findById(Long id) {
-        return labRepository.findById(id);
+    public LabResponse findById(Long id) {
+        return mapper.toResponse(getLabById(id));
     }
 
     @Override
-    public Page<Lab> findAll(Pageable pageable) {
-        return labRepository.findAll(pageable);
+    public Page<LabResponse> findAll(Pageable pageable) {
+        return labRepository.findAll(pageable).map(mapper::toResponse);
     }
 
     @Override
-    public Lab update(Long id, Lab lab) {
-        Lab existing = findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Laboratório", id));
+    public LabResponse update(Long id, LabRequest request) {
+        Lab lab = mapper.toDomain(request);
+        Lab existing = getLabById(id);
 
         if (!existing.isActive()) {
             throw new BusinessException("Laboratório está inativo e não pode ser atualizado.");
@@ -63,15 +71,24 @@ public class LabServiceImpl implements LabService {
             .updatedAt(LocalDateTime.now())
             .build();
 
-        return labRepository.save(updated);
+        Lab saved = labRepository.save(updated);
+        return mapper.toResponse(saved);
     }
 
     @Override
     public void delete(Long id) {
-        Lab lab = findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Laboratório", id));
-
+        Lab lab = getLabById(id);
         lab.deactivate();
         labRepository.save(lab);
+    }
+    
+    @Override
+    public Optional<Lab> findEntityById(Long id) {
+        return labRepository.findById(id);
+    }
+    
+    private Lab getLabById(Long id) {
+        return findEntityById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Laboratório", id));
     }
 }

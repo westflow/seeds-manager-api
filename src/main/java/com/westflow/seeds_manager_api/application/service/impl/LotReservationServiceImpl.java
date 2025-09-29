@@ -40,7 +40,7 @@ public class LotReservationServiceImpl implements LotReservationService {
         Lot lot = lotService.findById(request.getLotId())
                 .orElseThrow(() -> new ResourceNotFoundException("Lote", request.getLotId()));
 
-        Client client = clientService.findById(request.getClientId())
+        Client client = clientService.findEntityById(request.getClientId())
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente", request.getClientId()));
 
         LotReservation reservation = lotReservationMapper.toDomain(request, user, lot, client);

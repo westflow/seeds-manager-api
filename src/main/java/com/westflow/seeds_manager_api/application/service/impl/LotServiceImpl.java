@@ -127,7 +127,7 @@ public class LotServiceImpl implements LotService {
     }
 
     private Lab fetchLab(Long labId) {
-        return labService.findById(labId)
+        return labService.findEntityById(labId)
                 .orElseThrow(() -> new ResourceNotFoundException("Laboratório", labId));
     }
 

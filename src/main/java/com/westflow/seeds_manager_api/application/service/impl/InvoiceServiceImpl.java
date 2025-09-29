@@ -46,8 +46,7 @@ public class InvoiceServiceImpl implements InvoiceService {
             throw new DuplicateInvoiceNumberException(request.getInvoiceNumber());
         }
 
-        Seed seed = seedService.findById(seedId)
-                .orElseThrow(() -> new ResourceNotFoundException("Semente", seedId));
+        Seed seed = seedService.findEntityById(seedId);
 
         Invoice invoice = invoiceMapper.toDomain(request, seed);
         return invoiceRepository.save(invoice);

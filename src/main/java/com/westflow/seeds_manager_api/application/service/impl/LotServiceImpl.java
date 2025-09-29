@@ -122,8 +122,7 @@ public class LotServiceImpl implements LotService {
     }
 
     private BagType fetchBagType(Long bagTypeId) {
-        return bagTypeService.findById(bagTypeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Tipo da sacaria", bagTypeId));
+        return bagTypeService.findEntityById(bagTypeId);
     }
 
     private Lab fetchLab(Long labId) {

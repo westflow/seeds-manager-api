@@ -7,13 +7,13 @@ import lombok.*;
 public class Seed {
 
     private final Long id;
-    private final String species;
-    private final String cultivar;
+    private String species;
+    private String cultivar;
     private final boolean isProtected;
     private boolean isActive = true;
 
-    private final String normalizedSpecies;
-    private final String normalizedCultivar;
+    private String normalizedSpecies;
+    private String normalizedCultivar;
 
     @Builder
     public Seed(Long id, String species, String cultivar, boolean isProtected) {
@@ -46,5 +46,28 @@ public class Seed {
             throw new ValidationException("A semente já está deletada.");
         }
         this.isActive = false;
+    }
+    
+    public void update(Seed updatedSeed) {
+        if (updatedSeed == null) {
+            throw new ValidationException("Dados de atualização inválidos");
+        }
+        
+        if (updatedSeed.getSpecies() != null) {
+            this.species = updatedSeed.getSpecies();
+        }
+        
+        if (updatedSeed.getCultivar() != null) {
+            this.cultivar = updatedSeed.getCultivar();
+        }
+        
+        // Atualiza os campos normalizados
+        if (this.species != null) {
+            this.normalizedSpecies = normalize(this.species);
+        }
+        
+        if (this.cultivar != null) {
+            this.normalizedCultivar = normalize(this.cultivar).toUpperCase();
+        }
     }
 }

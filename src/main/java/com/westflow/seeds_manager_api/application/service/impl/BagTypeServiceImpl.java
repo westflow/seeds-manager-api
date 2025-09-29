@@ -1,10 +1,13 @@
 package com.westflow.seeds_manager_api.application.service.impl;
 
+import com.westflow.seeds_manager_api.api.dto.request.BagTypeRequest;
+import com.westflow.seeds_manager_api.api.dto.response.BagTypeResponse;
+import com.westflow.seeds_manager_api.api.mapper.BagTypeMapper;
 import com.westflow.seeds_manager_api.application.service.BagTypeService;
 import com.westflow.seeds_manager_api.domain.entity.BagType;
 import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.repository.BagTypeRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,39 +15,46 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BagTypeServiceImpl implements BagTypeService {
 
     private final BagTypeRepository bagTypeRepository;
+    private final BagTypeMapper mapper;
 
     @Override
-    public BagType register(BagType bagType) {
-        return bagTypeRepository.save(bagType);
+    public BagTypeResponse register(BagTypeRequest request) {
+        BagType bagType = mapper.toDomain(request);
+        BagType saved = bagTypeRepository.save(bagType);
+        return mapper.toResponse(saved);
     }
 
     @Override
-    public Optional<BagType> findById(Long id) {
-        return bagTypeRepository.findById(id);
+    public BagTypeResponse findById(Long id) {
+        return mapper.toResponse(getBagTypeById(id));
+    }
+
+    @Override
+    public BagType findEntityById(Long id) {
+        return getBagTypeById(id);
     }
 
     @Override
     public void delete(Long id) {
-        BagType bagType = findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Tipo de sacaria", id));
+        BagType bagType = getBagTypeById(id);
 
         bagType.deactivate();
         bagTypeRepository.save(bagType);
     }
 
     @Override
-    public Page<BagType> findAll(Pageable pageable) {
-        return bagTypeRepository.findAll(pageable);
+    public Page<BagTypeResponse> findAll(Pageable pageable) {
+        return bagTypeRepository.findAll(pageable).map(mapper::toResponse);
     }
 
     @Override
-    public BagType update(Long id, BagType bagType) {
-        BagType existing = findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Tipo de sacaria", id));
+    public BagTypeResponse update(Long id, BagTypeRequest request) {
+        BagType bagType = mapper.toDomain(request);
+        BagType existing = getBagTypeById(id);
 
         if (!existing.isActive()) {
             throw new IllegalStateException("Tipo de sacaria está inativo e não pode ser atualizado.");
@@ -54,6 +64,12 @@ public class BagTypeServiceImpl implements BagTypeService {
             .id(existing.getId())
             .name(bagType.getName())
             .build();
-        return bagTypeRepository.save(bagType);
+        BagType saved = bagTypeRepository.save(bagType);
+        return mapper.toResponse(saved);
+    }
+
+    private BagType getBagTypeById(Long id) {
+        return bagTypeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Tipo de sacaria", id));
     }
 }

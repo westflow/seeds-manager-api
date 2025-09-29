@@ -37,6 +37,24 @@ public class User {
         this.lastLogin = lastLogin;
     }
 
+    public User withEncodedPassword(String encodedPassword) {
+        return new User(
+                this.id,
+                this.email,
+                encodedPassword,
+                this.name,
+                this.position,
+                this.accessLevel,
+                this.createdAt,
+                this.updatedAt,
+                this.lastLogin
+        );
+    }
+
+    public void markLogin() {
+        this.lastLogin = LocalDateTime.now();
+    }
+
     private void validate(String email, String password, String name, AccessLevel accessLevel) {
         if (email == null || email.isBlank()) {
             throw new ValidationException("Email é obrigatório");
@@ -53,9 +71,5 @@ public class User {
         if (accessLevel == null) {
             throw new ValidationException("Nível de acesso é obrigatório");
         }
-    }
-
-    public void markLogin() {
-        this.lastLogin = LocalDateTime.now();
     }
 }

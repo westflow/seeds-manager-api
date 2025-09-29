@@ -1,11 +1,15 @@
 package com.westflow.seeds_manager_api.application.service.impl;
 
+import com.westflow.seeds_manager_api.api.dto.request.UserCreateRequest;
+import com.westflow.seeds_manager_api.api.dto.response.UserResponse;
+import com.westflow.seeds_manager_api.api.mapper.UserMapper;
 import com.westflow.seeds_manager_api.application.service.UserService;
 import com.westflow.seeds_manager_api.domain.entity.User;
 import com.westflow.seeds_manager_api.domain.repository.UserRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaUserRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.UserEntity;
 import com.westflow.seeds_manager_api.infrastructure.persistence.specification.UserSpecifications;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,22 +19,17 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JpaUserRepository jpaUserRepository;
-
-    public UserServiceImpl(UserRepository userRepository,
-                           PasswordEncoder passwordEncoder,
-                           JpaUserRepository jpaUserRepository) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jpaUserRepository = jpaUserRepository;
-    }
+    private final UserMapper userMapper;
 
     @Override
-    public User register(User user) {
+    public UserResponse register(UserCreateRequest request) {
+        User user = userMapper.toDomain(request);
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         User securedUser = new User(
                 user.getId(),
@@ -43,7 +42,7 @@ public class UserServiceImpl implements UserService {
                 user.getUpdatedAt(),
                 user.getLastLogin()
         );
-        return userRepository.save(securedUser);
+        return userMapper.toResponse(userRepository.save(securedUser));
     }
 
     @Override

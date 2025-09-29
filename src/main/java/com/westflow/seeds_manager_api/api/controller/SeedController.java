@@ -2,13 +2,12 @@ package com.westflow.seeds_manager_api.api.controller;
 
 import com.westflow.seeds_manager_api.api.dto.request.SeedRequest;
 import com.westflow.seeds_manager_api.api.dto.response.SeedResponse;
-import com.westflow.seeds_manager_api.api.mapper.SeedMapper;
 import com.westflow.seeds_manager_api.application.service.SeedService;
-import com.westflow.seeds_manager_api.domain.entity.Seed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,18 +16,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Seeds", description = "Operações de sementes")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/seeds")
+@Tag(name = "Seeds", description = "Operações de sementes")
 public class SeedController {
 
     private final SeedService seedService;
-    private final SeedMapper seedMapper;
-
-    public SeedController(SeedService seedService, SeedMapper seedMapper) {
-        this.seedService = seedService;
-        this.seedMapper = seedMapper;
-    }
 
     @Operation(
             summary = "Cria uma nova semente",
@@ -42,9 +36,7 @@ public class SeedController {
     @PostMapping
     public ResponseEntity<SeedResponse> register(@Valid @RequestBody SeedRequest request) {
 
-        Seed seed = seedMapper.toDomain(request);
-        Seed saved = seedService.register(seed);
-        SeedResponse response = seedMapper.toResponse(saved);
+        SeedResponse response = seedService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -68,8 +60,7 @@ public class SeedController {
             @ParameterObject Pageable pageable,
             @RequestParam(value = "protected", required = false) Boolean isProtected
     ) {
-        Page<SeedResponse> page = seedService.findAll(isProtected, pageable)
-                .map(seedMapper::toResponse);
+        Page<SeedResponse> page = seedService.findAll(isProtected, pageable);
         return ResponseEntity.ok(page);
     }
 
@@ -84,10 +75,8 @@ public class SeedController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD', 'READ_ONLY')")
     @GetMapping("/{id}")
     public ResponseEntity<SeedResponse> getById(@PathVariable Long id) {
-        return seedService.findById(id)
-                .map(seedMapper::toResponse)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        SeedResponse response = seedService.findById(id);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -103,8 +92,8 @@ public class SeedController {
     @PutMapping("/{id}")
     public ResponseEntity<SeedResponse> update(@PathVariable Long id, @Valid @RequestBody SeedRequest request) {
         try {
-            Seed updated = seedService.update(id, seedMapper.toDomain(request, id));
-            return ResponseEntity.ok(seedMapper.toResponse(updated));
+            SeedResponse response = seedService.update(id, request);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,17 +19,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/bag-types")
 @Tag(name = "BagTypes", description = "Operações de tipo de sacaria")
 public class BagTypeController {
 
     private final BagTypeService service;
-    private final BagTypeMapper mapper;
-
-    public BagTypeController(BagTypeService service, BagTypeMapper mapper) {
-        this.service = service;
-        this.mapper = mapper;
-    }
 
     @Operation(summary = "Cria novo tipo de sacaria", responses = {
             @ApiResponse(responseCode = "201", description = "Tipo criado"),
@@ -37,8 +33,7 @@ public class BagTypeController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<BagTypeResponse> register(@Valid @RequestBody BagTypeRequest request) {
-        BagType saved = service.register(mapper.toDomain(request));
-        BagTypeResponse response = mapper.toResponse(saved);
+        BagTypeResponse response = service.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -52,7 +47,7 @@ public class BagTypeController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD', 'READ_ONLY')")
     @GetMapping
     public ResponseEntity<Page<BagTypeResponse>> listAll(@ParameterObject Pageable pageable) {
-        Page<BagTypeResponse> page = service.findAll(pageable).map(mapper::toResponse);
+        Page<BagTypeResponse> page = service.findAll(pageable);
         return ResponseEntity.ok(page);
     }
 
@@ -67,10 +62,8 @@ public class BagTypeController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD', 'READ_ONLY')")
     @GetMapping("/{id}")
     public ResponseEntity<BagTypeResponse> getById(@PathVariable Long id) {
-        return service.findById(id)
-                .map(mapper::toResponse)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        BagTypeResponse response = service.findById(id);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -85,12 +78,8 @@ public class BagTypeController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<BagTypeResponse> update(@PathVariable Long id, @Valid @RequestBody BagTypeRequest request) {
-        try {
-            BagType updated = service.update(id, mapper.toDomain(request, id));
-            return ResponseEntity.ok(mapper.toResponse(updated));
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        BagTypeResponse response = service.update(id, request);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -104,11 +93,7 @@ public class BagTypeController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        try {
-            service.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

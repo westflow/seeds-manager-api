@@ -69,7 +69,7 @@ public class BagTypeServiceImpl implements BagTypeService {
     }
 
     private BagType getBagTypeById(Long id) {
-        return bagTypeRepository.findById(id)
+        return findEntityById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tipo de sacaria", id));
     }
 }

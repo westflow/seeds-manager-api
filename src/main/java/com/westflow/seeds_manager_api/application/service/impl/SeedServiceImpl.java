@@ -82,7 +82,7 @@ public class SeedServiceImpl implements SeedService {
     }
     
     private Seed getSeedById(Long id) {
-        return seedRepository.findById(id)
+        return findEntityById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Semente", id));
     }
 }

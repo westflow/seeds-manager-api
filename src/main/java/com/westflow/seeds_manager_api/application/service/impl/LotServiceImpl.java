@@ -111,7 +111,7 @@ public class LotServiceImpl implements LotService {
 
     private List<Invoice> fetchInvoices(Map<Long, BigDecimal> allocationMap) {
         return allocationMap.keySet().stream()
-                .map(id -> invoiceService.findById(id)
+                .map(id -> invoiceService.findEntityById(id)
                         .orElseThrow(() -> new ResourceNotFoundException("Nota fiscal", id)))
                 .toList();
     }

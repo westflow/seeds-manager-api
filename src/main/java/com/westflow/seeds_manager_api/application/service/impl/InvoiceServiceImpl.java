@@ -1,86 +1,122 @@
 package com.westflow.seeds_manager_api.application.service.impl;
 
-import com.westflow.seeds_manager_api.api.dto.request.InvoiceCreateRequest;
+import com.westflow.seeds_manager_api.api.dto.request.InvoiceRequest;
+import com.westflow.seeds_manager_api.api.dto.response.InvoiceResponse;
 import com.westflow.seeds_manager_api.api.mapper.InvoiceMapper;
 import com.westflow.seeds_manager_api.application.service.InvoiceService;
 import com.westflow.seeds_manager_api.application.service.SeedService;
 import com.westflow.seeds_manager_api.domain.entity.Invoice;
 import com.westflow.seeds_manager_api.domain.entity.Seed;
+import com.westflow.seeds_manager_api.domain.exception.BusinessException;
 import com.westflow.seeds_manager_api.domain.exception.DuplicateInvoiceNumberException;
 import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.repository.InvoiceRepository;
-import com.westflow.seeds_manager_api.infrastructure.persistence.entity.InvoiceEntity;
-import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaInvoiceRepository;
-import com.westflow.seeds_manager_api.infrastructure.persistence.specification.InvoiceSpecifications;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
     private final SeedService seedService;
     private final InvoiceMapper invoiceMapper;
-    private final JpaInvoiceRepository jpaInvoiceRepository;
-
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository,
-                              SeedService seedService,
-                              InvoiceMapper invoiceMapper,
-                              JpaInvoiceRepository jpaInvoiceRepository) {
-        this.invoiceRepository = invoiceRepository;
-        this.seedService = seedService;
-        this.invoiceMapper = invoiceMapper;
-        this.jpaInvoiceRepository = jpaInvoiceRepository;
-    }
 
     @Override
-    public Invoice register(InvoiceCreateRequest request) {
-        Long seedId = request.getSeedId();
-
+    @Transactional
+    public InvoiceResponse register(InvoiceRequest request) {
         if (invoiceRepository.existsByInvoiceNumber(request.getInvoiceNumber())) {
             throw new DuplicateInvoiceNumberException(request.getInvoiceNumber());
         }
 
-        Seed seed = seedService.findEntityById(seedId)
-                .orElseThrow(() -> new ResourceNotFoundException("Semente",seedId));
+        Seed seed = seedService.findEntityById(request.getSeedId())
+                .orElseThrow(() -> new ResourceNotFoundException("Semente", request.getSeedId()));
 
         Invoice invoice = invoiceMapper.toDomain(request, seed);
-        return invoiceRepository.save(invoice);
+        Invoice saved = invoiceRepository.save(invoice);
+        return invoiceMapper.toResponse(saved);
     }
 
     @Override
-    public Optional<Invoice> findById(Long id) {
+    @Transactional(readOnly = true)
+    public InvoiceResponse findById(Long id) {
+        return invoiceMapper.toResponse(getInvoiceById(id));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<InvoiceResponse> findAll(Pageable pageable) {
+        return invoiceRepository.findAll(pageable)
+                .map(invoiceMapper::toResponse);
+    }
+
+    @Override
+    @Transactional
+    public InvoiceResponse update(Long id, InvoiceRequest request) {
+        Invoice existing = getInvoiceById(id);
+
+        if (!existing.isActive()) {
+            throw new BusinessException("Nota fiscal está inativa e não pode ser atualizada.");
+        }
+
+        Seed seed = existing.getSeed();
+        if (!seed.getId().equals(request.getSeedId())) {
+            seed = seedService.findEntityById(request.getSeedId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Semente", request.getSeedId()));
+        }
+
+        Invoice updated = existing.toBuilder()
+                .producerName(request.getProducerName())
+                .totalKg(request.getTotalKg())
+                .operationType(request.getOperationType())
+                .authNumber(request.getAuthNumber())
+                .category(request.getCategory())
+                .purity(request.getPurity())
+                .harvest(request.getHarvest())
+                .productionState(request.getProductionState())
+                .plantedArea(request.getPlantedArea())
+                .approvedArea(request.getApprovedArea())
+                .seed(seed)
+                .updatedAt(LocalDateTime.now())
+                .isActive(true)
+                .build();
+
+        return invoiceMapper.toResponse(invoiceRepository.save(updated));
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        Invoice invoice = getInvoiceById(id);
+        invoice.deactivate();
+        invoiceRepository.save(invoice);
+    }
+    
+    @Override
+    public Optional<Invoice> findEntityById(Long id) {
         return invoiceRepository.findById(id);
     }
-
+    
     @Override
-    public Invoice save(Invoice invoice) {
-        return invoiceRepository.save(invoice);
-    }
-
-    @Override
+    @Transactional
     public void updateBalance(Invoice invoice, BigDecimal allocated) {
         invoice.withUpdatedBalance(allocated);
         invoiceRepository.save(invoice);
     }
 
-    public void delete(Long id) {
-        InvoiceEntity entity = jpaInvoiceRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Nota fiscal não encontrada."));
-        if (!entity.isActive()) {
-            throw new RuntimeException("Nota fiscal já está inativa.");
-        }
-        entity.setActive(false);
-        jpaInvoiceRepository.save(entity);
+    private Invoice getInvoiceById(Long id) {
+        return findEntityById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Nota fiscal", id));
     }
 
-    public Page<InvoiceEntity> findAll(Pageable pageable) {
-        Specification<InvoiceEntity> spec = InvoiceSpecifications.isActive();
-        return jpaInvoiceRepository.findAll(spec, pageable);
+    public Invoice save(Invoice invoice) {
+        return invoiceRepository.save(invoice);
     }
 }

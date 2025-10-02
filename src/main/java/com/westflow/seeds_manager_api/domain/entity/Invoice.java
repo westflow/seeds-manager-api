@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
+@Builder(toBuilder = true)
 public class Invoice {
 
     private final Long id;
@@ -28,13 +29,14 @@ public class Invoice {
     private final BigDecimal approvedArea;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+    private boolean isActive = true;
 
     @Builder
     public Invoice(Long id, String invoiceNumber, String producerName, Seed seed,
-                   BigDecimal totalKg, BigDecimal balance, OperationType operationType, String authNumber,
-                   LotCategory category, BigDecimal purity, String harvest,
-                   String productionState, BigDecimal plantedArea,
-                   BigDecimal approvedArea, LocalDateTime createdAt, LocalDateTime updatedAt) {
+                   BigDecimal totalKg, BigDecimal balance, OperationType operationType,
+                   String authNumber, LotCategory category, BigDecimal purity, String harvest,
+                   String productionState, BigDecimal plantedArea,BigDecimal approvedArea,
+                   LocalDateTime createdAt, LocalDateTime updatedAt, boolean isActive) {
 
         validate(invoiceNumber, producerName, seed, totalKg, operationType, category, purity, harvest, productionState);
 
@@ -54,6 +56,7 @@ public class Invoice {
         this.approvedArea = approvedArea;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.isActive = isActive;
     }
 
     private void validate(String invoiceNumber, String producerName, Seed seed,
@@ -106,5 +109,12 @@ public class Invoice {
             throw new ValidationException("Quantidade alocada excede o saldo da nota fiscal " + this.invoiceNumber);
         }
         this.balance = this.balance.subtract(allocated);
+    }
+
+    public void deactivate() {
+        if (!this.isActive) {
+            throw new ValidationException("Nota fiscal já está inativa");
+        }
+        this.isActive = false;
     }
 }

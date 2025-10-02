@@ -60,8 +60,7 @@ public class Seed {
         if (updatedSeed.getCultivar() != null) {
             this.cultivar = updatedSeed.getCultivar();
         }
-        
-        // Atualiza os campos normalizados
+
         if (this.species != null) {
             this.normalizedSpecies = normalize(this.species);
         }

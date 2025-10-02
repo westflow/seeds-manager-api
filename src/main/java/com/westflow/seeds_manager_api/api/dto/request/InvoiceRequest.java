@@ -3,6 +3,7 @@ package com.westflow.seeds_manager_api.api.dto.request;
 import com.westflow.seeds_manager_api.domain.enums.LotCategory;
 import com.westflow.seeds_manager_api.domain.enums.OperationType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +15,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Schema(name = "InvoiceCreateRequest", description = "Payload para criação de nota fiscal")
-public class InvoiceCreateRequest {
+public class InvoiceRequest {
 
     @Schema(description = "Número da nota fiscal", example = "NF-2025-001", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "Número da nota é obrigatório")
@@ -28,16 +29,16 @@ public class InvoiceCreateRequest {
     @NotNull(message = "Semente é obrigatória")
     private Long seedId;
 
-    @Schema(description = "Peso total em quilogramas", example = "1500.00", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "Peso total em kg é obrigatório")
-    @DecimalMin("0.01")
+    @Schema(description = "Peso total em KG", example = "1500.00", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "Peso total é obrigatório")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Peso total deve ser maior que zero")
     private BigDecimal totalKg;
 
-    @Schema(description = "Tipo de operação realizada", example = "TRANSFER", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Tipo de operação", example = "TRANSFER", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "Tipo de operação é obrigatório")
     private OperationType operationType;
 
-    @Schema(description = "Número de autorização (se aplicável)", example = "AUT-9981")
+    @Schema(description = "Número de autorização", example = "AUT-9981")
     private String authNumber;
 
     @Schema(description = "Categoria do lote", example = "S1", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -46,7 +47,8 @@ public class InvoiceCreateRequest {
 
     @Schema(description = "Pureza da semente", example = "98.5", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "Pureza é obrigatória")
-    @DecimalMin("0.00")
+    @DecimalMin(value = "0.0", message = "Pureza não pode ser negativa")
+    @DecimalMax(value = "100.0", message = "Pureza não pode ser maior que 100")
     private BigDecimal purity;
 
     @Schema(description = "Safra da produção", example = "2024/2025", requiredMode = Schema.RequiredMode.REQUIRED)

@@ -9,13 +9,16 @@ import lombok.Getter;
 public class BagType {
     private final Long id;
     private final String name;
-    private boolean isActive = true;
+    private Boolean active = true;
 
     @Builder
-    public BagType(Long id, String name) {
+    public BagType(Long id, String name, Boolean active) {
         validate(name);
         this.id = id;
         this.name = name;
+        if (active != null) {
+            this.active = active;
+        }
     }
 
     private void validate(String name) {
@@ -25,9 +28,9 @@ public class BagType {
     }
 
     public void deactivate() {
-        if (!this.isActive) {
+        if (!this.active) {
             throw new BusinessException("Tipo de sacaria já está deletado.");
         }
-        this.isActive = false;
+        this.active = false;
     }
 }

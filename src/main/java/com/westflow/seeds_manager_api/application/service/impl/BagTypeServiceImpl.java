@@ -56,7 +56,7 @@ public class BagTypeServiceImpl implements BagTypeService {
         BagType bagType = mapper.toDomain(request);
         BagType existing = getBagTypeById(id);
 
-        if (!existing.isActive()) {
+        if (!existing.getActive()) {
             throw new IllegalStateException("Tipo de sacaria está inativo e não pode ser atualizado.");
         }
 
@@ -70,6 +70,7 @@ public class BagTypeServiceImpl implements BagTypeService {
 
     private BagType getBagTypeById(Long id) {
         return findEntityById(id)
+                .filter(BagType::getActive)
                 .orElseThrow(() -> new ResourceNotFoundException("Tipo de sacaria", id));
     }
 }

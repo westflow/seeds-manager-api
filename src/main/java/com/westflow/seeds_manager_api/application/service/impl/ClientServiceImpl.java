@@ -50,7 +50,7 @@ public class ClientServiceImpl implements ClientService {
         Client client = mapper.toDomain(request);
         Client existing = getClientById(id);
 
-        if (!existing.isActive()) {
+        if (!existing.getActive()) {
             throw new BusinessException("Cliente está inativo e não pode ser atualizado.");
         }
 

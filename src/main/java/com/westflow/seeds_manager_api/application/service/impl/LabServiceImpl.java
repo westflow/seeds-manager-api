@@ -51,7 +51,7 @@ public class LabServiceImpl implements LabService {
         Lab lab = mapper.toDomain(request);
         Lab existing = getLabById(id);
 
-        if (!existing.isActive()) {
+        if (!existing.getActive()) {
             throw new BusinessException("Laboratório está inativo e não pode ser atualizado.");
         }
 

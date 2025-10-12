@@ -16,11 +16,11 @@ public class Client {
     private final String phone;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
-    private boolean isActive = true;
+    private Boolean active = true;
 
     @Builder
     public Client(Long id, String number, String name, String email, String phone,
-                  LocalDateTime createdAt, LocalDateTime updatedAt) {
+                  LocalDateTime createdAt, LocalDateTime updatedAt, Boolean active) {
         validate(number, name);
         this.id = id;
         this.number = number;
@@ -29,6 +29,9 @@ public class Client {
         this.phone = phone;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        if (active != null) {
+            this.active = active;
+        }
     }
 
     private void validate(String number, String name) {
@@ -42,9 +45,9 @@ public class Client {
     }
 
     public void deactivate() {
-        if (!this.isActive) {
+        if (!this.active) {
             throw new ValidationException("Cliente já está inativo.");
         }
-        this.isActive = false;
+        this.active = false;
     }
 }

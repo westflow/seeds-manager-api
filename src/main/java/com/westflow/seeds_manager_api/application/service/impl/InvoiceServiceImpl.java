@@ -62,7 +62,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     public InvoiceResponse update(Long id, InvoiceRequest request) {
         Invoice existing = getInvoiceById(id);
 
-        if (!existing.isActive()) {
+        if (!existing.getActive()) {
             throw new BusinessException("Nota fiscal está inativa e não pode ser atualizada.");
         }
 
@@ -85,7 +85,6 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .approvedArea(request.getApprovedArea())
                 .seed(seed)
                 .updatedAt(LocalDateTime.now())
-                .isActive(true)
                 .build();
 
         return invoiceMapper.toResponse(invoiceRepository.save(updated));

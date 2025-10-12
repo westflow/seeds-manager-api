@@ -29,14 +29,14 @@ public class Invoice {
     private final BigDecimal approvedArea;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
-    private boolean isActive = true;
+    private Boolean active = true;
 
     @Builder
     public Invoice(Long id, String invoiceNumber, String producerName, Seed seed,
                    BigDecimal totalKg, BigDecimal balance, OperationType operationType,
                    String authNumber, LotCategory category, BigDecimal purity, String harvest,
                    String productionState, BigDecimal plantedArea,BigDecimal approvedArea,
-                   LocalDateTime createdAt, LocalDateTime updatedAt, boolean isActive) {
+                   LocalDateTime createdAt, LocalDateTime updatedAt, Boolean active) {
 
         validate(invoiceNumber, producerName, seed, totalKg, operationType, category, purity, harvest, productionState);
 
@@ -56,7 +56,9 @@ public class Invoice {
         this.approvedArea = approvedArea;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.isActive = isActive;
+        if (active != null) {
+            this.active = active;
+        }
     }
 
     private void validate(String invoiceNumber, String producerName, Seed seed,
@@ -112,9 +114,9 @@ public class Invoice {
     }
 
     public void deactivate() {
-        if (!this.isActive) {
+        if (!this.active) {
             throw new ValidationException("Nota fiscal já está inativa");
         }
-        this.isActive = false;
+        this.active = false;
     }
 }

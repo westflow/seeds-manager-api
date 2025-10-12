@@ -14,11 +14,11 @@ public class Lab {
     private final String renasemCode;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
-    private boolean isActive = true;
+    private Boolean active = true;
 
     @Builder
     public Lab(Long id, String name, String state, String renasemCode,
-               LocalDateTime createdAt, LocalDateTime updatedAt) {
+               LocalDateTime createdAt, LocalDateTime updatedAt, Boolean active) {
         validate(name, state, renasemCode);
         this.id = id;
         this.name = name;
@@ -26,6 +26,9 @@ public class Lab {
         this.renasemCode = renasemCode;
         this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
         this.updatedAt = updatedAt;
+        if (active != null) {
+            this.active = active;
+        }
     }
 
     private void validate(String name, String state, String renasemCode) {
@@ -41,9 +44,9 @@ public class Lab {
     }
 
     public void deactivate() {
-        if (!this.isActive) {
+        if (!this.active) {
             throw new ValidationException("Laboratório já está inativo.");
         }
-        this.isActive = false;
+        this.active = false;
     }
 }

@@ -67,5 +67,5 @@ public class InvoiceEntity {
     private LocalDateTime updatedAt;
 
     @Column(name = "active", nullable = false)
-    private boolean active = true;
+    private Boolean active = true;
 }

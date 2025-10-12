@@ -28,5 +28,5 @@ public class SeedEntity {
     private boolean isProtected;
 
     @Column(name = "active", nullable = false)
-    private boolean active = true;
+    private Boolean active = true;
 }

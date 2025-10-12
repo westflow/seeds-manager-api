@@ -56,7 +56,7 @@ public class SeedServiceImpl implements SeedService {
     public SeedResponse update(Long id, SeedRequest request) {
         Seed existing = getSeedById(id);
 
-        if (!existing.isActive()) {
+        if (!existing.getActive()) {
             throw new BusinessException("Semente está inativa e não pode ser atualizada.");
         }
 

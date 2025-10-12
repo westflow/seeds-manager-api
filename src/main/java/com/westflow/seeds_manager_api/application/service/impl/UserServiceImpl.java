@@ -40,7 +40,8 @@ public class UserServiceImpl implements UserService {
                 user.getAccessLevel(),
                 user.getCreatedAt(),
                 user.getUpdatedAt(),
-                user.getLastLogin()
+                user.getLastLogin(),
+                user.getActive()
         );
         return userMapper.toResponse(userRepository.save(securedUser));
     }
@@ -53,7 +54,7 @@ public class UserServiceImpl implements UserService {
     public void delete(Long id) {
         UserEntity entity = jpaUserRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
-        if (!entity.isActive()) {
+        if (!entity.getActive()) {
             throw new RuntimeException("Usuário já está inativo.");
         }
         entity.setActive(false);

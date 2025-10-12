@@ -19,11 +19,12 @@ public class User {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
     private LocalDateTime lastLogin;
+    private Boolean active = true;
 
     @Builder
     public User(Long id, String email, String password, String name, String position,
                 AccessLevel accessLevel, LocalDateTime createdAt,
-                LocalDateTime updatedAt, LocalDateTime lastLogin) {
+                LocalDateTime updatedAt, LocalDateTime lastLogin, Boolean active) {
 
         validate(email, password, name, accessLevel);
         this.id = id;
@@ -35,6 +36,7 @@ public class User {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.lastLogin = lastLogin;
+        this.active = active;
     }
 
     public User withEncodedPassword(String encodedPassword) {
@@ -47,7 +49,8 @@ public class User {
                 this.accessLevel,
                 this.createdAt,
                 this.updatedAt,
-                this.lastLogin
+                this.lastLogin,
+                this.active
         );
     }
 
@@ -71,5 +74,12 @@ public class User {
         if (accessLevel == null) {
             throw new ValidationException("Nível de acesso é obrigatório");
         }
+    }
+
+    public void deactivate() {
+        if (!this.active) {
+            throw new ValidationException("Usuário já está deletada");
+        }
+        this.active = false;
     }
 }

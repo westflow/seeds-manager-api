@@ -54,7 +54,8 @@ public class AdminSeedService {
                     AccessLevel.ADMIN,
                     LocalDateTime.now(),
                     null,
-                    null
+                    null,
+                    true
             );
 
             repository.save(admin);

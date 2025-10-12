@@ -10,13 +10,13 @@ public class Seed {
     private String species;
     private String cultivar;
     private final boolean isProtected;
-    private boolean isActive = true;
+    private Boolean active = true;
 
     private String normalizedSpecies;
     private String normalizedCultivar;
 
     @Builder
-    public Seed(Long id, String species, String cultivar, boolean isProtected) {
+    public Seed(Long id, String species, String cultivar, boolean isProtected, Boolean active) {
         validate(species, cultivar);
         this.id = id;
         this.species = species;
@@ -24,6 +24,9 @@ public class Seed {
         this.isProtected = isProtected;
         this.normalizedSpecies = normalize(species);
         this.normalizedCultivar = normalize(cultivar).toUpperCase();
+        if (active != null) {
+            this.active = active;
+        }
     }
 
     private void validate(String species, String cultivar) {
@@ -42,10 +45,10 @@ public class Seed {
     }
 
     public void deactivate() {
-        if (!isActive) {
+        if (!active) {
             throw new ValidationException("A semente já está deletada.");
         }
-        this.isActive = false;
+        this.active = false;
     }
     
     public void update(Seed updatedSeed) {

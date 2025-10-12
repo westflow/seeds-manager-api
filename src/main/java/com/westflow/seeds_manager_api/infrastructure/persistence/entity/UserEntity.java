@@ -40,5 +40,5 @@ public class UserEntity {
     private LocalDateTime lastLogin;
 
     @Column(name = "active", nullable = false)
-    private boolean active = true;
+    private Boolean active = true;
 }

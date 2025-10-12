@@ -48,7 +48,7 @@ public class BagWeightServiceImpl implements BagWeightService {
         BagWeight bagWeight = mapper.toDomain(request);
         BagWeight existing = getBagWeightById(id);
 
-        if (!existing.isActive()) {
+        if (!existing.getActive()) {
             throw new BusinessException("Peso de sacaria está inativo e não pode ser atualizado.");
         }
 

@@ -36,7 +36,9 @@ public class User {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.lastLogin = lastLogin;
-        this.active = active;
+        if (active != null) {
+            this.active = active;
+        }
     }
 
     public User withEncodedPassword(String encodedPassword) {
@@ -81,5 +83,9 @@ public class User {
             throw new ValidationException("Usuário já está deletada");
         }
         this.active = false;
+    }
+
+    public void updateLastLogin() {
+        this.lastLogin = LocalDateTime.now();
     }
 }

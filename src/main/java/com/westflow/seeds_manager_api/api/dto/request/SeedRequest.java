@@ -3,6 +3,8 @@ package com.westflow.seeds_manager_api.api.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +19,8 @@ public class SeedRequest {
             requiredMode = RequiredMode.REQUIRED
     )
     @NotBlank(message = "Espécie é obrigatória")
+    @Size(max = 100, message = "A espécie deve ter no máximo 100 caracteres")
+    @Pattern(regexp = "^[\\p{L}0-9 .-]+", message = "A espécie contém caracteres inválidos. Use apenas letras, números, espaços, pontos e hífens")
     private String species;
 
     @Schema(
@@ -25,6 +29,8 @@ public class SeedRequest {
             requiredMode = RequiredMode.REQUIRED
     )
     @NotBlank(message = "Cultivar é obrigatória")
+    @Size(max = 100, message = "O cultivar deve ter no máximo 100 caracteres")
+    @Pattern(regexp = "^[\\p{L}0-9 .-]+", message = "O cultivar contém caracteres inválidos. Use apenas letras, números, espaços, pontos e hífens")
     private String cultivar;
 
     @Schema(

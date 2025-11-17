@@ -9,6 +9,7 @@ import java.util.List;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+
     private final CurrentUserArgumentResolver currentUserArgumentResolver;
 
     public WebMvcConfig(CurrentUserArgumentResolver currentUserArgumentResolver) {
@@ -19,5 +20,4 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(currentUserArgumentResolver);
     }
-
 }

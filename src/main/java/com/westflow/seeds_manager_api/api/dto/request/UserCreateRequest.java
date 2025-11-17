@@ -19,6 +19,8 @@ public class UserCreateRequest {
     @NotBlank(message = "Email é obrigatório")
     @Email(message = "Formato de email inválido")
     @Size(max = 100, message = "O email deve ter no máximo 100 caracteres")
+    @Pattern(regexp = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$", 
+             message = "Formato de email inválido")
     private String email;
 
     @Schema(
@@ -41,7 +43,7 @@ public class UserCreateRequest {
     )
     @NotBlank(message = "Nome é obrigatório")
     @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres")
-    @Pattern(regexp = "^[\\p{L} .'-]+", message = "Nome contém caracteres inválidos")
+    @Pattern(regexp = "^[\\p{L}\\s.'-]+", message = "Nome contém caracteres inválidos")
     private String name;
 
     @Schema(
@@ -49,6 +51,7 @@ public class UserCreateRequest {
             example = "Gerente de Produção"
     )
     @Size(max = 100, message = "O cargo deve ter no máximo 100 caracteres")
+    @Pattern(regexp = "^[\\p{L}\\s0-9.,'-]*$", message = "Cargo contém caracteres inválidos")
     private String position;
 
     @Schema(

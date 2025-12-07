@@ -28,7 +28,7 @@ public class LotWithdrawalServiceImpl implements LotWithdrawalService {
     @Override
     @Transactional
     public LotWithdrawalResponse withdraw(LotWithdrawalRequest request, User user) {
-        Lot lot = lotService.findById(request.getLotId())
+        Lot lot = lotService.findEntityById(request.getLotId())
                 .orElseThrow(() -> new ResourceNotFoundException("Lote", request.getLotId()));
 
         Client client = clientService.findEntityById(request.getClientId())

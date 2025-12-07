@@ -37,7 +37,7 @@ public class LotReservationServiceImpl implements LotReservationService {
     @Transactional
     public LotReservationResponse reserve(LotReservationRequest request, User user) {
 
-        Lot lot = lotService.findById(request.getLotId())
+        Lot lot = lotService.findEntityById(request.getLotId())
                 .orElseThrow(() -> new ResourceNotFoundException("Lote", request.getLotId()));
 
         Client client = clientService.findEntityById(request.getClientId())

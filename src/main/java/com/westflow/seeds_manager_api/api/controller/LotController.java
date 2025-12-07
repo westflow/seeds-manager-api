@@ -10,13 +10,13 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Lots", description = "Operações de lotes")
 @RestController
@@ -43,5 +43,51 @@ public class LotController {
                                               @Parameter(hidden = true) @CurrentUser User user) {
         LotResponse response = lotService.register(request, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @Operation(
+            summary = "Lista todos os lotes",
+            description = "Retorna uma lista paginada de lotes ativos",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de lotes retornada com sucesso")
+            }
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD', 'READ_ONLY')")
+    @GetMapping
+    public ResponseEntity<Page<LotResponse>> listAll(@ParameterObject Pageable pageable) {
+        return ResponseEntity.ok(lotService.findAll(pageable));
+    }
+
+    @Operation(
+            summary = "Busca lote por ID",
+            description = "Retorna um lote específico pelo seu identificador",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lote encontrado"),
+                    @ApiResponse(responseCode = "404", description = "Lote não encontrado")
+            }
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD', 'READ_ONLY')")
+    @GetMapping("/{id}")
+    public ResponseEntity<LotResponse> getById(
+            @Parameter(description = "ID do lote", required = true)
+            @PathVariable Long id) {
+        return ResponseEntity.ok(lotService.findById(id));
+    }
+
+    @Operation(
+            summary = "Remove um lote",
+            description = "Remove logicamente um lote pelo seu identificador",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Lote removido com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Lote não encontrado")
+            }
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(
+            @Parameter(description = "ID do lote", required = true)
+            @PathVariable Long id) {
+        lotService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

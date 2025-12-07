@@ -3,6 +3,7 @@ package com.westflow.seeds_manager_api.infrastructure.config;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.westflow.seeds_manager_api.infrastructure.web.ProtectionSerializer;
 import com.westflow.seeds_manager_api.infrastructure.web.RequestSanitizer;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +18,8 @@ public class ProtectionConfig {
     @Primary
     public ObjectMapper objectMapper() {
         return Jackson2ObjectMapperBuilder.json()
-            .modules(protectionModule())
+            .modules(protectionModule(), new JavaTimeModule())
+            .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             .build();
     }
 

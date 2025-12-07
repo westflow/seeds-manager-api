@@ -14,6 +14,7 @@ import com.westflow.seeds_manager_api.infrastructure.persistence.entity.LotEntit
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaLotRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.specification.LotSpecifications;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -26,6 +27,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class LotServiceImpl implements LotService {
 
     private final LotRepository lotRepository;
@@ -39,28 +41,6 @@ public class LotServiceImpl implements LotService {
 
     private final LotValidator lotValidator;
     private final JpaLotRepository jpaLotRepository;
-
-    public LotServiceImpl(LotRepository lotRepository,
-                          InvoiceService invoiceService,
-                          LotMapper lotMapper,
-                          LotSequenceService lotSequenceService,
-                          BagWeightService bagWeightService,
-                          BagTypeService bagTypeService,
-                          LabService labService,
-                          LotInvoiceService lotInvoiceService,
-                          LotValidator lotValidator,
-                          JpaLotRepository jpaLotRepository) {
-        this.lotRepository = lotRepository;
-        this.invoiceService = invoiceService;
-        this.lotMapper = lotMapper;
-        this.lotSequenceService = lotSequenceService;
-        this.bagWeightService = bagWeightService;
-        this.bagTypeService = bagTypeService;
-        this.labService = labService;
-        this.lotInvoiceService = lotInvoiceService;
-        this.lotValidator = lotValidator;
-        this.jpaLotRepository = jpaLotRepository;
-    }
 
     @Override
     @Transactional
@@ -99,7 +79,16 @@ public class LotServiceImpl implements LotService {
     }
 
     @Override
-    public Optional<Lot> findById(Long id) {
+    public LotResponse findById(Long id) {
+        LotEntity entity = jpaLotRepository.findById(id)
+                .filter(LotEntity::isActive)
+                .orElseThrow(() -> new ResourceNotFoundException("Lote", id));
+
+        return mapEntityToResponse(entity);
+    }
+
+    @Override
+    public Optional<Lot> findEntityById(Long id) {
         return lotRepository.findById(id);
     }
 
@@ -131,6 +120,7 @@ public class LotServiceImpl implements LotService {
                 .orElseThrow(() -> new ResourceNotFoundException("Laboratório", labId));
     }
 
+    @Override
     public void delete(Long id) {
         LotEntity entity = jpaLotRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Lote não encontrado."));
@@ -141,8 +131,46 @@ public class LotServiceImpl implements LotService {
         jpaLotRepository.save(entity);
     }
 
-    public Page<LotEntity> findAll(Pageable pageable) {
+    @Override
+    public Page<LotResponse> findAll(Pageable pageable) {
         Specification<LotEntity> spec = LotSpecifications.isActive();
-        return jpaLotRepository.findAll(spec, pageable);
+        Page<LotEntity> page = jpaLotRepository.findAll(spec, pageable);
+        return page.map(this::mapEntityToResponse);
+    }
+
+    private LotResponse mapEntityToResponse(LotEntity entity) {
+        List<InvoiceAllocationResponse> allocationResponses = entity.getLotInvoices() == null
+                ? List.of()
+                : entity.getLotInvoices().stream()
+                    .map(li -> InvoiceAllocationResponse.builder()
+                            .invoiceId(li.getInvoice().getId())
+                            .quantity(li.getAllocatedQuantityLot())
+                            .build())
+                    .toList();
+
+        return LotResponse.builder()
+                .id(entity.getId())
+                .lotNumber(entity.getLotNumber())
+                .lotType(entity.getLotType())
+                .seedType(entity.getSeedType())
+                .category(entity.getCategory())
+                .bagWeightId(entity.getBagWeight() != null ? entity.getBagWeight().getId() : null)
+                .bagTypeId(entity.getBagType() != null ? entity.getBagType().getId() : null)
+                .quantityTotal(entity.getQuantityTotal())
+                .balance(entity.getBalance())
+                .productionOrder(entity.getProductionOrder())
+                .analysisBulletin(entity.getAnalysisBulletin())
+                .bulletinDate(entity.getBulletinDate())
+                .hardSeeds(entity.getHardSeeds())
+                .wildSeeds(entity.getWildSeeds())
+                .otherCultivatedSpecies(entity.getOtherCultivatedSpecies())
+                .tolerated(entity.getTolerated())
+                .prohibited(entity.getProhibited())
+                .labId(entity.getLab() != null ? entity.getLab().getId() : null)
+                .invoiceAllocations(allocationResponses)
+                .validityDate(entity.getValidityDate())
+                .seedScore(entity.getSeedScore())
+                .purity(entity.getPurity())
+                .build();
     }
 }

@@ -40,6 +40,7 @@ public class Lot {
     private final User user;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+    private Boolean active = true;
 
     @Builder
     public Lot(Long id, String lotNumber, LotType lotType, SeedType seedType,
@@ -48,7 +49,7 @@ public class Lot {
                LocalDate validityDate, Integer seedScore, BigDecimal purity,
                User user, LocalDateTime createdAt, LocalDateTime updatedAt,
                Lab lab, String productionOrder, Integer hardSeeds, Integer wildSeeds,
-               Integer otherCultivatedSpecies, Integer tolerated, Integer prohibited) {
+               Integer otherCultivatedSpecies, Integer tolerated, Integer prohibited, Boolean active) {
 
         validate(lotNumber, lotType, seedType, category, bagWeight, bagType, quantityTotal, purity, invoices);
 
@@ -77,6 +78,9 @@ public class Lot {
         this.otherCultivatedSpecies = otherCultivatedSpecies;
         this.tolerated = tolerated;
         this.prohibited = prohibited;
+        if (active == null) {
+            this.active = true;
+        }
     }
 
     private void validate(String lotNumber, LotType lotType, SeedType seedType,
@@ -126,5 +130,12 @@ public class Lot {
         }
 
         this.balance = this.balance.subtract(allocated);
+    }
+
+    public void deactivate() {
+        if (!this.active) {
+            throw new ValidationException("Lote já está inativo");
+        }
+        this.active = false;
     }
 }

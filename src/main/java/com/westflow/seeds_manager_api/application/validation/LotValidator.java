@@ -1,11 +1,10 @@
 package com.westflow.seeds_manager_api.application.validation;
 
-import com.westflow.seeds_manager_api.api.dto.request.LotCreateRequest;
+import com.westflow.seeds_manager_api.api.dto.request.LotRequest;
 import com.westflow.seeds_manager_api.domain.entity.Invoice;
 import com.westflow.seeds_manager_api.domain.enums.OperationType;
 import com.westflow.seeds_manager_api.domain.exception.BusinessException;
 import com.westflow.seeds_manager_api.domain.exception.ValidationException;
-
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -14,7 +13,7 @@ import java.util.Map;
 
 @Component
 public class LotValidator {
-    public void validateInvoices(List<Invoice> invoices, LotCreateRequest request, Map<Long, BigDecimal> allocationMap) {
+    public void validateInvoices(List<Invoice> invoices, LotRequest request, Map<Long, BigDecimal> allocationMap) {
         if (invoices.isEmpty()) {
             throw new ValidationException("É necessário informar ao menos uma nota fiscal.");
         }

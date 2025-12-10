@@ -1,7 +1,7 @@
 package com.westflow.seeds_manager_api.api.controller;
 
 import com.westflow.seeds_manager_api.api.config.CurrentUser;
-import com.westflow.seeds_manager_api.api.dto.request.LotCreateRequest;
+import com.westflow.seeds_manager_api.api.dto.request.LotRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotResponse;
 import com.westflow.seeds_manager_api.application.service.LotService;
 import com.westflow.seeds_manager_api.domain.entity.User;
@@ -39,7 +39,7 @@ public class LotController {
     )
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<LotResponse> create(@Valid @RequestBody LotCreateRequest request,
+    public ResponseEntity<LotResponse> create(@Valid @RequestBody LotRequest request,
                                               @Parameter(hidden = true) @CurrentUser User user) {
         LotResponse response = lotService.register(request, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

@@ -23,7 +23,7 @@ import java.util.List;
 @Getter
 @Setter
 @Schema(name = "LotCreateRequest", description = "Payload para criação de lote")
-public class LotCreateRequest {
+public class LotRequest {
 
     @Schema(
             description = "Tipo de lote",
@@ -67,7 +67,7 @@ public class LotCreateRequest {
 
     @Schema(
             description = "Quantidade total do lote em kg",
-            example = "1000.00",
+            example = "1000.50",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
     @NotNull(message = "Quantidade total é obrigatória")
@@ -135,4 +135,7 @@ public class LotCreateRequest {
     @DecimalMax(value = "100.00", message = "A pureza não pode ser maior que 100.00")
     @Digits(integer = 3, fraction = 2, message = "A pureza deve ter no máximo 3 dígitos inteiros e 2 casas decimais")
     private BigDecimal purity = new BigDecimal("0.00");
+
+    @Schema(description = "Indica se o lote é de exportação", example = "false")
+    private Boolean export = Boolean.FALSE;
 }

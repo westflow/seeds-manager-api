@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.api.mapper;
 
-import com.westflow.seeds_manager_api.api.dto.request.LotCreateRequest;
+import com.westflow.seeds_manager_api.api.dto.request.LotRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotResponse;
 import com.westflow.seeds_manager_api.domain.entity.*;
 import org.mapstruct.Mapper;
@@ -17,7 +17,7 @@ public abstract class LotMapper {
     @Mapping(source = "lab.id", target = "labId")
     public abstract LotResponse toResponse(Lot lot);
 
-    public Lot toDomain(LotCreateRequest request, List<Invoice> invoices, BagWeight bagWeight, BagType bagType, Lab lab, User user, String lotNumber) {
+    public Lot toDomain(LotRequest request, List<Invoice> invoices, BagWeight bagWeight, BagType bagType, Lab lab, User user, String lotNumber) {
         return Lot.builder()
                 .lotNumber(lotNumber)
                 .lotType(request.getLotType())

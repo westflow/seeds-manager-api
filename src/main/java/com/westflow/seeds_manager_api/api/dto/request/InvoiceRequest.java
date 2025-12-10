@@ -26,7 +26,7 @@ public class InvoiceRequest {
     @Pattern(regexp = "^[\\p{L}0-9 .,'-]+", message = "Nome do produtor contém caracteres inválidos")
     private String producerName;
 
-    @Schema(description = "ID da semente associada", example = "42", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "ID da semente associada", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "Semente é obrigatória")
     private Long seedId;
 

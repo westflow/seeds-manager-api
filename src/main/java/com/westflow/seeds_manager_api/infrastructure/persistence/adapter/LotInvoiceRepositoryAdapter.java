@@ -31,4 +31,11 @@ public class LotInvoiceRepositoryAdapter implements LotInvoiceRepository {
         }
         return saved;
     }
+
+    @Override
+    public List<LotInvoice> findAllByLotId(Long lotId) {
+        return jpaRepository.findAllByLotId(lotId).stream()
+                .map(mapper::toDomain)
+                .toList();
+    }
 }

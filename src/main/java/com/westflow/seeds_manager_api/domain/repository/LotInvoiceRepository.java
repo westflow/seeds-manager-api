@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface LotInvoiceRepository {
     List<LotInvoice> saveAll(List<LotInvoice> lotInvoices);
+    List<LotInvoice> findAllByLotId(Long lotId);
 }

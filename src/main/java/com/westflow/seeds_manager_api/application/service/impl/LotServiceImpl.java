@@ -2,7 +2,6 @@ package com.westflow.seeds_manager_api.application.service.impl;
 
 import com.westflow.seeds_manager_api.api.dto.request.InvoiceAllocationRequest;
 import com.westflow.seeds_manager_api.api.dto.request.LotRequest;
-import com.westflow.seeds_manager_api.api.dto.response.InvoiceAllocationResponse;
 import com.westflow.seeds_manager_api.api.dto.response.LotResponse;
 import com.westflow.seeds_manager_api.api.mapper.LotMapper;
 import com.westflow.seeds_manager_api.application.service.*;
@@ -43,10 +42,11 @@ public class LotServiceImpl implements LotService {
         Long bagWeightId = request.getBagWeightId();
         Long bagTypeId = request.getBagTypeId();
         Long labId = request.getLabId();
-        List<InvoiceAllocationRequest> allocationRequests = request.getInvoiceAllocations();
+        List<InvoiceAllocationRequest> allocationRequests = request.getInvoiceAllocations() != null ? request.getInvoiceAllocations() : List.of();
 
         Map<Long, BigDecimal> allocationMap = allocationRequests.stream()
-                .collect(Collectors.toMap(InvoiceAllocationRequest::getInvoiceId, InvoiceAllocationRequest::getQuantity));
+                .filter(req -> req.getInvoiceId() != null && req.getQuantity() != null)
+                .collect(Collectors.toMap(InvoiceAllocationRequest::getInvoiceId, InvoiceAllocationRequest::getQuantity, BigDecimal::add));
 
         List<Invoice> invoices = fetchInvoices(allocationMap);
         BagWeight bagWeight = fetchBagWeight(bagWeightId);
@@ -56,26 +56,26 @@ public class LotServiceImpl implements LotService {
         lotValidator.validateInvoices(invoices, request, allocationMap);
 
         String lotNumber = lotSequenceService.generateNextFormattedNumber();
-        Lot lot = lotMapper.toDomain(request, invoices, bagWeight, bagType, lab, user, lotNumber);
+        Lot lot = lotMapper.toDomain(request, bagWeight, bagType, lab, user, lotNumber);
         Lot savedLot = lotRepository.save(lot);
 
         List<LotInvoice> savedLotInvoices = lotInvoiceService.createLotInvoices(savedLot, invoices, allocationMap);
 
-        List<InvoiceAllocationResponse> allocationResponses = savedLotInvoices.stream()
-                .map(li -> InvoiceAllocationResponse.builder()
-                        .invoiceId(li.getInvoice().getId())
-                        .quantity(li.getAllocatedQuantityLot())
-                        .build())
-                .toList();
-
         LotResponse response = lotMapper.toResponse(savedLot);
-        response.setInvoiceAllocations(allocationResponses);
+        response.setInvoiceAllocations(lotMapper.toInvoiceAllocations(savedLotInvoices));
         return response;
     }
 
     @Override
     public LotResponse findById(Long id) {
-        return lotMapper.toResponse(getLotById(id));
+        Lot lot = getLotById(id);
+
+        List<LotInvoice> lotInvoices = lotInvoiceService.findAllByLotId(id);
+
+        LotResponse response = lotMapper.toResponse(lot);
+        response.setInvoiceAllocations(lotMapper.toInvoiceAllocations(lotInvoices));
+
+        return response;
     }
 
     @Override
@@ -98,7 +98,13 @@ public class LotServiceImpl implements LotService {
 
     @Override
     public Page<LotResponse> findAll(Pageable pageable) {
-        return lotRepository.findAll(pageable).map(lotMapper::toResponse);
+        return lotRepository.findAll(pageable)
+                .map(lot -> {
+                    List<LotInvoice> lotInvoices = lotInvoiceService.findAllByLotId(lot.getId());
+                    LotResponse response = lotMapper.toResponse(lot);
+                    response.setInvoiceAllocations(lotMapper.toInvoiceAllocations(lotInvoices));
+                    return response;
+                });
     }
 
     private List<Invoice> fetchInvoices(Map<Long, BigDecimal> allocationMap) {

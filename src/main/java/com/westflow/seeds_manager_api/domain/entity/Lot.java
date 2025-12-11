@@ -5,12 +5,12 @@ import com.westflow.seeds_manager_api.domain.enums.LotType;
 import com.westflow.seeds_manager_api.domain.enums.SeedType;
 import com.westflow.seeds_manager_api.domain.exception.InsufficientLotBalanceException;
 import com.westflow.seeds_manager_api.domain.exception.ValidationException;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 public class Lot {
@@ -32,7 +32,6 @@ public class Lot {
     private final Integer otherCultivatedSpecies;
     private final Integer tolerated;
     private final Integer prohibited;
-    private final List<Invoice> invoices;
     private final LocalDate validityDate;
     private final Integer seedScore;
     private final BigDecimal purity;
@@ -45,13 +44,13 @@ public class Lot {
     @Builder
     public Lot(Long id, String lotNumber, LotType lotType, SeedType seedType,
                LotCategory category, BagWeight bagWeight, BagType bagType, BigDecimal quantityTotal,
-               BigDecimal balance, String analysisBulletin, LocalDate bulletinDate, List<Invoice> invoices,
+               BigDecimal balance, String analysisBulletin, LocalDate bulletinDate,
                LocalDate validityDate, Integer seedScore, BigDecimal purity,
                User user, LocalDateTime createdAt, LocalDateTime updatedAt,
                Lab lab, String productionOrder, Integer hardSeeds, Integer wildSeeds,
                Integer otherCultivatedSpecies, Integer tolerated, Integer prohibited, Boolean active) {
 
-        validate(lotNumber, lotType, seedType, category, bagWeight, bagType, quantityTotal, purity, invoices);
+        validate(lotNumber, lotType, seedType, category, bagWeight, bagType, quantityTotal, purity);
 
         this.id = id;
         this.lotNumber = lotNumber;
@@ -65,7 +64,6 @@ public class Lot {
         this.productionOrder = productionOrder;
         this.analysisBulletin = analysisBulletin;
         this.bulletinDate = bulletinDate;
-        this.invoices = invoices;
         this.validityDate = validityDate;
         this.seedScore = seedScore;
         this.purity = purity;
@@ -85,7 +83,7 @@ public class Lot {
 
     private void validate(String lotNumber, LotType lotType, SeedType seedType,
                           LotCategory category, BagWeight bagWeight, BagType bagType,
-                          BigDecimal balance, BigDecimal purity, List<Invoice> invoices) {
+                          BigDecimal balance, BigDecimal purity) {
 
         if (lotNumber == null || lotNumber.isBlank()) {
             throw new ValidationException("Número do lote é obrigatório");

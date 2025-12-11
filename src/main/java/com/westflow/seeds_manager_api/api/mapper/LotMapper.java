@@ -1,6 +1,7 @@
 package com.westflow.seeds_manager_api.api.mapper;
 
 import com.westflow.seeds_manager_api.api.dto.request.LotRequest;
+import com.westflow.seeds_manager_api.api.dto.response.InvoiceAllocationResponse;
 import com.westflow.seeds_manager_api.api.dto.response.LotResponse;
 import com.westflow.seeds_manager_api.domain.entity.*;
 import org.mapstruct.Mapper;
@@ -17,7 +18,7 @@ public abstract class LotMapper {
     @Mapping(source = "lab.id", target = "labId")
     public abstract LotResponse toResponse(Lot lot);
 
-    public Lot toDomain(LotRequest request, List<Invoice> invoices, BagWeight bagWeight, BagType bagType, Lab lab, User user, String lotNumber) {
+    public Lot toDomain(LotRequest request, BagWeight bagWeight, BagType bagType, Lab lab, User user, String lotNumber) {
         return Lot.builder()
                 .lotNumber(lotNumber)
                 .lotType(request.getLotType())
@@ -35,7 +36,6 @@ public abstract class LotMapper {
                 .otherCultivatedSpecies(request.getOtherCultivatedSpecies())
                 .tolerated(request.getTolerated())
                 .prohibited(request.getProhibited())
-                .invoices(invoices)
                 .validityDate(request.getValidityDate())
                 .seedScore(request.getSeedScore())
                 .purity(request.getPurity())
@@ -45,9 +45,20 @@ public abstract class LotMapper {
                 .build();
     }
 
-    protected List<Long> mapInvoiceToIds(List<Invoice> invoices) {
-        return invoices.stream()
-                .map(Invoice::getId)
+    protected InvoiceAllocationResponse map(LotInvoice lotInvoice) {
+        if (lotInvoice == null) {
+            return null;
+        }
+        return InvoiceAllocationResponse.builder()
+                .invoiceId(lotInvoice.getInvoice().getId())
+                .quantity(lotInvoice.getAllocatedQuantityLot())
+                .build();
+    }
+
+    public List<InvoiceAllocationResponse> toInvoiceAllocations(List<LotInvoice> lotInvoices) {
+        if (lotInvoices == null) return List.of();
+        return lotInvoices.stream()
+                .map(this::map)
                 .toList();
     }
 }

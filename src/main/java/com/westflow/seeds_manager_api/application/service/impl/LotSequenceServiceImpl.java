@@ -1,7 +1,7 @@
 package com.westflow.seeds_manager_api.application.service.impl;
 
 import com.westflow.seeds_manager_api.application.service.LotSequenceService;
-import com.westflow.seeds_manager_api.domain.entity.LotSequence;
+import com.westflow.seeds_manager_api.domain.model.LotSequence;
 import com.westflow.seeds_manager_api.domain.repository.LotSequenceRepository;
 import org.springframework.stereotype.Service;
 

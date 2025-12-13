@@ -2,7 +2,7 @@ package com.westflow.seeds_manager_api.application.service;
 
 import com.westflow.seeds_manager_api.api.dto.request.ClientRequest;
 import com.westflow.seeds_manager_api.api.dto.response.ClientResponse;
-import com.westflow.seeds_manager_api.domain.entity.Client;
+import com.westflow.seeds_manager_api.domain.model.Client;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

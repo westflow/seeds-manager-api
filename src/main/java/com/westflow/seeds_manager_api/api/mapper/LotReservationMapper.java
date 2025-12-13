@@ -2,10 +2,10 @@ package com.westflow.seeds_manager_api.api.mapper;
 
 import com.westflow.seeds_manager_api.api.dto.request.LotReservationRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotReservationResponse;
-import com.westflow.seeds_manager_api.domain.entity.Client;
-import com.westflow.seeds_manager_api.domain.entity.Lot;
-import com.westflow.seeds_manager_api.domain.entity.LotReservation;
-import com.westflow.seeds_manager_api.domain.entity.User;
+import com.westflow.seeds_manager_api.domain.model.Client;
+import com.westflow.seeds_manager_api.domain.model.Lot;
+import com.westflow.seeds_manager_api.domain.model.LotReservation;
+import com.westflow.seeds_manager_api.domain.model.User;
 import com.westflow.seeds_manager_api.domain.enums.LotStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

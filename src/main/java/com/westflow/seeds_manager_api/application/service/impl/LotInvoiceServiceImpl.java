@@ -2,9 +2,9 @@ package com.westflow.seeds_manager_api.application.service.impl;
 
 import com.westflow.seeds_manager_api.application.service.InvoiceService;
 import com.westflow.seeds_manager_api.application.service.LotInvoiceService;
-import com.westflow.seeds_manager_api.domain.entity.Invoice;
-import com.westflow.seeds_manager_api.domain.entity.Lot;
-import com.westflow.seeds_manager_api.domain.entity.LotInvoice;
+import com.westflow.seeds_manager_api.domain.model.Invoice;
+import com.westflow.seeds_manager_api.domain.model.Lot;
+import com.westflow.seeds_manager_api.domain.model.LotInvoice;
 import com.westflow.seeds_manager_api.domain.exception.ValidationException;
 import com.westflow.seeds_manager_api.domain.repository.LotInvoiceRepository;
 import jakarta.transaction.Transactional;

@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.infrastructure.persistence.adapter;
 
-import com.westflow.seeds_manager_api.domain.entity.BagWeight;
+import com.westflow.seeds_manager_api.domain.model.BagWeight;
 import com.westflow.seeds_manager_api.domain.repository.BagWeightRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.BagWeightEntity;
 import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.BagWeightPersistenceMapper;

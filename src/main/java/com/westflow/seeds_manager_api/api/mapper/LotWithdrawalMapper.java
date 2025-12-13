@@ -2,10 +2,10 @@ package com.westflow.seeds_manager_api.api.mapper;
 
 import com.westflow.seeds_manager_api.api.dto.request.LotWithdrawalRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotWithdrawalResponse;
-import com.westflow.seeds_manager_api.domain.entity.Client;
-import com.westflow.seeds_manager_api.domain.entity.Lot;
-import com.westflow.seeds_manager_api.domain.entity.LotWithdrawal;
-import com.westflow.seeds_manager_api.domain.entity.User;
+import com.westflow.seeds_manager_api.domain.model.Client;
+import com.westflow.seeds_manager_api.domain.model.Lot;
+import com.westflow.seeds_manager_api.domain.model.LotWithdrawal;
+import com.westflow.seeds_manager_api.domain.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

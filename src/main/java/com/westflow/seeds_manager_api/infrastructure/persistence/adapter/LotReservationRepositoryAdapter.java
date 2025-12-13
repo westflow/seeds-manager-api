@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.infrastructure.persistence.adapter;
 
-import com.westflow.seeds_manager_api.domain.entity.LotReservation;
+import com.westflow.seeds_manager_api.domain.model.LotReservation;
 import com.westflow.seeds_manager_api.domain.repository.LotReservationRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.LotReservationEntity;
 import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.LotReservationPersistenceMapper;

@@ -2,8 +2,8 @@ package com.westflow.seeds_manager_api.api.mapper;
 
 import com.westflow.seeds_manager_api.api.dto.request.InvoiceRequest;
 import com.westflow.seeds_manager_api.api.dto.response.InvoiceResponse;
-import com.westflow.seeds_manager_api.domain.entity.Invoice;
-import com.westflow.seeds_manager_api.domain.entity.Seed;
+import com.westflow.seeds_manager_api.domain.model.Invoice;
+import com.westflow.seeds_manager_api.domain.model.Seed;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

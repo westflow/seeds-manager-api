@@ -3,7 +3,7 @@ package com.westflow.seeds_manager_api.api.mapper;
 import com.westflow.seeds_manager_api.api.dto.request.LotRequest;
 import com.westflow.seeds_manager_api.api.dto.response.InvoiceAllocationResponse;
 import com.westflow.seeds_manager_api.api.dto.response.LotResponse;
-import com.westflow.seeds_manager_api.domain.entity.*;
+import com.westflow.seeds_manager_api.domain.model.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

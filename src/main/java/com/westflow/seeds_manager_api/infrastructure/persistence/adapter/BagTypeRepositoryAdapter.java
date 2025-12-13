@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.infrastructure.persistence.adapter;
 
-import com.westflow.seeds_manager_api.domain.entity.BagType;
+import com.westflow.seeds_manager_api.domain.model.BagType;
 import com.westflow.seeds_manager_api.domain.repository.BagTypeRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.BagTypeEntity;
 import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.BagTypePersistenceMapper;

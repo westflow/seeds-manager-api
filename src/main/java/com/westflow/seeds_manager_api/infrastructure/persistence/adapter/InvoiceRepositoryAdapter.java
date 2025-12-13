@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.infrastructure.persistence.adapter;
 
-import com.westflow.seeds_manager_api.domain.entity.Invoice;
+import com.westflow.seeds_manager_api.domain.model.Invoice;
 import com.westflow.seeds_manager_api.domain.repository.InvoiceRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.InvoiceEntity;
 import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.InvoicePersistenceMapper;

@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.infrastructure.seed.lot;
 
-import com.westflow.seeds_manager_api.domain.entity.LotSequence;
+import com.westflow.seeds_manager_api.domain.model.LotSequence;
 import com.westflow.seeds_manager_api.domain.repository.LotSequenceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

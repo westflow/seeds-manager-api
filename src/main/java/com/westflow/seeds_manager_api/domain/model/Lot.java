@@ -1,4 +1,4 @@
-package com.westflow.seeds_manager_api.domain.entity;
+package com.westflow.seeds_manager_api.domain.model;
 
 import com.westflow.seeds_manager_api.domain.enums.LotCategory;
 import com.westflow.seeds_manager_api.domain.enums.LotType;

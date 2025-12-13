@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.infrastructure.persistence.mapper;
 
-import com.westflow.seeds_manager_api.domain.entity.Lot;
+import com.westflow.seeds_manager_api.domain.model.Lot;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.LotEntity;
 import org.mapstruct.Mapper;
 

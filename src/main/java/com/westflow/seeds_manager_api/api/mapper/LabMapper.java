@@ -2,7 +2,7 @@ package com.westflow.seeds_manager_api.api.mapper;
 
 import com.westflow.seeds_manager_api.api.dto.request.LabRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LabResponse;
-import com.westflow.seeds_manager_api.domain.entity.Lab;
+import com.westflow.seeds_manager_api.domain.model.Lab;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

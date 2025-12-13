@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.infrastructure.persistence.adapter;
 
-import com.westflow.seeds_manager_api.domain.entity.User;
+import com.westflow.seeds_manager_api.domain.model.User;
 import com.westflow.seeds_manager_api.domain.repository.UserRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.UserEntity;
 import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.UserPersistenceMapper;

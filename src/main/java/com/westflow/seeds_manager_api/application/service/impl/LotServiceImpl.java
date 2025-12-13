@@ -6,7 +6,7 @@ import com.westflow.seeds_manager_api.api.dto.response.LotResponse;
 import com.westflow.seeds_manager_api.api.mapper.LotMapper;
 import com.westflow.seeds_manager_api.application.service.*;
 import com.westflow.seeds_manager_api.application.validation.LotValidator;
-import com.westflow.seeds_manager_api.domain.entity.*;
+import com.westflow.seeds_manager_api.domain.model.*;
 import com.westflow.seeds_manager_api.domain.exception.BusinessException;
 import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.repository.LotRepository;

@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.domain.repository;
 
-import com.westflow.seeds_manager_api.domain.entity.LotInvoice;
+import com.westflow.seeds_manager_api.domain.model.LotInvoice;
 
 import java.util.List;
 

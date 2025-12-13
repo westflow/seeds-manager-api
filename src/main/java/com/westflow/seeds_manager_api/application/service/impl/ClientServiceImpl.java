@@ -4,7 +4,7 @@ import com.westflow.seeds_manager_api.api.dto.request.ClientRequest;
 import com.westflow.seeds_manager_api.api.dto.response.ClientResponse;
 import com.westflow.seeds_manager_api.api.mapper.ClientMapper;
 import com.westflow.seeds_manager_api.application.service.ClientService;
-import com.westflow.seeds_manager_api.domain.entity.Client;
+import com.westflow.seeds_manager_api.domain.model.Client;
 import com.westflow.seeds_manager_api.domain.exception.BusinessException;
 import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.repository.ClientRepository;

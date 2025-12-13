@@ -1,4 +1,4 @@
-package com.westflow.seeds_manager_api.domain.entity;
+package com.westflow.seeds_manager_api.domain.model;
 
 import com.westflow.seeds_manager_api.domain.exception.ValidationException;
 import lombok.Getter;

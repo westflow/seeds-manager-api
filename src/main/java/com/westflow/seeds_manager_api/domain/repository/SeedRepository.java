@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.domain.repository;
 
-import com.westflow.seeds_manager_api.domain.entity.Seed;
+import com.westflow.seeds_manager_api.domain.model.Seed;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

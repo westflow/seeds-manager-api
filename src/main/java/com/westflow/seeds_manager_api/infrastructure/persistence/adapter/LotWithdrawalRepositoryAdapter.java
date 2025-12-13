@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.infrastructure.persistence.adapter;
 
-import com.westflow.seeds_manager_api.domain.entity.LotWithdrawal;
+import com.westflow.seeds_manager_api.domain.model.LotWithdrawal;
 import com.westflow.seeds_manager_api.domain.repository.LotWithdrawalRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.LotWithdrawalEntity;
 import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.LotWithdrawalPersistenceMapper;

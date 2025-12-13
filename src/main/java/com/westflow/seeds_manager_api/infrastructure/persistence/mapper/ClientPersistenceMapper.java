@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.infrastructure.persistence.mapper;
 
-import com.westflow.seeds_manager_api.domain.entity.Client;
+import com.westflow.seeds_manager_api.domain.model.Client;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.ClientEntity;
 import org.mapstruct.Mapper;
 

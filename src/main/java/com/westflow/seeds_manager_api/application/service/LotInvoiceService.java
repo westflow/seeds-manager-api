@@ -1,8 +1,8 @@
 package com.westflow.seeds_manager_api.application.service;
 
-import com.westflow.seeds_manager_api.domain.entity.Invoice;
-import com.westflow.seeds_manager_api.domain.entity.Lot;
-import com.westflow.seeds_manager_api.domain.entity.LotInvoice;
+import com.westflow.seeds_manager_api.domain.model.Invoice;
+import com.westflow.seeds_manager_api.domain.model.Lot;
+import com.westflow.seeds_manager_api.domain.model.LotInvoice;
 
 import java.math.BigDecimal;
 import java.util.List;

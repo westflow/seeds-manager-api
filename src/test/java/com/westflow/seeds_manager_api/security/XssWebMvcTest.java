@@ -6,7 +6,7 @@ import com.westflow.seeds_manager_api.api.dto.request.LotReservationRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotReservationResponse;
 import com.westflow.seeds_manager_api.application.service.LotReservationService;
 import com.westflow.seeds_manager_api.config.TestConfig;
-import com.westflow.seeds_manager_api.domain.entity.User;
+import com.westflow.seeds_manager_api.domain.model.User;
 import com.westflow.seeds_manager_api.domain.enums.AccessLevel;
 import com.westflow.seeds_manager_api.domain.enums.LotStatus;
 import com.westflow.seeds_manager_api.infrastructure.config.WebMvcConfig;

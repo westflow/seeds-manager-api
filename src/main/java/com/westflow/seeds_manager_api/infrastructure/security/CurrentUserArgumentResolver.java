@@ -3,7 +3,7 @@ package com.westflow.seeds_manager_api.infrastructure.security;
 import com.westflow.seeds_manager_api.api.config.CurrentUser;
 import com.westflow.seeds_manager_api.domain.exception.UnauthorizedException;
 import com.westflow.seeds_manager_api.application.service.UserService;
-import com.westflow.seeds_manager_api.domain.entity.User;
+import com.westflow.seeds_manager_api.domain.model.User;
 import org.springframework.core.MethodParameter;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.infrastructure.security;
 
-import com.westflow.seeds_manager_api.domain.entity.User;
+import com.westflow.seeds_manager_api.domain.model.User;
 import com.westflow.seeds_manager_api.domain.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -4,7 +4,7 @@ import com.westflow.seeds_manager_api.api.dto.request.BagWeightRequest;
 import com.westflow.seeds_manager_api.api.dto.response.BagWeightResponse;
 import com.westflow.seeds_manager_api.api.mapper.BagWeightMapper;
 import com.westflow.seeds_manager_api.application.service.BagWeightService;
-import com.westflow.seeds_manager_api.domain.entity.BagWeight;
+import com.westflow.seeds_manager_api.domain.model.BagWeight;
 import com.westflow.seeds_manager_api.domain.exception.BusinessException;
 import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.repository.BagWeightRepository;

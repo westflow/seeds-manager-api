@@ -1,7 +1,7 @@
 package com.westflow.seeds_manager_api.application.validation;
 
 import com.westflow.seeds_manager_api.api.dto.request.LotRequest;
-import com.westflow.seeds_manager_api.domain.entity.Invoice;
+import com.westflow.seeds_manager_api.domain.model.Invoice;
 import com.westflow.seeds_manager_api.domain.enums.OperationType;
 import com.westflow.seeds_manager_api.domain.exception.BusinessException;
 import com.westflow.seeds_manager_api.domain.exception.ValidationException;

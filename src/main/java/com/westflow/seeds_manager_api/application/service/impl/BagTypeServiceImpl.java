@@ -4,7 +4,7 @@ import com.westflow.seeds_manager_api.api.dto.request.BagTypeRequest;
 import com.westflow.seeds_manager_api.api.dto.response.BagTypeResponse;
 import com.westflow.seeds_manager_api.api.mapper.BagTypeMapper;
 import com.westflow.seeds_manager_api.application.service.BagTypeService;
-import com.westflow.seeds_manager_api.domain.entity.BagType;
+import com.westflow.seeds_manager_api.domain.model.BagType;
 import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.repository.BagTypeRepository;
 import lombok.RequiredArgsConstructor;

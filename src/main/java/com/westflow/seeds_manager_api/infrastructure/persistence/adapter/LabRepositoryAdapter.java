@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.infrastructure.persistence.adapter;
 
-import com.westflow.seeds_manager_api.domain.entity.Lab;
+import com.westflow.seeds_manager_api.domain.model.Lab;
 import com.westflow.seeds_manager_api.domain.repository.LabRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.LabEntity;
 import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.LabPersistenceMapper;

@@ -26,4 +26,9 @@ public class LotReservationRepositoryAdapter implements LotReservationRepository
         LotReservationEntity entity = mapper.toEntity(lotReservation);
         return mapper.toDomain(jpaRepository.save(entity));
     }
+
+    @Override
+    public boolean existsByLotId(Long lotId) {
+        return jpaRepository.existsByLotId(lotId);
+    }
 }

@@ -4,4 +4,5 @@ import com.westflow.seeds_manager_api.domain.entity.LotWithdrawal;
 
 public interface LotWithdrawalRepository {
     LotWithdrawal save(LotWithdrawal lotWithdrawal);
+    boolean existsByLotId(Long lotId);
 }

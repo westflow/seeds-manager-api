@@ -11,4 +11,5 @@ import java.util.Map;
 public interface LotInvoiceService {
     List<LotInvoice> createLotInvoices(Lot lot, List<Invoice> invoices, Map<Long, BigDecimal> allocationMap);
     List<LotInvoice> findAllByLotId(Long lotId);
+    List<LotInvoice> updateLotInvoices(Lot lot, List<Invoice> invoices, Map<Long, BigDecimal> allocationMap);
 }

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface JpaLotInvoiceRepository extends JpaRepository<LotInvoiceEntity,Long> {
     List<LotInvoiceEntity> findAllByLotId(Long lotId);
+    void deleteAllByLotId(Long lotId);
 }

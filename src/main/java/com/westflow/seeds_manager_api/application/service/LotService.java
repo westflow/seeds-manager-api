@@ -14,6 +14,8 @@ public interface LotService {
 
     LotResponse register(LotRequest request, User user);
 
+    LotResponse update(Long id, LotRequest request, User user);
+
     LotResponse findById(Long id);
 
     Optional<Lot> findEntityById(Long id);

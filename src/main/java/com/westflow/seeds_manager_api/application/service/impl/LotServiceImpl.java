@@ -7,8 +7,11 @@ import com.westflow.seeds_manager_api.api.mapper.LotMapper;
 import com.westflow.seeds_manager_api.application.service.*;
 import com.westflow.seeds_manager_api.application.validation.LotValidator;
 import com.westflow.seeds_manager_api.domain.entity.*;
+import com.westflow.seeds_manager_api.domain.exception.BusinessException;
 import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.repository.LotRepository;
+import com.westflow.seeds_manager_api.domain.repository.LotReservationRepository;
+import com.westflow.seeds_manager_api.domain.repository.LotWithdrawalRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,6 +38,9 @@ public class LotServiceImpl implements LotService {
     private final LotInvoiceService lotInvoiceService;
 
     private final LotValidator lotValidator;
+
+    private final LotWithdrawalRepository lotWithdrawalRepository;
+    private final LotReservationRepository lotReservationRepository;
 
     @Override
     @Transactional
@@ -63,6 +69,48 @@ public class LotServiceImpl implements LotService {
 
         LotResponse response = lotMapper.toResponse(savedLot);
         response.setInvoiceAllocations(lotMapper.toInvoiceAllocations(savedLotInvoices));
+        return response;
+    }
+
+    @Override
+    @Transactional
+    public LotResponse update(Long id, LotRequest request, User user) {
+        Lot existingLot = getLotById(id);
+
+        boolean hasWithdrawals = lotWithdrawalRepository.existsByLotId(id);
+        boolean hasReservations = lotReservationRepository.existsByLotId(id);
+
+        if (hasWithdrawals || hasReservations) {
+            throw new BusinessException(
+                    "Não é permitido alterar o lote pois já existem saídas ou reservas associadas.");
+        }
+
+        Long bagWeightId = request.getBagWeightId();
+        Long bagTypeId = request.getBagTypeId();
+        Long labId = request.getLabId();
+
+        List<InvoiceAllocationRequest> allocationRequests =
+                request.getInvoiceAllocations() != null ? request.getInvoiceAllocations() : List.of();
+
+        Map<Long, BigDecimal> allocationMap = allocationRequests.stream()
+                .filter(req -> req.getInvoiceId() != null && req.getQuantity() != null)
+                .collect(Collectors.toMap(InvoiceAllocationRequest::getInvoiceId,
+                        InvoiceAllocationRequest::getQuantity, BigDecimal::add));
+
+        List<Invoice> invoices = fetchInvoices(allocationMap);
+        BagWeight bagWeight = fetchBagWeight(bagWeightId);
+        BagType bagType = fetchBagType(bagTypeId);
+        Lab lab = (labId != null && labId > 0) ? fetchLab(labId) : null;
+
+        lotValidator.validateInvoices(invoices, request, allocationMap);
+
+        Lot updatedLot = lotMapper.toUpdatedDomain(existingLot, request, bagWeight, bagType, lab);
+        Lot savedLot = lotRepository.save(updatedLot);
+
+        List<LotInvoice> lotInvoices = lotInvoiceService.updateLotInvoices(savedLot, invoices, allocationMap);
+
+        LotResponse response = lotMapper.toResponse(savedLot);
+        response.setInvoiceAllocations(lotMapper.toInvoiceAllocations(lotInvoices));
         return response;
     }
 

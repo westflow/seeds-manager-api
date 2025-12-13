@@ -4,4 +4,5 @@ import com.westflow.seeds_manager_api.infrastructure.persistence.entity.LotWithd
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JpaLotWithdrawalRepository extends JpaRepository<LotWithdrawalEntity,Long> {
+    boolean existsByLotId(Long lotId);
 }

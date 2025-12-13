@@ -5,11 +5,11 @@ import com.westflow.seeds_manager_api.application.service.LotInvoiceService;
 import com.westflow.seeds_manager_api.domain.entity.Invoice;
 import com.westflow.seeds_manager_api.domain.entity.Lot;
 import com.westflow.seeds_manager_api.domain.entity.LotInvoice;
+import com.westflow.seeds_manager_api.domain.exception.ValidationException;
 import com.westflow.seeds_manager_api.domain.repository.LotInvoiceRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import jakarta.transaction.Transactional;
-import com.westflow.seeds_manager_api.domain.exception.ValidationException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -53,6 +53,28 @@ public class LotInvoiceServiceImpl implements LotInvoiceService {
     @Override
     public List<LotInvoice> findAllByLotId(Long lotId) {
         return lotInvoiceRepository.findAllByLotId(lotId);
+    }
+
+    @Override
+    @Transactional
+    public List<LotInvoice> updateLotInvoices(Lot lot, List<Invoice> invoices, Map<Long, BigDecimal> allocationMap) {
+        List<LotInvoice> currentLotInvoices = lotInvoiceRepository.findAllByLotId(lot.getId());
+
+        for (LotInvoice lotInvoice : currentLotInvoices) {
+            Invoice invoice = lotInvoice.getInvoice();
+            invoiceService.restoreBalance(invoice, lotInvoice.getAllocatedQuantityInvoice());
+        }
+
+        lotInvoiceRepository.deleteAllByLotId(lot.getId());
+
+        List<Invoice> refreshedInvoices = new ArrayList<>();
+        for (Invoice invoice : invoices) {
+            Invoice refreshed = invoiceService.findEntityById(invoice.getId())
+                    .orElseThrow(() -> new ValidationException("Nota fiscal não encontrada para id " + invoice.getId()));
+            refreshedInvoices.add(refreshed);
+        }
+
+        return createLotInvoices(lot, refreshedInvoices, allocationMap);
     }
 
     private BigDecimal calculateAllocatedQuantityInvoice(BigDecimal lotPurity, BigDecimal invoicePurity, BigDecimal allocatedQuantityLot) {

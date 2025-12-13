@@ -45,6 +45,37 @@ public abstract class LotMapper {
                 .build();
     }
 
+    public Lot toUpdatedDomain(Lot existingLot, LotRequest request,
+                               BagWeight bagWeight, BagType bagType, Lab lab) {
+        return Lot.builder()
+                .id(existingLot.getId())
+                .lotNumber(existingLot.getLotNumber())
+                .lotType(request.getLotType())
+                .seedType(request.getSeedType())
+                .category(request.getCategory())
+                .bagWeight(bagWeight)
+                .bagType(bagType)
+                .quantityTotal(request.getQuantityTotal())
+                .balance(request.getQuantityTotal())
+                .productionOrder(request.getProductionOrder())
+                .analysisBulletin(request.getAnalysisBulletin())
+                .bulletinDate(request.getBulletinDate())
+                .hardSeeds(request.getHardSeeds())
+                .wildSeeds(request.getWildSeeds())
+                .otherCultivatedSpecies(request.getOtherCultivatedSpecies())
+                .tolerated(request.getTolerated())
+                .prohibited(request.getProhibited())
+                .validityDate(request.getValidityDate())
+                .seedScore(request.getSeedScore())
+                .purity(request.getPurity())
+                .lab(lab)
+                .user(existingLot.getUser())
+                .createdAt(existingLot.getCreatedAt())
+                .updatedAt(LocalDateTime.now())
+                .active(existingLot.getActive())
+                .build();
+    }
+
     protected InvoiceAllocationResponse map(LotInvoice lotInvoice) {
         if (lotInvoice == null) {
             return null;

@@ -79,7 +79,7 @@ public class LotEntity {
     @Column(name = "prohibited", nullable = false)
     private Integer prohibited = 0;
 
-    @OneToMany(mappedBy = "lot", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "lot")
     private List<LotInvoiceEntity> lotInvoices = new ArrayList<>();
 
     @Column(name = "validity_date")

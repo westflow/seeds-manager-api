@@ -110,6 +110,13 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoiceRepository.save(invoice);
     }
 
+    @Override
+    @Transactional
+    public void restoreBalance(Invoice invoice, BigDecimal amount) {
+        invoice.restoreBalance(amount);
+        invoiceRepository.save(invoice);
+    }
+
     private Invoice getInvoiceById(Long id) {
         return findEntityById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Nota fiscal", id));

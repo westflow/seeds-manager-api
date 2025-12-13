@@ -136,4 +136,5 @@ public class Lot {
         }
         this.active = false;
     }
+
 }

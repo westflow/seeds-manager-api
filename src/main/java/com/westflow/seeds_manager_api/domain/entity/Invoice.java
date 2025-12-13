@@ -113,6 +113,13 @@ public class Invoice {
         this.balance = this.balance.subtract(allocated);
     }
 
+    public void restoreBalance(BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new ValidationException("Quantidade para devolver deve ser maior que zero");
+        }
+        this.balance = this.balance.add(amount);
+    }
+
     public void deactivate() {
         if (!this.active) {
             throw new ValidationException("Nota fiscal já está inativa");

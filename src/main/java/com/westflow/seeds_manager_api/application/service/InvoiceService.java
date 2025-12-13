@@ -17,4 +17,5 @@ public interface InvoiceService {
     InvoiceResponse update(Long id, InvoiceRequest request);
     void delete(Long id);
     void updateBalance(Invoice invoice, BigDecimal allocated);
+    void restoreBalance(Invoice invoice, BigDecimal amount);
 }

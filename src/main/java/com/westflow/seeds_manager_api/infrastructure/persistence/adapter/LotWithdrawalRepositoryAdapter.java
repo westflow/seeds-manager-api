@@ -26,4 +26,9 @@ public class LotWithdrawalRepositoryAdapter implements LotWithdrawalRepository {
         LotWithdrawalEntity entity = mapper.toEntity(lotWithdrawal);
         return mapper.toDomain(jpaRepository.save(entity));
     }
+
+    @Override
+    public boolean existsByLotId(Long lotId) {
+        return jpaRepository.existsByLotId(lotId);
+    }
 }

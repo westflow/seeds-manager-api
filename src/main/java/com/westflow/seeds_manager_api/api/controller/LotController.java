@@ -46,6 +46,26 @@ public class LotController {
     }
 
     @Operation(
+            summary = "Atualiza um lote",
+            description = "Valida e atualiza um lote existente vinculado ao usuário logado",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lote atualizado com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+                    @ApiResponse(responseCode = "404", description = "Lote não encontrado")
+            }
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<LotResponse> update(
+            @Parameter(description = "ID do lote", required = true)
+            @PathVariable Long id,
+            @Valid @RequestBody LotRequest request,
+            @Parameter(hidden = true) @CurrentUser User user) {
+        LotResponse response = lotService.update(id, request, user);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
             summary = "Lista todos os lotes",
             description = "Retorna uma lista paginada de lotes ativos",
             responses = {

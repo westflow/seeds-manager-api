@@ -3,138 +3,220 @@ package com.westflow.seeds_manager_api.domain.model;
 import com.westflow.seeds_manager_api.domain.enums.LotCategory;
 import com.westflow.seeds_manager_api.domain.enums.LotType;
 import com.westflow.seeds_manager_api.domain.enums.SeedType;
-import com.westflow.seeds_manager_api.domain.exception.InsufficientLotBalanceException;
-import com.westflow.seeds_manager_api.domain.exception.ValidationException;
-import lombok.Builder;
+import com.westflow.seeds_manager_api.domain.exception.BusinessException;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Lot {
 
-    private final Long id;
-    private final String lotNumber;
-    private final LotType lotType;
-    private final SeedType seedType;
-    private final LotCategory category;
-    private final BagWeight bagWeight;
-    private final BagType bagType;
-    private final BigDecimal quantityTotal;
+    private Long id;
+    private String lotNumber;
+    private LotType lotType;
+    private SeedType seedType;
+    private LotCategory category;
+    private BagWeight bagWeight;
+    private BagType bagType;
+    private BigDecimal quantityTotal;
     private BigDecimal balance;
-    private final String productionOrder;
-    private final String analysisBulletin;
-    private final LocalDate bulletinDate;
-    private final Integer hardSeeds;
-    private final Integer wildSeeds;
-    private final Integer otherCultivatedSpecies;
-    private final Integer tolerated;
-    private final Integer prohibited;
-    private final LocalDate validityDate;
-    private final Integer seedScore;
-    private final BigDecimal purity;
-    private final Lab lab;
-    private final User user;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
-    private Boolean active = true;
+    private String productionOrder;
+    private String analysisBulletin;
+    private LocalDate bulletinDate;
+    private Integer hardSeeds;
+    private Integer wildSeeds;
+    private Integer otherCultivatedSpecies;
+    private Integer tolerated;
+    private Integer prohibited;
+    private LocalDate validityDate;
+    private Integer seedScore;
+    private BigDecimal purity;
+    private User user;
+    private Lab lab;
 
-    @Builder
-    public Lot(Long id, String lotNumber, LotType lotType, SeedType seedType,
-               LotCategory category, BagWeight bagWeight, BagType bagType, BigDecimal quantityTotal,
-               BigDecimal balance, String analysisBulletin, LocalDate bulletinDate,
-               LocalDate validityDate, Integer seedScore, BigDecimal purity,
-               User user, LocalDateTime createdAt, LocalDateTime updatedAt,
-               Lab lab, String productionOrder, Integer hardSeeds, Integer wildSeeds,
-               Integer otherCultivatedSpecies, Integer tolerated, Integer prohibited, Boolean active) {
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private Boolean active;
 
-        validate(lotNumber, lotType, seedType, category, bagWeight, bagType, quantityTotal, purity);
+    public static Lot newLot(
+            String lotNumber,
+            LotType lotType,
+            SeedType seedType,
+            LotCategory category,
+            BagWeight bagWeight,
+            BagType bagType,
+            Lab lab,
+            BigDecimal quantityTotal,
+            String productionOrder,
+            String analysisBulletin,
+            LocalDate bulletinDate,
+            Integer hardSeeds,
+            Integer wildSeeds,
+            Integer otherCultivatedSpecies,
+            Integer tolerated,
+            Integer prohibited,
+            LocalDate validityDate,
+            Integer seedScore,
+            BigDecimal purity,
+            User user
+    ) {
+        if (quantityTotal == null || quantityTotal.signum() <= 0) {
+            throw new BusinessException("Quantidade total deve ser maior que zero");
+        }
 
-        this.id = id;
-        this.lotNumber = lotNumber;
+        Lot lot = new Lot();
+        lot.id = null;
+        lot.lotNumber = lotNumber;
+        lot.lotType = lotType;
+        lot.seedType = seedType;
+        lot.category = category;
+        lot.bagWeight = bagWeight;
+        lot.bagType = bagType;
+        lot.quantityTotal = quantityTotal;
+        lot.balance = quantityTotal;
+
+        // campos vindos da request
+        lot.productionOrder = productionOrder;
+        lot.analysisBulletin = analysisBulletin;
+        lot.bulletinDate = bulletinDate;
+        lot.hardSeeds = hardSeeds;
+        lot.wildSeeds = wildSeeds;
+        lot.otherCultivatedSpecies = otherCultivatedSpecies;
+        lot.tolerated = tolerated;
+        lot.prohibited = prohibited;
+        lot.validityDate = validityDate;
+        lot.seedScore = seedScore;
+
+        lot.purity = purity;
+        lot.user = user;
+        lot.lab = lab;
+        lot.createdAt = LocalDateTime.now();
+        lot.updatedAt = null;
+        lot.active = true;
+        return lot;
+    }
+
+    public void update(
+            LotType lotType,
+            SeedType seedType,
+            LotCategory category,
+            BagWeight bagWeight,
+            BagType bagType,
+            Lab lab,
+            BigDecimal quantityTotal,
+            String productionOrder,
+            String analysisBulletin,
+            LocalDate bulletinDate,
+            Integer hardSeeds,
+            Integer wildSeeds,
+            Integer otherCultivatedSpecies,
+            Integer tolerated,
+            Integer prohibited,
+            LocalDate validityDate,
+            Integer seedScore,
+            BigDecimal purity,
+            User user
+    ) {
+        if (quantityTotal == null || quantityTotal.signum() <= 0) {
+            throw new BusinessException("Quantidade total deve ser maior que zero");
+        }
+
         this.lotType = lotType;
         this.seedType = seedType;
         this.category = category;
         this.bagWeight = bagWeight;
         this.bagType = bagType;
+        this.lab = lab;
         this.quantityTotal = quantityTotal;
-        this.balance = balance;
+        this.balance = quantityTotal; // ajuste de regra se precisar
         this.productionOrder = productionOrder;
         this.analysisBulletin = analysisBulletin;
         this.bulletinDate = bulletinDate;
-        this.validityDate = validityDate;
-        this.seedScore = seedScore;
-        this.purity = purity;
-        this.lab = lab;
-        this.user = user;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.hardSeeds = hardSeeds;
         this.wildSeeds = wildSeeds;
         this.otherCultivatedSpecies = otherCultivatedSpecies;
         this.tolerated = tolerated;
         this.prohibited = prohibited;
-        if (active == null) {
-            this.active = true;
-        }
+        this.validityDate = validityDate;
+        this.seedScore = seedScore;
+
+        this.purity = purity;
+        this.user = user;
+        this.updatedAt = LocalDateTime.now();
     }
 
-    private void validate(String lotNumber, LotType lotType, SeedType seedType,
-                          LotCategory category, BagWeight bagWeight, BagType bagType,
-                          BigDecimal balance, BigDecimal purity) {
-
-        if (lotNumber == null || lotNumber.isBlank()) {
-            throw new ValidationException("Número do lote é obrigatório");
-        }
-
-        if (lotType == null) {
-            throw new ValidationException("Tipo de lote é obrigatório");
-        }
-
-        if (seedType == null) {
-            throw new ValidationException("Tipo de semente é obrigatório");
-        }
-
-        if (category == null) {
-            throw new ValidationException("Categoria é obrigatória");
-        }
-
-        if (bagWeight == null) {
-            throw new ValidationException("Peso da sacaria é obrigatória");
-        }
-
-        if (balance == null || balance.compareTo(BigDecimal.ZERO) < 0) {
-            throw new ValidationException("Saldo do lote não pode ser negativo");
-        }
-
-        if (bagType == null) {
-            throw new ValidationException("Tipo de sacaria é obrigatório");
-        }
-
-        if (purity == null || purity.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new ValidationException("Pureza é obrigatória e deve ser positiva");
-        }
+    public static Lot restore(
+            Long id,
+            String lotNumber,
+            LotType lotType,
+            SeedType seedType,
+            LotCategory category,
+            BagWeight bagWeight,
+            BagType bagType,
+            BigDecimal quantityTotal,
+            BigDecimal balance,
+            String productionOrder,
+            String analysisBulletin,
+            LocalDate bulletinDate,
+            Integer hardSeeds,
+            Integer wildSeeds,
+            Integer otherCultivatedSpecies,
+            Integer tolerated,
+            Integer prohibited,
+            LocalDate validityDate,
+            Integer seedScore,
+            BigDecimal purity,
+            User user,
+            Lab lab,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt,
+            Boolean active
+    ) {
+        return new Lot(
+                id,
+                lotNumber,
+                lotType,
+                seedType,
+                category,
+                bagWeight,
+                bagType,
+                quantityTotal,
+                balance,
+                productionOrder,
+                analysisBulletin,
+                bulletinDate,
+                hardSeeds,
+                wildSeeds,
+                otherCultivatedSpecies,
+                tolerated,
+                prohibited,
+                validityDate,
+                seedScore,
+                purity,
+                user,
+                lab,
+                createdAt,
+                updatedAt,
+                active
+        );
     }
 
-    public void withUpdatedBalance(BigDecimal allocated) {
-        if (allocated == null || allocated.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new ValidationException("Quantidade de retirada deve ser maior que zero");
+    public void decreaseBalance(BigDecimal quantity) {
+        if (balance.compareTo(quantity) < 0) {
+            throw new BusinessException("Saldo insuficiente no lote.");
         }
-
-        if (balance.compareTo(allocated) < 0) {
-            throw new InsufficientLotBalanceException(lotNumber, balance.doubleValue(), allocated.doubleValue());
-        }
-
-        this.balance = this.balance.subtract(allocated);
+        this.balance = this.balance.subtract(quantity);
     }
 
-    public void deactivate() {
-        if (!this.active) {
-            throw new ValidationException("Lote já está inativo");
-        }
-        this.active = false;
+    public void applyAllocations(List<LotInvoice> allocations) {
+        allocations.forEach(a -> decreaseBalance(a.getAllocatedQuantityLot()));
     }
-
 }

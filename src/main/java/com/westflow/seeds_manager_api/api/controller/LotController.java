@@ -4,12 +4,15 @@ import com.westflow.seeds_manager_api.api.config.CurrentUser;
 import com.westflow.seeds_manager_api.api.dto.request.LotRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotResponse;
 import com.westflow.seeds_manager_api.application.service.LotService;
+import com.westflow.seeds_manager_api.application.usecase.lot.CreateLotUseCase;
+import com.westflow.seeds_manager_api.application.usecase.lot.UpdateLotUseCase;
 import com.westflow.seeds_manager_api.domain.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,16 +21,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Lots", description = "Operações de lotes")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/lots")
+@Tag(name = "Lots", description = "Operações de lotes")
 public class LotController {
 
     private final LotService lotService;
-
-    public LotController(LotService lotService) {
-        this.lotService = lotService;
-    }
+    private final CreateLotUseCase createLotUseCase;
+    private final UpdateLotUseCase updateLotUseCase;
 
     @Operation(
             summary = "Cria um novo lote",
@@ -41,7 +43,7 @@ public class LotController {
     @PostMapping
     public ResponseEntity<LotResponse> create(@Valid @RequestBody LotRequest request,
                                               @Parameter(hidden = true) @CurrentUser User user) {
-        LotResponse response = lotService.register(request, user);
+        LotResponse response = createLotUseCase.execute(request, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -61,7 +63,7 @@ public class LotController {
             @PathVariable Long id,
             @Valid @RequestBody LotRequest request,
             @Parameter(hidden = true) @CurrentUser User user) {
-        LotResponse response = lotService.update(id, request, user);
+        LotResponse response = updateLotUseCase.execute(id, request, user);
         return ResponseEntity.ok(response);
     }
 

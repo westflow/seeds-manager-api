@@ -24,6 +24,7 @@ public class LotServiceImpl implements LotService {
     private final LotRepository lotRepository;
     private final LotMapper lotMapper;
     private final LotInvoiceService lotInvoiceService;
+    private final com.westflow.seeds_manager_api.application.usecase.lot.DeleteLotUseCase deleteLotUseCase;
 
     @Override
     public LotResponse findById(Long id) {
@@ -47,9 +48,7 @@ public class LotServiceImpl implements LotService {
 
     @Override
     public void delete(Long id) {
-        Lot lot = getLotById(id);
-        //lot.deactivate();
-        lotRepository.save(lot);
+        deleteLotUseCase.execute(id);
     }
 
     @Override

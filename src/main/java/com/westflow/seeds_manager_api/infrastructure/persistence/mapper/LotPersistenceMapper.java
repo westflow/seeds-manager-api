@@ -4,6 +4,7 @@ import com.westflow.seeds_manager_api.domain.model.*;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.ObjectFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(
         componentModel = "spring",
@@ -15,6 +16,13 @@ import org.mapstruct.ObjectFactory;
         }
 )
 public abstract class LotPersistenceMapper {
+
+    protected UserPersistenceMapper userPersistenceMapper;
+
+    @Autowired
+    void setUserPersistenceMapper(UserPersistenceMapper mapper) {
+        this.userPersistenceMapper = mapper;
+    }
 
     public abstract LotEntity toEntity(Lot domain);
 
@@ -43,7 +51,7 @@ public abstract class LotPersistenceMapper {
                 entity.getValidityDate(),
                 entity.getSeedScore(),
                 entity.getPurity(),
-                null,
+                userPersistenceMapper.toDomain(entity.getUser()),
                 map(entity.getLab()),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),

@@ -136,7 +136,6 @@ public class Lot {
         this.bagType = bagType;
         this.lab = lab;
         this.quantityTotal = quantityTotal;
-        this.balance = quantityTotal; // ajuste de regra se precisar
         this.productionOrder = productionOrder;
         this.analysisBulletin = analysisBulletin;
         this.bulletinDate = bulletinDate;
@@ -218,5 +217,10 @@ public class Lot {
 
     public void applyAllocations(List<LotInvoice> allocations) {
         allocations.forEach(a -> decreaseBalance(a.getAllocatedQuantityLot()));
+    }
+
+    public void deactivate() {
+        this.active = false;
+        this.updatedAt = LocalDateTime.now();
     }
 }

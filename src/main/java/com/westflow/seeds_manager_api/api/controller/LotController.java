@@ -5,6 +5,7 @@ import com.westflow.seeds_manager_api.api.dto.request.LotRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotResponse;
 import com.westflow.seeds_manager_api.application.service.LotService;
 import com.westflow.seeds_manager_api.application.usecase.lot.CreateLotUseCase;
+import com.westflow.seeds_manager_api.application.usecase.lot.DeleteLotUseCase;
 import com.westflow.seeds_manager_api.application.usecase.lot.UpdateLotUseCase;
 import com.westflow.seeds_manager_api.domain.model.User;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +31,7 @@ public class LotController {
     private final LotService lotService;
     private final CreateLotUseCase createLotUseCase;
     private final UpdateLotUseCase updateLotUseCase;
+    private final DeleteLotUseCase deleteLotUseCase;
 
     @Operation(
             summary = "Cria um novo lote",
@@ -109,7 +111,7 @@ public class LotController {
     public ResponseEntity<Void> delete(
             @Parameter(description = "ID do lote", required = true)
             @PathVariable Long id) {
-        lotService.delete(id);
+        deleteLotUseCase.execute(id);
         return ResponseEntity.noContent().build();
     }
 }

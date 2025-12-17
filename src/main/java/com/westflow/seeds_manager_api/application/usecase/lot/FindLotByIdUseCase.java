@@ -1,28 +1,19 @@
 package com.westflow.seeds_manager_api.application.usecase.lot;
 
-import com.westflow.seeds_manager_api.application.support.lot.LotModificationPreparationService;
 import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.model.Lot;
 import com.westflow.seeds_manager_api.domain.repository.LotRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class DeleteLotUseCase {
+public class FindLotByIdUseCase {
 
     private final LotRepository lotRepository;
-    private final LotModificationPreparationService lotModificationPreparationService;
 
-    @Transactional
-    public void execute(Long id) {
-        Lot existingLot = lotRepository.findById(id)
+    public Lot execute(Long id) {
+        return lotRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lote", id));
-
-        lotModificationPreparationService.prepare(id);
-
-        existingLot.deactivate();
-        lotRepository.save(existingLot);
     }
 }

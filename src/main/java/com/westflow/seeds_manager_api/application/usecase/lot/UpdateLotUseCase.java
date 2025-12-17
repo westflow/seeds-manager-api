@@ -7,7 +7,6 @@ import com.westflow.seeds_manager_api.application.factory.LotFactory;
 import com.westflow.seeds_manager_api.application.support.lot.LotContext;
 import com.westflow.seeds_manager_api.application.support.lot.LotContextService;
 import com.westflow.seeds_manager_api.application.support.lot.LotModificationPreparationService;
-import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.model.Lot;
 import com.westflow.seeds_manager_api.domain.model.LotInvoice;
 import com.westflow.seeds_manager_api.domain.model.User;
@@ -17,11 +16,11 @@ import com.westflow.seeds_manager_api.domain.service.InvoiceAllocationService;
 import com.westflow.seeds_manager_api.domain.service.LotDomainService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class UpdateLotUseCase {
 
@@ -35,12 +34,12 @@ public class UpdateLotUseCase {
 
     private final InvoiceAllocationService invoiceAllocationService;
     private final LotModificationPreparationService lotModificationPreparationService;
+    private final FindLotByIdUseCase findLotByIdUseCase;
 
     @Transactional
     public LotResponse execute(Long id, LotRequest request, User user) {
 
-        Lot existingLot = lotRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Lote", id));
+        Lot existingLot = findLotByIdUseCase.execute(id);
 
         lotModificationPreparationService.prepare(id);
 

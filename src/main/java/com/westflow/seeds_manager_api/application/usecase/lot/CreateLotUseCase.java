@@ -15,11 +15,11 @@ import com.westflow.seeds_manager_api.domain.service.InvoiceAllocationService;
 import com.westflow.seeds_manager_api.domain.service.LotDomainService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class CreateLotUseCase {
 

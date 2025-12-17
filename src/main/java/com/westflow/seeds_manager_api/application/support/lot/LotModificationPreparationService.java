@@ -23,7 +23,7 @@ public class LotModificationPreparationService {
     private final LotReservationRepository lotReservationRepository;
 
     @Transactional
-    public List<LotInvoice> prepare(Long lotId) {
+    public void prepare(Long lotId) {
 
         lotDomainService.validateUpdateAllowed(
                 lotWithdrawalRepository.existsByLotId(lotId),
@@ -36,7 +36,5 @@ public class LotModificationPreparationService {
         invoiceAllocationService.restoreAllocations(allocations);
 
         lotInvoiceRepository.deleteAllByLotId(lotId);
-
-        return allocations;
     }
 }

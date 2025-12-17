@@ -213,6 +213,7 @@ public class Lot {
             throw new BusinessException("Saldo insuficiente no lote.");
         }
         this.balance = this.balance.subtract(quantity);
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void applyAllocations(List<LotInvoice> allocations) {

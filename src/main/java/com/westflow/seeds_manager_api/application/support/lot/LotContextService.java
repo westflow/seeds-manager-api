@@ -2,7 +2,7 @@ package com.westflow.seeds_manager_api.application.support.lot;
 
 import com.westflow.seeds_manager_api.api.dto.request.InvoiceAllocationRequest;
 import com.westflow.seeds_manager_api.api.dto.request.LotRequest;
-import com.westflow.seeds_manager_api.application.service.BagTypeService;
+import com.westflow.seeds_manager_api.application.usecase.bagtype.FindBagTypeByIdUseCase;
 import com.westflow.seeds_manager_api.application.service.BagWeightService;
 import com.westflow.seeds_manager_api.application.service.InvoiceService;
 import com.westflow.seeds_manager_api.application.service.LabService;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class LotContextService {
 
     private final BagWeightService bagWeightService;
-    private final BagTypeService bagTypeService;
+    private final FindBagTypeByIdUseCase findBagTypeByIdUseCase;
     private final LabService labService;
     private final InvoiceService invoiceService;
 
@@ -50,9 +50,7 @@ public class LotContextService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Tamanho da sacaria", request.getBagWeightId()));
 
-        BagType bagType = bagTypeService.findEntityById(request.getBagTypeId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Tipo de sacaria", request.getBagTypeId()));
+        BagType bagType = findBagTypeByIdUseCase.execute(request.getBagTypeId());
 
         Lab lab = request.getLabId() == null || request.getLabId() <= 0
                 ? null

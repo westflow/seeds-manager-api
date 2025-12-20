@@ -6,6 +6,18 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface BagTypePersistenceMapper {
+
     BagTypeEntity toEntity(BagType domain);
-    BagType toDomain(BagTypeEntity entity);
+
+    default BagType toDomain(BagTypeEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        return BagType.restore(
+                entity.getId(),
+                entity.getName(),
+                entity.getActive()
+        );
+    }
 }

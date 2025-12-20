@@ -2,7 +2,9 @@ package com.westflow.seeds_manager_api.api.controller;
 
 import com.westflow.seeds_manager_api.api.dto.request.BagTypeRequest;
 import com.westflow.seeds_manager_api.api.dto.response.BagTypeResponse;
-import com.westflow.seeds_manager_api.application.service.BagTypeService;
+import com.westflow.seeds_manager_api.api.mapper.BagTypeMapper;
+import com.westflow.seeds_manager_api.application.usecase.bagtype.*;
+import com.westflow.seeds_manager_api.domain.model.BagType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +24,12 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "BagTypes", description = "Operações de tipo de sacaria")
 public class BagTypeController {
 
-    private final BagTypeService service;
+    private final BagTypeMapper mapper;
+    private final RegisterBagTypeUseCase registerBagTypeUseCase;
+    private final FindPagedBagTypesUseCase findPagedBagTypesUseCase;
+    private final FindBagTypeByIdUseCase findBagTypeByIdUseCase;
+    private final UpdateBagTypeUseCase updateBagTypeUseCase;
+    private final DeleteBagTypeUseCase deleteBagTypeUseCase;
 
     @Operation(summary = "Cria novo tipo de sacaria", responses = {
             @ApiResponse(responseCode = "201", description = "Tipo criado"),
@@ -31,7 +38,9 @@ public class BagTypeController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<BagTypeResponse> register(@Valid @RequestBody BagTypeRequest request) {
-        BagTypeResponse response = service.register(request);
+        BagType bagType = BagType.newBagType(request.getName());
+        BagType saved = registerBagTypeUseCase.execute(bagType);
+        BagTypeResponse response = mapper.toResponse(saved);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -45,8 +54,9 @@ public class BagTypeController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD', 'READ_ONLY')")
     @GetMapping
     public ResponseEntity<Page<BagTypeResponse>> listAll(@ParameterObject Pageable pageable) {
-        Page<BagTypeResponse> page = service.findAll(pageable);
-        return ResponseEntity.ok(page);
+        Page<BagType> page = findPagedBagTypesUseCase.execute(pageable);
+        Page<BagTypeResponse> response = page.map(mapper::toResponse);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -60,7 +70,8 @@ public class BagTypeController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD', 'READ_ONLY')")
     @GetMapping("/{id}")
     public ResponseEntity<BagTypeResponse> getById(@PathVariable Long id) {
-        BagTypeResponse response = service.findById(id);
+        BagType bagType = findBagTypeByIdUseCase.execute(id);
+        BagTypeResponse response = mapper.toResponse(bagType);
         return ResponseEntity.ok(response);
     }
 
@@ -76,7 +87,8 @@ public class BagTypeController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<BagTypeResponse> update(@PathVariable Long id, @Valid @RequestBody BagTypeRequest request) {
-        BagTypeResponse response = service.update(id, request);
+        BagType saved = updateBagTypeUseCase.execute(id, request.getName());
+        BagTypeResponse response = mapper.toResponse(saved);
         return ResponseEntity.ok(response);
     }
 
@@ -91,7 +103,7 @@ public class BagTypeController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
+        deleteBagTypeUseCase.execute(id);
         return ResponseEntity.noContent().build();
     }
 }

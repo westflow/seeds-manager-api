@@ -6,6 +6,23 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface ClientPersistenceMapper {
+
     ClientEntity toEntity(Client domain);
-    Client toDomain(ClientEntity entity);
+
+    default Client toDomain(ClientEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        return Client.restore(
+                entity.getId(),
+                entity.getNumber(),
+                entity.getName(),
+                entity.getEmail(),
+                entity.getPhone(),
+                entity.getActive(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
+        );
+    }
 }

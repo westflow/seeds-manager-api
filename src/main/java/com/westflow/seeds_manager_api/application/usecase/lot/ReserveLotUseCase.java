@@ -3,8 +3,7 @@ package com.westflow.seeds_manager_api.application.usecase.lot;
 import com.westflow.seeds_manager_api.api.dto.request.LotReservationRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotReservationResponse;
 import com.westflow.seeds_manager_api.api.mapper.LotReservationMapper;
-import com.westflow.seeds_manager_api.application.service.ClientService;
-import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
+import com.westflow.seeds_manager_api.application.usecase.client.FindClientByIdUseCase;
 import com.westflow.seeds_manager_api.domain.model.Client;
 import com.westflow.seeds_manager_api.domain.model.Lot;
 import com.westflow.seeds_manager_api.domain.model.LotReservation;
@@ -22,17 +21,14 @@ public class ReserveLotUseCase {
     private final LotReservationMapper mapper;
     private final FindLotByIdUseCase findLotByIdUseCase;
     private final ConsumeLotBalanceUseCase consumeLotBalanceUseCase;
-    private final ClientService clientService;
+    private final FindClientByIdUseCase findClientByIdUseCase;
 
     @Transactional
     public LotReservationResponse execute(LotReservationRequest request, User user) {
 
         Lot lot = findLotByIdUseCase.execute(request.getLotId());
 
-        Client client = clientService.findEntityById(request.getClientId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Cliente", request.getClientId())
-                );
+        Client client = findClientByIdUseCase.execute(request.getClientId());
 
         LotReservation reservation =
                 mapper.toDomain(request, user, lot, client);

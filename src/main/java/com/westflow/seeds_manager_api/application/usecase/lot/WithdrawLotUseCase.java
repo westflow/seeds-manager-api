@@ -3,8 +3,7 @@ package com.westflow.seeds_manager_api.application.usecase.lot;
 import com.westflow.seeds_manager_api.api.dto.request.LotWithdrawalRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotWithdrawalResponse;
 import com.westflow.seeds_manager_api.api.mapper.LotWithdrawalMapper;
-import com.westflow.seeds_manager_api.application.service.ClientService;
-import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
+import com.westflow.seeds_manager_api.application.usecase.client.FindClientByIdUseCase;
 import com.westflow.seeds_manager_api.domain.model.Client;
 import com.westflow.seeds_manager_api.domain.model.Lot;
 import com.westflow.seeds_manager_api.domain.model.LotWithdrawal;
@@ -22,15 +21,14 @@ public class WithdrawLotUseCase {
     private final LotWithdrawalMapper mapper;
     private final FindLotByIdUseCase findLotByIdUseCase;
     private final ConsumeLotBalanceUseCase consumeLotBalanceUseCase;
-    private final ClientService clientService;
+    private final FindClientByIdUseCase findClientByIdUseCase;
 
     @Transactional
     public LotWithdrawalResponse execute(LotWithdrawalRequest request, User user) {
 
         Lot lot = findLotByIdUseCase.execute(request.getLotId());
 
-        Client client = clientService.findEntityById(request.getClientId())
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente", request.getClientId()));
+        Client client = findClientByIdUseCase.execute(request.getClientId());
 
         LotWithdrawal withdrawal =
                 mapper.toDomain(request, user, lot, client);

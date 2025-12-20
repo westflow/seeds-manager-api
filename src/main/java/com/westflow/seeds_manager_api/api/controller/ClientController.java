@@ -2,7 +2,13 @@ package com.westflow.seeds_manager_api.api.controller;
 
 import com.westflow.seeds_manager_api.api.dto.request.ClientRequest;
 import com.westflow.seeds_manager_api.api.dto.response.ClientResponse;
-import com.westflow.seeds_manager_api.application.service.ClientService;
+import com.westflow.seeds_manager_api.api.mapper.ClientMapper;
+import com.westflow.seeds_manager_api.application.usecase.client.DeleteClientUseCase;
+import com.westflow.seeds_manager_api.application.usecase.client.FindPagedClientsUseCase;
+import com.westflow.seeds_manager_api.application.usecase.client.FindClientByIdUseCase;
+import com.westflow.seeds_manager_api.application.usecase.client.RegisterClientUseCase;
+import com.westflow.seeds_manager_api.application.usecase.client.UpdateClientUseCase;
+import com.westflow.seeds_manager_api.domain.model.Client;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +28,12 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Clients", description = "Operações de clientes")
 public class ClientController {
 
-    private final ClientService clientService;
+    private final ClientMapper clientMapper;
+    private final RegisterClientUseCase registerClientUseCase;
+    private final FindPagedClientsUseCase findPagedClientsUseCase;
+    private final FindClientByIdUseCase findClientByIdUseCase;
+    private final UpdateClientUseCase updateClientUseCase;
+    private final DeleteClientUseCase deleteClientUseCase;
 
     @Operation(
             summary = "Cria um novo cliente",
@@ -35,7 +46,14 @@ public class ClientController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ClientResponse> create(@Valid @RequestBody ClientRequest request) {
-        ClientResponse response = clientService.register(request);
+        Client client = Client.newClient(
+                request.getNumber(),
+                request.getName(),
+                request.getEmail(),
+                request.getPhone()
+        );
+        Client saved = registerClientUseCase.execute(client);
+        ClientResponse response = clientMapper.toResponse(saved);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -49,7 +67,9 @@ public class ClientController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD', 'READ_ONLY')")
     @GetMapping
     public ResponseEntity<Page<ClientResponse>> listAll(@ParameterObject Pageable pageable) {
-        return ResponseEntity.ok(clientService.findAll(pageable));
+        Page<Client> clients = findPagedClientsUseCase.execute(pageable);
+        Page<ClientResponse> response = clients.map(clientMapper::toResponse);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -63,7 +83,9 @@ public class ClientController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD', 'READ_ONLY')")
     @GetMapping("/{id}")
     public ResponseEntity<ClientResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(clientService.findById(id));
+        Client client = findClientByIdUseCase.execute(id);
+        ClientResponse response = clientMapper.toResponse(client);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -78,7 +100,14 @@ public class ClientController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ClientResponse> update(@PathVariable Long id, @Valid @RequestBody ClientRequest request) {
-        ClientResponse response = clientService.update(id, request);
+        Client client = Client.newClient(
+                request.getNumber(),
+                request.getName(),
+                request.getEmail(),
+                request.getPhone()
+        );
+        Client saved = updateClientUseCase.execute(id, client);
+        ClientResponse response = clientMapper.toResponse(saved);
         return ResponseEntity.ok(response);
     }
 
@@ -93,7 +122,7 @@ public class ClientController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        clientService.delete(id);
+        deleteClientUseCase.execute(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -2,7 +2,9 @@ package com.westflow.seeds_manager_api.api.controller;
 
 import com.westflow.seeds_manager_api.api.dto.request.BagWeightRequest;
 import com.westflow.seeds_manager_api.api.dto.response.BagWeightResponse;
-import com.westflow.seeds_manager_api.application.service.BagWeightService;
+import com.westflow.seeds_manager_api.api.mapper.BagWeightMapper;
+import com.westflow.seeds_manager_api.application.usecase.bagweight.*;
+import com.westflow.seeds_manager_api.domain.model.BagWeight;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +24,12 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "BagWeights", description = "Operações de peso de sacaria")
 public class BagWeightController {
 
-    private final BagWeightService service;
+    private final BagWeightMapper mapper;
+    private final RegisterBagWeightUseCase registerBagWeightUseCase;
+    private final FindPagedBagWeightsUseCase findPagedBagWeightsUseCase;
+    private final FindBagWeightByIdUseCase findBagWeightByIdUseCase;
+    private final UpdateBagWeightUseCase updateBagWeightUseCase;
+    private final DeleteBagWeightUseCase deleteBagWeightUseCase;
 
     @Operation(summary = "Cria novo peso de sacaria", responses = {
             @ApiResponse(responseCode = "201", description = "Peso criado"),
@@ -31,7 +38,9 @@ public class BagWeightController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<BagWeightResponse> register(@Valid @RequestBody BagWeightRequest request) {
-        BagWeightResponse response = service.register(request);
+        BagWeight bagWeight = BagWeight.newBagWeight(request.getWeight());
+        BagWeight saved = registerBagWeightUseCase.execute(bagWeight);
+        BagWeightResponse response = mapper.toResponse(saved);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -45,7 +54,9 @@ public class BagWeightController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD', 'READ_ONLY')")
     @GetMapping
     public ResponseEntity<Page<BagWeightResponse>> listAll(@ParameterObject Pageable pageable) {
-        return ResponseEntity.ok(service.findAll(pageable));
+        Page<BagWeight> page = findPagedBagWeightsUseCase.execute(pageable);
+        Page<BagWeightResponse> response = page.map(mapper::toResponse);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -59,7 +70,9 @@ public class BagWeightController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD', 'READ_ONLY')")
     @GetMapping("/{id}")
     public ResponseEntity<BagWeightResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.findById(id));
+        BagWeight bagWeight = findBagWeightByIdUseCase.execute(id);
+        BagWeightResponse response = mapper.toResponse(bagWeight);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -74,7 +87,9 @@ public class BagWeightController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<BagWeightResponse> update(@PathVariable Long id, @Valid @RequestBody BagWeightRequest request) {
-        BagWeightResponse response = service.update(id, request);
+        BagWeight data = BagWeight.newBagWeight(request.getWeight());
+        BagWeight saved = updateBagWeightUseCase.execute(id, data);
+        BagWeightResponse response = mapper.toResponse(saved);
         return ResponseEntity.ok(response);
     }
 
@@ -89,7 +104,7 @@ public class BagWeightController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
+        deleteBagWeightUseCase.execute(id);
         return ResponseEntity.noContent().build();
     }
 }

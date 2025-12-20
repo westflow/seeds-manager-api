@@ -6,6 +6,18 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface BagWeightPersistenceMapper {
+
     BagWeightEntity toEntity(BagWeight domain);
-    BagWeight toDomain(BagWeightEntity entity);
+
+    default BagWeight toDomain(BagWeightEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        return BagWeight.restore(
+                entity.getId(),
+                entity.getWeight(),
+                entity.getActive()
+        );
+    }
 }

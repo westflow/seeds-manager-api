@@ -2,10 +2,10 @@ package com.westflow.seeds_manager_api.application.support.lot;
 
 import com.westflow.seeds_manager_api.api.dto.request.InvoiceAllocationRequest;
 import com.westflow.seeds_manager_api.api.dto.request.LotRequest;
-import com.westflow.seeds_manager_api.application.usecase.bagtype.FindBagTypeByIdUseCase;
-import com.westflow.seeds_manager_api.application.service.BagWeightService;
 import com.westflow.seeds_manager_api.application.service.InvoiceService;
 import com.westflow.seeds_manager_api.application.service.LabService;
+import com.westflow.seeds_manager_api.application.usecase.bagtype.FindBagTypeByIdUseCase;
+import com.westflow.seeds_manager_api.application.usecase.bagweight.FindBagWeightByIdUseCase;
 import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.model.BagType;
 import com.westflow.seeds_manager_api.domain.model.BagWeight;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LotContextService {
 
-    private final BagWeightService bagWeightService;
+    private final FindBagWeightByIdUseCase findBagWeightByIdUseCase;
     private final FindBagTypeByIdUseCase findBagTypeByIdUseCase;
     private final LabService labService;
     private final InvoiceService invoiceService;
@@ -46,9 +46,7 @@ public class LotContextService {
                         .orElseThrow(() -> new ResourceNotFoundException("Nota fiscal", id)))
                 .toList();
 
-        BagWeight bagWeight = bagWeightService.findEntityById(request.getBagWeightId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Tamanho da sacaria", request.getBagWeightId()));
+        BagWeight bagWeight = findBagWeightByIdUseCase.execute(request.getBagWeightId());
 
         BagType bagType = findBagTypeByIdUseCase.execute(request.getBagTypeId());
 

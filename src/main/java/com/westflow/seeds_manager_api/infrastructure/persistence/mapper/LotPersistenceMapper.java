@@ -69,6 +69,15 @@ public abstract class LotPersistenceMapper {
         );
     }
 
-    protected abstract BagWeight map(BagWeightEntity entity);
+    protected BagWeight map(BagWeightEntity entity) {
+        if (entity == null) return null;
+
+        return BagWeight.restore(
+                entity.getId(),
+                entity.getWeight(),
+                entity.getActive()
+        );
+    }
+
     protected abstract Lab map(LabEntity entity);
 }

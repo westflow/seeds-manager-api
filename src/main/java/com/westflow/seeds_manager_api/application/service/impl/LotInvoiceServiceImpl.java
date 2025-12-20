@@ -1,7 +1,9 @@
 package com.westflow.seeds_manager_api.application.service.impl;
 
-import com.westflow.seeds_manager_api.application.service.InvoiceService;
 import com.westflow.seeds_manager_api.application.service.LotInvoiceService;
+import com.westflow.seeds_manager_api.application.usecase.invoice.AllocateInvoiceQuantityUseCase;
+import com.westflow.seeds_manager_api.application.usecase.invoice.FindInvoiceByIdUseCase;
+import com.westflow.seeds_manager_api.application.usecase.invoice.RestoreInvoiceBalanceUseCase;
 import com.westflow.seeds_manager_api.domain.model.Invoice;
 import com.westflow.seeds_manager_api.domain.model.Lot;
 import com.westflow.seeds_manager_api.domain.model.LotInvoice;
@@ -23,7 +25,9 @@ import java.util.Map;
 public class LotInvoiceServiceImpl implements LotInvoiceService {
 
     private final LotInvoiceRepository lotInvoiceRepository;
-    private final InvoiceService invoiceService;
+    private final AllocateInvoiceQuantityUseCase allocateInvoiceQuantityUseCase;
+    private final RestoreInvoiceBalanceUseCase restoreInvoiceBalanceUseCase;
+    private final FindInvoiceByIdUseCase findInvoiceByIdUseCase;
 
     @Override
     @Transactional
@@ -44,7 +48,7 @@ public class LotInvoiceServiceImpl implements LotInvoiceService {
                     quantityInvoice,
                     LocalDateTime.now()
             ));
-            invoiceService.updateBalance(invoice, quantityInvoice);
+            allocateInvoiceQuantityUseCase.execute(invoice.getId(), quantityInvoice);
         }
 
         return lotInvoiceRepository.saveAll(lotInvoices);
@@ -62,15 +66,14 @@ public class LotInvoiceServiceImpl implements LotInvoiceService {
 
         for (LotInvoice lotInvoice : currentLotInvoices) {
             Invoice invoice = lotInvoice.getInvoice();
-            invoiceService.restoreBalance(invoice, lotInvoice.getAllocatedQuantityInvoice());
+            restoreInvoiceBalanceUseCase.execute(invoice.getId(), lotInvoice.getAllocatedQuantityInvoice());
         }
 
         lotInvoiceRepository.deleteAllByLotId(lot.getId());
 
         List<Invoice> refreshedInvoices = new ArrayList<>();
         for (Invoice invoice : invoices) {
-            Invoice refreshed = invoiceService.findEntityById(invoice.getId())
-                    .orElseThrow(() -> new ValidationException("Nota fiscal não encontrada para id " + invoice.getId()));
+            Invoice refreshed = findInvoiceByIdUseCase.execute(invoice.getId());
             refreshedInvoices.add(refreshed);
         }
 

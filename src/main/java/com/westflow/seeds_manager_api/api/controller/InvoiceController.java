@@ -2,7 +2,13 @@ package com.westflow.seeds_manager_api.api.controller;
 
 import com.westflow.seeds_manager_api.api.dto.request.InvoiceRequest;
 import com.westflow.seeds_manager_api.api.dto.response.InvoiceResponse;
-import com.westflow.seeds_manager_api.application.service.InvoiceService;
+import com.westflow.seeds_manager_api.api.mapper.InvoiceMapper;
+import com.westflow.seeds_manager_api.application.usecase.invoice.DeleteInvoiceUseCase;
+import com.westflow.seeds_manager_api.application.usecase.invoice.FindInvoiceByIdUseCase;
+import com.westflow.seeds_manager_api.application.usecase.invoice.FindPagedInvoicesUseCase;
+import com.westflow.seeds_manager_api.application.usecase.invoice.RegisterInvoiceUseCase;
+import com.westflow.seeds_manager_api.application.usecase.invoice.UpdateInvoiceUseCase;
+import com.westflow.seeds_manager_api.domain.model.Invoice;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,14 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,7 +29,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Invoices", description = "Operações de notas fiscais")
 public class InvoiceController {
 
-    private final InvoiceService invoiceService;
+    private final InvoiceMapper mapper;
+    private final RegisterInvoiceUseCase registerInvoiceUseCase;
+    private final FindPagedInvoicesUseCase findPagedInvoicesUseCase;
+    private final FindInvoiceByIdUseCase findInvoiceByIdUseCase;
+    private final UpdateInvoiceUseCase updateInvoiceUseCase;
+    private final DeleteInvoiceUseCase deleteInvoiceUseCase;
 
     @Operation(
             summary = "Cria uma nova nota fiscal",
@@ -44,7 +48,8 @@ public class InvoiceController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<InvoiceResponse> create(@Valid @RequestBody InvoiceRequest request) {
-        InvoiceResponse response = invoiceService.register(request);
+        Invoice invoice = registerInvoiceUseCase.execute(request);
+        InvoiceResponse response = mapper.toResponse(invoice);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -58,7 +63,9 @@ public class InvoiceController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD', 'READ_ONLY')")
     @GetMapping
     public ResponseEntity<Page<InvoiceResponse>> listAll(@ParameterObject Pageable pageable) {
-        return ResponseEntity.ok(invoiceService.findAll(pageable));
+        Page<Invoice> page = findPagedInvoicesUseCase.execute(pageable);
+        Page<InvoiceResponse> response = page.map(mapper::toResponse);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -74,7 +81,9 @@ public class InvoiceController {
     public ResponseEntity<InvoiceResponse> getById(
             @Parameter(description = "ID da nota fiscal", required = true)
             @PathVariable Long id) {
-        return ResponseEntity.ok(invoiceService.findById(id));
+        Invoice invoice = findInvoiceByIdUseCase.execute(id);
+        InvoiceResponse response = mapper.toResponse(invoice);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -93,7 +102,9 @@ public class InvoiceController {
             @Parameter(description = "ID da nota fiscal", required = true)
             @PathVariable Long id,
             @Valid @RequestBody InvoiceRequest request) {
-        return ResponseEntity.ok(invoiceService.update(id, request));
+        Invoice invoice = updateInvoiceUseCase.execute(id, request);
+        InvoiceResponse response = mapper.toResponse(invoice);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -109,7 +120,7 @@ public class InvoiceController {
     public ResponseEntity<Void> delete(
             @Parameter(description = "ID da nota fiscal", required = true)
             @PathVariable Long id) {
-        invoiceService.delete(id);
+        deleteInvoiceUseCase.execute(id);
         return ResponseEntity.noContent().build();
     }
 }

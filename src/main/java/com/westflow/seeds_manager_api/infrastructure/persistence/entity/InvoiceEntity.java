@@ -1,5 +1,6 @@
 package com.westflow.seeds_manager_api.infrastructure.persistence.entity;
 
+import com.westflow.seeds_manager_api.domain.enums.LotCategory;
 import com.westflow.seeds_manager_api.domain.enums.OperationType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -44,8 +45,9 @@ public class InvoiceEntity {
     @Column(name = "auth_number")
     private String authNumber;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
-    private String category;
+    private LotCategory category;
     @Column(name = "purity", nullable = false)
     private BigDecimal purity;
     @Column(name = "harvest", nullable = false)

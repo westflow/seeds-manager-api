@@ -2,11 +2,10 @@ package com.westflow.seeds_manager_api.application.support.lot;
 
 import com.westflow.seeds_manager_api.api.dto.request.InvoiceAllocationRequest;
 import com.westflow.seeds_manager_api.api.dto.request.LotRequest;
-import com.westflow.seeds_manager_api.application.service.InvoiceService;
-import com.westflow.seeds_manager_api.application.usecase.lab.FindLabByIdUseCase;
 import com.westflow.seeds_manager_api.application.usecase.bagtype.FindBagTypeByIdUseCase;
 import com.westflow.seeds_manager_api.application.usecase.bagweight.FindBagWeightByIdUseCase;
-import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
+import com.westflow.seeds_manager_api.application.usecase.invoice.FindInvoiceByIdUseCase;
+import com.westflow.seeds_manager_api.application.usecase.lab.FindLabByIdUseCase;
 import com.westflow.seeds_manager_api.domain.model.BagType;
 import com.westflow.seeds_manager_api.domain.model.BagWeight;
 import com.westflow.seeds_manager_api.domain.model.Invoice;
@@ -26,7 +25,7 @@ public class LotContextService {
     private final FindBagWeightByIdUseCase findBagWeightByIdUseCase;
     private final FindBagTypeByIdUseCase findBagTypeByIdUseCase;
     private final FindLabByIdUseCase findLabByIdUseCase;
-    private final InvoiceService invoiceService;
+    private final FindInvoiceByIdUseCase findInvoiceByIdUseCase;
 
     public LotContext load(LotRequest request) {
 
@@ -42,8 +41,7 @@ public class LotContextService {
                         ));
 
         List<Invoice> invoices = allocationMap.keySet().stream()
-                .map(id -> invoiceService.findEntityById(id)
-                        .orElseThrow(() -> new ResourceNotFoundException("Nota fiscal", id)))
+                .map(findInvoiceByIdUseCase::execute)
                 .toList();
 
         BagWeight bagWeight = findBagWeightByIdUseCase.execute(request.getBagWeightId());

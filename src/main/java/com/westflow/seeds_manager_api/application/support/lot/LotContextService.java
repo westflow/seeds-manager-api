@@ -3,7 +3,7 @@ package com.westflow.seeds_manager_api.application.support.lot;
 import com.westflow.seeds_manager_api.api.dto.request.InvoiceAllocationRequest;
 import com.westflow.seeds_manager_api.api.dto.request.LotRequest;
 import com.westflow.seeds_manager_api.application.service.InvoiceService;
-import com.westflow.seeds_manager_api.application.service.LabService;
+import com.westflow.seeds_manager_api.application.usecase.lab.FindLabByIdUseCase;
 import com.westflow.seeds_manager_api.application.usecase.bagtype.FindBagTypeByIdUseCase;
 import com.westflow.seeds_manager_api.application.usecase.bagweight.FindBagWeightByIdUseCase;
 import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
@@ -25,7 +25,7 @@ public class LotContextService {
 
     private final FindBagWeightByIdUseCase findBagWeightByIdUseCase;
     private final FindBagTypeByIdUseCase findBagTypeByIdUseCase;
-    private final LabService labService;
+    private final FindLabByIdUseCase findLabByIdUseCase;
     private final InvoiceService invoiceService;
 
     public LotContext load(LotRequest request) {
@@ -52,9 +52,7 @@ public class LotContextService {
 
         Lab lab = request.getLabId() == null || request.getLabId() <= 0
                 ? null
-                : labService.findEntityById(request.getLabId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Laboratório", request.getLabId()));
+                : findLabByIdUseCase.execute(request.getLabId());
 
         return new LotContext(bagWeight, bagType, lab, invoices, allocationMap);
     }

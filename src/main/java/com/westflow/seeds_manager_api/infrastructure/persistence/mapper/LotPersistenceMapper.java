@@ -79,5 +79,17 @@ public abstract class LotPersistenceMapper {
         );
     }
 
-    protected abstract Lab map(LabEntity entity);
+    protected Lab map(LabEntity entity) {
+        if (entity == null) return null;
+
+        return Lab.restore(
+                entity.getId(),
+                entity.getName(),
+                entity.getState(),
+                entity.getRenasemCode(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt(),
+                entity.getActive()
+        );
+    }
 }

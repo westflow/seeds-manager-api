@@ -2,7 +2,9 @@ package com.westflow.seeds_manager_api.api.controller;
 
 import com.westflow.seeds_manager_api.api.dto.request.LabRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LabResponse;
-import com.westflow.seeds_manager_api.application.service.LabService;
+import com.westflow.seeds_manager_api.api.mapper.LabMapper;
+import com.westflow.seeds_manager_api.application.usecase.lab.*;
+import com.westflow.seeds_manager_api.domain.model.Lab;
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,7 +24,12 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Labs", description = "Operações de laboratórios credenciados")
 public class LabController {
 
-    private final LabService service;
+    private final LabMapper mapper;
+    private final RegisterLabUseCase registerLabUseCase;
+    private final FindPagedLabsUseCase findPagedLabsUseCase;
+    private final FindLabByIdUseCase findLabByIdUseCase;
+    private final UpdateLabUseCase updateLabUseCase;
+    private final DeleteLabUseCase deleteLabUseCase;
 
     @Operation(summary = "Cria novo laboratório credenciado", responses = {
             @ApiResponse(responseCode = "201", description = "Laboratório criado"),
@@ -31,7 +38,13 @@ public class LabController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<LabResponse> register(@Valid @RequestBody LabRequest request) {
-        LabResponse response = service.register(request);
+        Lab lab = Lab.newLab(
+                request.getName(),
+                request.getState(),
+                request.getRenasemCode()
+        );
+        Lab saved = registerLabUseCase.execute(lab);
+        LabResponse response = mapper.toResponse(saved);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -45,7 +58,9 @@ public class LabController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD', 'READ_ONLY')")
     @GetMapping
     public ResponseEntity<Page<LabResponse>> listAll(@ParameterObject Pageable pageable) {
-        return ResponseEntity.ok(service.findAll(pageable));
+        Page<Lab> page = findPagedLabsUseCase.execute(pageable);
+        Page<LabResponse> response = page.map(mapper::toResponse);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -59,7 +74,9 @@ public class LabController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD', 'READ_ONLY')")
     @GetMapping("/{id}")
     public ResponseEntity<LabResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.findById(id));
+        Lab lab = findLabByIdUseCase.execute(id);
+        LabResponse response = mapper.toResponse(lab);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -74,7 +91,13 @@ public class LabController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<LabResponse> update(@PathVariable Long id, @Valid @RequestBody LabRequest request) {
-        LabResponse response = service.update(id, request);
+        Lab data = Lab.newLab(
+                request.getName(),
+                request.getState(),
+                request.getRenasemCode()
+        );
+        Lab saved = updateLabUseCase.execute(id, data);
+        LabResponse response = mapper.toResponse(saved);
         return ResponseEntity.ok(response);
     }
 
@@ -89,7 +112,7 @@ public class LabController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
+        deleteLabUseCase.execute(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -18,11 +18,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class LotPersistenceMapper {
 
     protected UserPersistenceMapper userPersistenceMapper;
+    protected LabPersistenceMapper labPersistenceMapper;
+    protected BagTypePersistenceMapper bagTypePersistenceMapper;
+    protected BagWeightPersistenceMapper bagWeightPersistenceMapper;
 
     @Autowired
     void setUserPersistenceMapper(UserPersistenceMapper mapper) {
         this.userPersistenceMapper = mapper;
     }
+
+    @Autowired
+    void setLabPersistenceMapper(LabPersistenceMapper mapper) { this.labPersistenceMapper = mapper; }
+
+    @Autowired
+    void setBagTypePersistenceMapper(BagTypePersistenceMapper mapper) { this.bagTypePersistenceMapper = mapper; }
+
+    @Autowired
+    void setBagWeightPersistenceMapper(BagWeightPersistenceMapper mapper) { this.bagWeightPersistenceMapper = mapper; }
 
     public abstract LotEntity toEntity(Lot domain);
 
@@ -36,8 +48,8 @@ public abstract class LotPersistenceMapper {
                 entity.getLotType(),
                 entity.getSeedType(),
                 entity.getCategory(),
-                map(entity.getBagWeight()),
-                map(entity.getBagType()),
+                bagWeightPersistenceMapper.toDomain(entity.getBagWeight()),
+                bagTypePersistenceMapper.toDomain(entity.getBagType()),
                 entity.getQuantityTotal(),
                 entity.getBalance(),
                 entity.getProductionOrder(),
@@ -52,58 +64,10 @@ public abstract class LotPersistenceMapper {
                 entity.getSeedScore(),
                 entity.getPurity(),
                 userPersistenceMapper.toDomain(entity.getUser()),
-                map(entity.getLab()),
+                labPersistenceMapper.toDomain(entity.getLab()),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),
                 entity.isActive()
-        );
-    }
-
-    protected BagType map(BagTypeEntity entity) {
-        if (entity == null) return null;
-
-        return BagType.restore(
-                entity.getId(),
-                entity.getName(),
-                entity.getActive()
-        );
-    }
-
-    protected BagWeight map(BagWeightEntity entity) {
-        if (entity == null) return null;
-
-        return BagWeight.restore(
-                entity.getId(),
-                entity.getWeight(),
-                entity.getActive()
-        );
-    }
-
-    protected Lab map(LabEntity entity) {
-        if (entity == null) return null;
-
-        return Lab.restore(
-                entity.getId(),
-                entity.getName(),
-                entity.getState(),
-                entity.getRenasemCode(),
-                entity.getCreatedAt(),
-                entity.getUpdatedAt(),
-                entity.getActive()
-        );
-    }
-
-    protected Seed map(SeedEntity entity) {
-        if (entity == null) return null;
-
-        return Seed.restore(
-                entity.getId(),
-                entity.getSpecies(),
-                entity.getCultivar(),
-                entity.isProtected(),
-                entity.getNormalizedSpecies(),
-                entity.getNormalizedCultivar(),
-                entity.getActive()
         );
     }
 }

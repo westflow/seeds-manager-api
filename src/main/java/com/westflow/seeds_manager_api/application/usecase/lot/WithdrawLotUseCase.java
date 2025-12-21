@@ -30,8 +30,15 @@ public class WithdrawLotUseCase {
 
         Client client = findClientByIdUseCase.execute(request.getClientId());
 
-        LotWithdrawal withdrawal =
-                mapper.toDomain(request, user, lot, client);
+        LotWithdrawal withdrawal = LotWithdrawal.newWithdrawal(
+                lot,
+                request.getInvoiceNumber(),
+                request.getQuantity(),
+                request.getWithdrawalDate(),
+                request.getState(),
+                user,
+                client
+        );
 
         LotWithdrawal saved =
                 lotWithdrawalRepository.save(withdrawal);

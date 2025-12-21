@@ -1,15 +1,9 @@
 package com.westflow.seeds_manager_api.api.mapper;
 
-import com.westflow.seeds_manager_api.api.dto.request.LotWithdrawalRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotWithdrawalResponse;
-import com.westflow.seeds_manager_api.domain.model.Client;
-import com.westflow.seeds_manager_api.domain.model.Lot;
 import com.westflow.seeds_manager_api.domain.model.LotWithdrawal;
-import com.westflow.seeds_manager_api.domain.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
-import java.time.LocalDateTime;
 
 @Mapper(componentModel = "spring")
 public abstract class LotWithdrawalMapper {
@@ -19,16 +13,4 @@ public abstract class LotWithdrawalMapper {
     @Mapping(source = "user.id", target = "userId")
     public abstract LotWithdrawalResponse toResponse(LotWithdrawal withdrawal);
 
-    public LotWithdrawal toDomain(LotWithdrawalRequest request, User user, Lot lot, Client client) {;
-        return LotWithdrawal.builder()
-                .lot(lot)
-                .invoiceNumber(request.getInvoiceNumber())
-                .quantity(request.getQuantity())
-                .withdrawalDate(request.getWithdrawalDate())
-                .state(request.getState())
-                .client(client)
-                .user(user)
-                .createdAt(LocalDateTime.now())
-                .build();
-    }
 }

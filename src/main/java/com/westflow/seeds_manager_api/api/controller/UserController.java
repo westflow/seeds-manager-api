@@ -2,7 +2,9 @@ package com.westflow.seeds_manager_api.api.controller;
 
 import com.westflow.seeds_manager_api.api.dto.request.UserCreateRequest;
 import com.westflow.seeds_manager_api.api.dto.response.UserResponse;
-import com.westflow.seeds_manager_api.application.service.UserService;
+import com.westflow.seeds_manager_api.application.usecase.user.RegisterUserUseCase;
+import com.westflow.seeds_manager_api.api.mapper.UserMapper;
+import com.westflow.seeds_manager_api.domain.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserService userService;
+    private final RegisterUserUseCase registerUserUseCase;
+    private final UserMapper userMapper;
 
     @Operation(
             summary = "Cria um novo usuário",
@@ -35,7 +38,15 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<UserResponse> create(@Valid @RequestBody UserCreateRequest request) {
-        UserResponse response = userService.register(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        User user = User.newUser(
+                request.getEmail(),
+                request.getPassword(),
+                request.getName(),
+                request.getPosition(),
+                request.getAccessLevel()
+        );
+
+        User saved = registerUserUseCase.execute(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toResponse(saved));
     }
 }

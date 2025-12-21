@@ -1,47 +1,80 @@
 package com.westflow.seeds_manager_api.domain.model;
 
 import com.westflow.seeds_manager_api.domain.exception.ValidationException;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LotWithdrawal {
 
-    private final Long id;
-    private final Lot lot;
-    private final String invoiceNumber;
-    private final BigDecimal quantity;
-    private final LocalDate withdrawalDate;
-    private final String state;
-    private final User user;
-    private final Client client;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    private Long id;
+    private Lot lot;
+    private String invoiceNumber;
+    private BigDecimal quantity;
+    private LocalDate withdrawalDate;
+    private String state;
+    private User user;
+    private Client client;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    @Builder
-    public LotWithdrawal(Long id, Lot lot, String invoiceNumber,
-                         BigDecimal quantity, LocalDate withdrawalDate, String state,
-                         User user, Client client, LocalDateTime createdAt, LocalDateTime updatedAt) {
-
+    public static LotWithdrawal newWithdrawal(
+            Lot lot,
+            String invoiceNumber,
+            BigDecimal quantity,
+            LocalDate withdrawalDate,
+            String state,
+            User user,
+            Client client
+    ) {
         validate(lot, invoiceNumber, quantity, withdrawalDate, state, user, client);
 
-        this.id = id;
-        this.lot = lot;
-        this.invoiceNumber = invoiceNumber;
-        this.quantity = quantity;
-        this.withdrawalDate = withdrawalDate;
-        this.state = state;
-        this.user = user;
-        this.client = client;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        return new LotWithdrawal(
+                null,
+                lot,
+                invoiceNumber,
+                quantity,
+                withdrawalDate,
+                state,
+                user,
+                client,
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
     }
 
-    private void validate(Lot lot, String invoiceNumber, BigDecimal quantity, LocalDate withdrawalDate, String state, User user, Client client) {
+    public static LotWithdrawal restore(
+            Long id,
+            Lot lot,
+            String invoiceNumber,
+            BigDecimal quantity,
+            LocalDate withdrawalDate,
+            String state,
+            User user,
+            Client client,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
+        return new LotWithdrawal(
+                id,
+                lot,
+                invoiceNumber,
+                quantity,
+                withdrawalDate,
+                state,
+                user,
+                client,
+                createdAt,
+                updatedAt
+        );
+    }
+
+    private static void validate(Lot lot, String invoiceNumber, BigDecimal quantity, LocalDate withdrawalDate, String state, User user, Client client) {
         if (lot == null) {
             throw new ValidationException("O lote deve ser informado");
         }

@@ -25,14 +25,14 @@ public class UserCreateRequest {
 
     @Schema(
             description = "Senha do usuário",
-            example = "senhaSegura123",
+            example = "senhaSegura123*",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
     @NotBlank(message = "Senha é obrigatória")
     @Size(min = 8, max = 64, message = "A senha deve ter entre 8 e 64 caracteres")
     @Pattern(
-        regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$",
-        message = "A senha deve conter pelo menos 1 letra maiúscula, 1 minúscula, 1 número e 1 caractere especial"
+            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9\\s]).{8,}$",
+            message = "A senha deve conter pelo menos 1 letra maiúscula, 1 minúscula, 1 número e 1 caractere especial"
     )
     private String password;
 

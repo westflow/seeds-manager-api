@@ -1,15 +1,13 @@
 package com.westflow.seeds_manager_api.infrastructure.seed.admin;
 
-import com.westflow.seeds_manager_api.domain.model.User;
 import com.westflow.seeds_manager_api.domain.enums.AccessLevel;
+import com.westflow.seeds_manager_api.domain.model.User;
 import com.westflow.seeds_manager_api.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 @Slf4j
@@ -45,17 +43,12 @@ public class AdminSeedService {
         }
 
         try {
-            User admin = new User(
-                    null,
+            User admin = User.newUser(
                     seedEmail,
                     passwordEncoder.encode(seedPassword),
                     "Administrador",
                     "Admin",
-                    AccessLevel.ADMIN,
-                    LocalDateTime.now(),
-                    null,
-                    null,
-                    true
+                    AccessLevel.ADMIN
             );
 
             repository.save(admin);

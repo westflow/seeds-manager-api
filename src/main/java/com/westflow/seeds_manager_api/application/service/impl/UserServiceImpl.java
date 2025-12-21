@@ -4,10 +4,12 @@ import com.westflow.seeds_manager_api.api.dto.request.UserCreateRequest;
 import com.westflow.seeds_manager_api.api.dto.response.UserResponse;
 import com.westflow.seeds_manager_api.api.mapper.UserMapper;
 import com.westflow.seeds_manager_api.application.service.UserService;
+import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
+import com.westflow.seeds_manager_api.domain.exception.ValidationException;
 import com.westflow.seeds_manager_api.domain.model.User;
 import com.westflow.seeds_manager_api.domain.repository.UserRepository;
-import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaUserRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.UserEntity;
+import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaUserRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.specification.UserSpecifications;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -53,9 +55,9 @@ public class UserServiceImpl implements UserService {
 
     public void delete(Long id) {
         UserEntity entity = jpaUserRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+            .orElseThrow(() -> new ResourceNotFoundException("Usuário", id));
         if (!entity.getActive()) {
-            throw new RuntimeException("Usuário já está inativo.");
+            throw new ValidationException("Usuário já está inativo.");
         }
         entity.setActive(false);
         jpaUserRepository.save(entity);

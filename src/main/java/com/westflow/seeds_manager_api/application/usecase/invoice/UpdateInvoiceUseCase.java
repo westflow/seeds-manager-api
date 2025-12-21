@@ -1,12 +1,11 @@
 package com.westflow.seeds_manager_api.application.usecase.invoice;
 
 import com.westflow.seeds_manager_api.api.dto.request.InvoiceRequest;
+import com.westflow.seeds_manager_api.application.usecase.seed.FindSeedByIdUseCase;
 import com.westflow.seeds_manager_api.domain.exception.DuplicateInvoiceNumberException;
-import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
 import com.westflow.seeds_manager_api.domain.model.Invoice;
 import com.westflow.seeds_manager_api.domain.model.Seed;
 import com.westflow.seeds_manager_api.domain.repository.InvoiceRepository;
-import com.westflow.seeds_manager_api.domain.repository.SeedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,16 +14,15 @@ import org.springframework.stereotype.Component;
 public class UpdateInvoiceUseCase {
 
     private final InvoiceRepository invoiceRepository;
-    private final SeedRepository seedRepository;
     private final FindInvoiceByIdUseCase findInvoiceByIdUseCase;
+    private final FindSeedByIdUseCase findSeedByIdUseCase;
 
     public Invoice execute(Long id, InvoiceRequest request) {
         Invoice existing = findInvoiceByIdUseCase.execute(id);
 
         Seed seed = existing.getSeed();
         if (!seed.getId().equals(request.getSeedId())) {
-            seed = seedRepository.findById(request.getSeedId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Semente", request.getSeedId()));
+            seed = findSeedByIdUseCase.execute(request.getSeedId());
         }
 
         if (!existing.getInvoiceNumber().equals(request.getInvoiceNumber())) {

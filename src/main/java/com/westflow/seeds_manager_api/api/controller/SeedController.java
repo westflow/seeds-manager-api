@@ -2,7 +2,9 @@ package com.westflow.seeds_manager_api.api.controller;
 
 import com.westflow.seeds_manager_api.api.dto.request.SeedRequest;
 import com.westflow.seeds_manager_api.api.dto.response.SeedResponse;
-import com.westflow.seeds_manager_api.application.service.SeedService;
+import com.westflow.seeds_manager_api.api.mapper.SeedMapper;
+import com.westflow.seeds_manager_api.application.usecase.seed.*;
+import com.westflow.seeds_manager_api.domain.model.Seed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +24,12 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Seeds", description = "Operações de sementes")
 public class SeedController {
 
-    private final SeedService seedService;
+    private final SeedMapper mapper;
+    private final RegisterSeedUseCase registerSeedUseCase;
+    private final FindPagedSeedsUseCase findPagedSeedsUseCase;
+    private final FindSeedByIdUseCase findSeedByIdUseCase;
+    private final UpdateSeedUseCase updateSeedUseCase;
+    private final DeleteSeedUseCase deleteSeedUseCase;
 
     @Operation(
             summary = "Cria uma nova semente",
@@ -35,8 +42,14 @@ public class SeedController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<SeedResponse> register(@Valid @RequestBody SeedRequest request) {
+        Seed seed = Seed.newSeed(
+                request.getSpecies(),
+                request.getCultivar(),
+                request.isProtected()
+        );
 
-        SeedResponse response = seedService.register(request);
+        Seed saved = registerSeedUseCase.execute(seed);
+        SeedResponse response = mapper.toResponse(saved);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -60,8 +73,9 @@ public class SeedController {
             @ParameterObject Pageable pageable,
             @RequestParam(value = "protected", required = false) Boolean isProtected
     ) {
-        Page<SeedResponse> page = seedService.findAll(isProtected, pageable);
-        return ResponseEntity.ok(page);
+        Page<Seed> page = findPagedSeedsUseCase.execute(isProtected, pageable);
+        Page<SeedResponse> response = page.map(mapper::toResponse);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -75,7 +89,8 @@ public class SeedController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD', 'READ_ONLY')")
     @GetMapping("/{id}")
     public ResponseEntity<SeedResponse> getById(@PathVariable Long id) {
-        SeedResponse response = seedService.findById(id);
+        Seed seed = findSeedByIdUseCase.execute(id);
+        SeedResponse response = mapper.toResponse(seed);
         return ResponseEntity.ok(response);
     }
 
@@ -91,12 +106,9 @@ public class SeedController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<SeedResponse> update(@PathVariable Long id, @Valid @RequestBody SeedRequest request) {
-        try {
-            SeedResponse response = seedService.update(id, request);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        Seed seed = updateSeedUseCase.execute(id, request);
+        SeedResponse response = mapper.toResponse(seed);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -110,11 +122,7 @@ public class SeedController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        try {
-            seedService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        deleteSeedUseCase.execute(id);
+        return ResponseEntity.noContent().build();
     }
 }

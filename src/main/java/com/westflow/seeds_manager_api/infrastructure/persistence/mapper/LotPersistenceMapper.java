@@ -92,4 +92,18 @@ public abstract class LotPersistenceMapper {
                 entity.getActive()
         );
     }
+
+    protected Seed map(SeedEntity entity) {
+        if (entity == null) return null;
+
+        return Seed.restore(
+                entity.getId(),
+                entity.getSpecies(),
+                entity.getCultivar(),
+                entity.isProtected(),
+                entity.getNormalizedSpecies(),
+                entity.getNormalizedCultivar(),
+                entity.getActive()
+        );
+    }
 }

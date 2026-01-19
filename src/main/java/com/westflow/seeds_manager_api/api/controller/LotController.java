@@ -4,7 +4,6 @@ import com.westflow.seeds_manager_api.api.config.CurrentUser;
 import com.westflow.seeds_manager_api.api.dto.request.LotRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotResponse;
 import com.westflow.seeds_manager_api.api.mapper.LotMapper;
-import com.westflow.seeds_manager_api.application.service.LotInvoiceService;
 import com.westflow.seeds_manager_api.application.usecase.lot.*;
 import com.westflow.seeds_manager_api.domain.model.Lot;
 import com.westflow.seeds_manager_api.domain.model.User;
@@ -34,7 +33,7 @@ public class LotController {
     private final FindLotByIdUseCase findLotByIdUseCase;
     private final FindPagedLotsUseCase findPagedLotsUseCase;
     private final LotMapper lotMapper;
-    private final LotInvoiceService lotInvoiceService;
+    private final FindLotInvoicesByLotIdUseCase findLotInvoicesByLotIdUseCase;
 
     @Operation(
             summary = "Cria um novo lote",
@@ -86,7 +85,7 @@ public class LotController {
         Page<Lot> lots = findPagedLotsUseCase.execute(pageable);
 
         Page<LotResponse> response = lots.map(lot -> {
-            var invoices = lotInvoiceService.findAllByLotId(lot.getId());
+            var invoices = findLotInvoicesByLotIdUseCase.execute(lot.getId());
             return lotMapper.toResponse(lot, invoices);
         });
 
@@ -109,7 +108,7 @@ public class LotController {
 
         Lot lot = findLotByIdUseCase.execute(id);
 
-        var lotInvoices = lotInvoiceService.findAllByLotId(lot.getId());
+        var lotInvoices = findLotInvoicesByLotIdUseCase.execute(lot.getId());
 
         LotResponse response = lotMapper.toResponse(lot, lotInvoices);
 

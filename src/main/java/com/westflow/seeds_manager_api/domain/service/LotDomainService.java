@@ -59,7 +59,7 @@ public class LotDomainService {
             );
 
             allocations.add(
-                    LotInvoice.create(
+                    LotInvoice.newLotInvoice(
                             lot,
                             invoice,
                             invoiceQuantity,

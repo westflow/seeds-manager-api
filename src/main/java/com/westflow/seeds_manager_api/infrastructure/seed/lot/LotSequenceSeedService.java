@@ -34,13 +34,12 @@ public class LotSequenceSeedService {
         int currentYear = LocalDate.now().getYear();
 
         try {
-            LotSequence sequence = LotSequence.builder()
-                    .year(currentYear)
-                    .lastNumber(0)
-                    .resetDone(false)
-                    .resetDate(null)
-                    .createdAt(LocalDateTime.now())
-                    .build();
+            LotSequence sequence = LotSequence.newLotSequence(
+                    currentYear,
+                    0,
+                    false,
+                    null
+            );
 
             repository.save(sequence);
             log.info("[LotSequenceSeedService] Sequência de lote criada para o ano {}.", currentYear);

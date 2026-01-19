@@ -1,8 +1,8 @@
 package com.westflow.seeds_manager_api.application.factory;
 
 import com.westflow.seeds_manager_api.api.dto.request.LotRequest;
-import com.westflow.seeds_manager_api.application.service.LotSequenceService;
 import com.westflow.seeds_manager_api.application.support.lot.LotContext;
+import com.westflow.seeds_manager_api.application.usecase.lot.GenerateNextLotNumberUseCase;
 import com.westflow.seeds_manager_api.domain.model.Lot;
 import com.westflow.seeds_manager_api.domain.model.User;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class LotFactory {
 
-    private final LotSequenceService lotSequenceService;
+    private final GenerateNextLotNumberUseCase generateNextLotNumberUseCase;
 
     public Lot create(LotRequest request, LotContext ctx, User user) {
 
-        String lotNumber = lotSequenceService.generateNextFormattedNumber();
+        String lotNumber = generateNextLotNumberUseCase.execute();
 
         return Lot.newLot(
                 lotNumber,

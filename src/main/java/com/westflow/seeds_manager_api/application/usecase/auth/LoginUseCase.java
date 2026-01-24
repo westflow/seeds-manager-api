@@ -1,30 +1,22 @@
-package com.westflow.seeds_manager_api.application.service.impl;
+package com.westflow.seeds_manager_api.application.usecase.auth;
 
 import com.westflow.seeds_manager_api.api.security.JwtTokenProvider;
-import com.westflow.seeds_manager_api.application.service.AuthService;
 import com.westflow.seeds_manager_api.domain.exception.DomainException;
 import com.westflow.seeds_manager_api.infrastructure.security.UserDetailsServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
-public class AuthServiceImpl implements AuthService {
+@Component
+@RequiredArgsConstructor
+public class LoginUseCase {
 
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthServiceImpl(UserDetailsServiceImpl userDetailsService,
-                           JwtTokenProvider jwtTokenProvider,
-                           PasswordEncoder passwordEncoder) {
-        this.userDetailsService = userDetailsService;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    @Override
-    public String login(String email, String rawPassword) {
+    public String execute(String email, String rawPassword) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
         if (!passwordEncoder.matches(rawPassword, userDetails.getPassword())) {

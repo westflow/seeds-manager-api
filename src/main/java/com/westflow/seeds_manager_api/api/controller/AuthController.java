@@ -2,7 +2,7 @@ package com.westflow.seeds_manager_api.api.controller;
 
 import com.westflow.seeds_manager_api.api.dto.request.LoginRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LoginResponse;
-import com.westflow.seeds_manager_api.application.service.AuthService;
+import com.westflow.seeds_manager_api.application.usecase.auth.LoginUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthService authService;
+    private final LoginUseCase loginUseCase;
 
     @Operation(
             summary = "Autentica um usuário",
@@ -32,7 +32,7 @@ public class AuthController {
     )
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        String token = authService.login(request.getEmail(), request.getPassword());
+        String token = loginUseCase.execute(request.getEmail(), request.getPassword());
         return ResponseEntity.ok(new LoginResponse(token));
     }
 }

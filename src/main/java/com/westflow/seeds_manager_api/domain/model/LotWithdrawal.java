@@ -22,6 +22,7 @@ public class LotWithdrawal {
     private Client client;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Boolean active;
 
     public static LotWithdrawal newWithdrawal(
             Lot lot,
@@ -44,7 +45,8 @@ public class LotWithdrawal {
                 user,
                 client,
                 LocalDateTime.now(),
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                true
         );
     }
 
@@ -58,7 +60,8 @@ public class LotWithdrawal {
             User user,
             Client client,
             LocalDateTime createdAt,
-            LocalDateTime updatedAt
+            LocalDateTime updatedAt,
+            Boolean active
     ) {
         return new LotWithdrawal(
                 id,
@@ -70,8 +73,14 @@ public class LotWithdrawal {
                 user,
                 client,
                 createdAt,
-                updatedAt
+                updatedAt,
+                active
         );
+    }
+
+    public void deactivate() {
+        this.active = false;
+        this.updatedAt = LocalDateTime.now();
     }
 
     private static void validate(Lot lot, String invoiceNumber, BigDecimal quantity, LocalDate withdrawalDate, String state, User user, Client client) {

@@ -145,7 +145,8 @@ CREATE TABLE lot_withdrawals (
     user_id BIGINT NOT NULL REFERENCES users(id),
     client_id BIGINT NOT NULL  REFERENCES clients(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 -- Tabela de Reservas de Lotes

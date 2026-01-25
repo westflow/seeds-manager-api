@@ -41,7 +41,6 @@ public class Lot {
     private BigDecimal purity;
     private User user;
     private Lab lab;
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Boolean active;

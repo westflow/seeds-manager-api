@@ -7,6 +7,8 @@ import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.LotWithd
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaLotWithdrawalRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class LotWithdrawalRepositoryAdapter implements LotWithdrawalRepository {
     private final JpaLotWithdrawalRepository jpaRepository;
@@ -29,6 +31,11 @@ public class LotWithdrawalRepositoryAdapter implements LotWithdrawalRepository {
 
     @Override
     public boolean existsByLotId(Long lotId) {
-        return jpaRepository.existsByLotId(lotId);
+        return jpaRepository.existsByLot_IdAndActiveTrue(lotId);
+    }
+
+    @Override
+    public Optional<LotWithdrawal> findById(Long id) {
+        return jpaRepository.findById(id).map(mapper::toDomain);
     }
 }

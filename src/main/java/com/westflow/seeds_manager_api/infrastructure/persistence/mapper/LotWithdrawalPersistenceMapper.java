@@ -42,7 +42,8 @@ public abstract class LotWithdrawalPersistenceMapper {
                 userPersistenceMapper.toDomain(entity.getUser()),
                 clientPersistenceMapper.toDomain(entity.getClient()),
                 entity.getCreatedAt(),
-                entity.getUpdatedAt()
+                entity.getUpdatedAt(),
+                entity.isActive()
         );
     }
 }

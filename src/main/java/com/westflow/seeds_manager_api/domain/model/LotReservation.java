@@ -2,42 +2,70 @@ package com.westflow.seeds_manager_api.domain.model;
 
 import com.westflow.seeds_manager_api.domain.enums.LotStatus;
 import com.westflow.seeds_manager_api.domain.exception.ValidationException;
-import lombok.Builder;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LotReservation {
 
-    private final Long id;
-    private final Lot lot;
-    private final String identification;
-    private final BigDecimal quantity;
-    private final LocalDateTime reservationDate;
+    private Long id;
+    private Lot lot;
+    private String identification;
+    private BigDecimal quantity;
+    private LocalDateTime reservationDate;
     private LotStatus status;
-    private final User user;
-    private final Client client;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    private User user;
+    private Client client;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    @Builder
-    public LotReservation(Long id, Lot lot, String identification, BigDecimal quantity,
-                          LocalDateTime reservationDate, LotStatus status, Client client, User user,
-                          LocalDateTime createdAt, LocalDateTime updatedAt) {
-        validate(lot, quantity, reservationDate, status, user);
+    public static LotReservation newReservation(Lot lot, String identification, BigDecimal quantity,
+                                               User user, Client client) {
+        LocalDateTime now = LocalDateTime.now();
+        LotReservation reservation = new LotReservation(
+                null,
+                lot,
+                identification,
+                quantity,
+                now,
+                LotStatus.RESERVED,
+                user,
+                client,
+                now,
+                null
+        );
 
-        this.id = id;
-        this.lot = lot;
-        this.identification = identification;
-        this.quantity = quantity;
-        this.reservationDate = reservationDate;
-        this.status = status;
-        this.client = client;
-        this.user = user;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        reservation.validate(lot, quantity, reservation.getReservationDate(), reservation.getStatus(), user);
+
+        return reservation;
+    }
+
+    public static LotReservation restore(Long id, Lot lot, String identification, BigDecimal quantity,
+                                         LocalDateTime reservationDate, LotStatus status, Client client, User user,
+                                         LocalDateTime createdAt, LocalDateTime updatedAt) {
+        LotReservation reservation = new LotReservation(
+                id,
+                lot,
+                identification,
+                quantity,
+                reservationDate,
+                status,
+                user,
+                client,
+                createdAt,
+                updatedAt
+        );
+
+        reservation.validate(lot, quantity, reservationDate, status, user);
+
+        return reservation;
     }
 
     private void validate(Lot lot, BigDecimal quantity, LocalDateTime reservationDate,
@@ -64,8 +92,11 @@ public class LotReservation {
     }
 
     public void cancel() {
-        if (status == LotStatus.CANCELLED)
-            throw new ValidationException("A reserva já está cancelada");
+        if (this.status != LotStatus.RESERVED) {
+            throw new ValidationException("Reserva não pode ser cancelada");
+        }
+
         this.status = LotStatus.CANCELLED;
+        this.updatedAt = LocalDateTime.now();
     }
 }

@@ -82,8 +82,6 @@ public class Lot {
         lot.bagType = bagType;
         lot.quantityTotal = quantityTotal;
         lot.balance = quantityTotal;
-
-        // campos vindos da request
         lot.productionOrder = productionOrder;
         lot.analysisBulletin = analysisBulletin;
         lot.bulletinDate = bulletinDate;
@@ -94,7 +92,6 @@ public class Lot {
         lot.prohibited = prohibited;
         lot.validityDate = validityDate;
         lot.seedScore = seedScore;
-
         lot.purity = purity;
         lot.user = user;
         lot.lab = lab;
@@ -146,7 +143,6 @@ public class Lot {
         this.prohibited = prohibited;
         this.validityDate = validityDate;
         this.seedScore = seedScore;
-
         this.purity = purity;
         this.user = user;
         this.updatedAt = LocalDateTime.now();
@@ -213,6 +209,20 @@ public class Lot {
             throw new BusinessException("Saldo insuficiente no lote.");
         }
         this.balance = this.balance.subtract(quantity);
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void increaseBalance(BigDecimal quantity) {
+        if (quantity == null || quantity.signum() <= 0) {
+            throw new BusinessException("Quantidade deve ser maior que zero");
+        }
+
+        BigDecimal newBalance = this.balance.add(quantity);
+        if (newBalance.compareTo(this.quantityTotal) > 0) {
+            throw new BusinessException("Saldo não pode exceder a quantidade total do lote.");
+        }
+
+        this.balance = newBalance;
         this.updatedAt = LocalDateTime.now();
     }
 

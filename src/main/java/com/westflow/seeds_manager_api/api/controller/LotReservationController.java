@@ -4,6 +4,7 @@ import com.westflow.seeds_manager_api.api.config.CurrentUser;
 import com.westflow.seeds_manager_api.api.dto.request.LotReservationRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotReservationResponse;
 import com.westflow.seeds_manager_api.application.usecase.lot.ReserveLotUseCase;
+import com.westflow.seeds_manager_api.application.usecase.lot.CancelLotReservationUseCase;
 import com.westflow.seeds_manager_api.domain.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LotReservationController {
 
     private final ReserveLotUseCase reserveLotUseCase;
+    private final CancelLotReservationUseCase cancelLotReservationUseCase;
 
     @Operation(
             summary = "Cria uma nova reserva de lote",
@@ -42,5 +45,21 @@ public class LotReservationController {
 
         LotReservationResponse response = reserveLotUseCase.execute(request, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @Operation(
+            summary = "Cancela uma reserva de lote",
+            description = "Cancela logicamente uma reserva de lote e atualiza o saldo do lote",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Reserva cancelada com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Reserva não pode ser cancelada"),
+                    @ApiResponse(responseCode = "404", description = "Reserva não encontrada")
+            }
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD')")
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<Void> cancel(@PathVariable Long id) {
+        cancelLotReservationUseCase.execute(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -30,8 +30,13 @@ public class ReserveLotUseCase {
 
         Client client = findClientByIdUseCase.execute(request.getClientId());
 
-        LotReservation reservation =
-                mapper.toDomain(request, user, lot, client);
+        LotReservation reservation = LotReservation.newReservation(
+            lot,
+            request.getIdentification(),
+            request.getQuantity(),
+            user,
+            client
+        );
 
         LotReservation saved =
                 lotReservationRepository.save(reservation);

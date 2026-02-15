@@ -83,6 +83,33 @@ public class LotWithdrawal {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void update(String invoiceNumber, BigDecimal quantity, LocalDate withdrawalDate, String state) {
+        if (invoiceNumber != null && invoiceNumber.isBlank()) {
+            throw new ValidationException("O número da nota fiscal de saída é obrigatório quando informado");
+        }
+
+        if (quantity == null || quantity.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new ValidationException("A quantidade deve ser maior que zero");
+        }
+
+        if (withdrawalDate == null) {
+            throw new ValidationException("A data de saída é obrigatória");
+        }
+
+        if (state == null || state.isBlank()) {
+            throw new ValidationException("O estado (UF) é obrigatório");
+        }
+
+        if (invoiceNumber != null) {
+            this.invoiceNumber = invoiceNumber;
+        }
+
+        this.quantity = quantity;
+        this.withdrawalDate = withdrawalDate;
+        this.state = state;
+        this.updatedAt = LocalDateTime.now();
+    }
+
     private static void validate(Lot lot, String invoiceNumber, BigDecimal quantity, LocalDate withdrawalDate, String state, User user, Client client) {
         if (lot == null) {
             throw new ValidationException("O lote deve ser informado");

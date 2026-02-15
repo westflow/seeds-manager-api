@@ -14,7 +14,16 @@ public class ConsumeLotBalanceUseCase {
     private final LotRepository lotRepository;
 
     public void execute(Lot lot, BigDecimal quantity) {
+        consume(lot, quantity);
+    }
+
+    public void consume(Lot lot, BigDecimal quantity) {
         lot.decreaseBalance(quantity);
+        lotRepository.save(lot);
+    }
+
+    public void refund(Lot lot, BigDecimal quantity) {
+        lot.increaseBalance(quantity);
         lotRepository.save(lot);
     }
 }

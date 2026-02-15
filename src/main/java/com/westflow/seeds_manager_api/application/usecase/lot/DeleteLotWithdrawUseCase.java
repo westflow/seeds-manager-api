@@ -1,9 +1,7 @@
 package com.westflow.seeds_manager_api.application.usecase.lot;
 
 import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException;
-import com.westflow.seeds_manager_api.domain.model.Lot;
 import com.westflow.seeds_manager_api.domain.model.LotWithdrawal;
-import com.westflow.seeds_manager_api.domain.repository.LotRepository;
 import com.westflow.seeds_manager_api.domain.repository.LotWithdrawalRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class DeleteLotWithdrawUseCase {
 
     private final LotWithdrawalRepository lotWithdrawalRepository;
-    private final LotRepository lotRepository;
+    private final ConsumeLotBalanceUseCase consumeLotBalanceUseCase;
 
     @Transactional
     public void execute(Long id) {
@@ -24,10 +22,7 @@ public class DeleteLotWithdrawUseCase {
 
         lotWithdrawal.deactivate();
 
-        Lot lot = lotWithdrawal.getLot();
-
-        lot.increaseBalance(lotWithdrawal.getQuantity());
-        lotRepository.save(lot);
+        consumeLotBalanceUseCase.refund(lotWithdrawal.getLot(), lotWithdrawal.getQuantity());
 
         lotWithdrawalRepository.save(lotWithdrawal);
     }

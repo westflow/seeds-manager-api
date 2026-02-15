@@ -2,8 +2,10 @@ package com.westflow.seeds_manager_api.api.controller;
 
 import com.westflow.seeds_manager_api.api.config.CurrentUser;
 import com.westflow.seeds_manager_api.api.dto.request.LotWithdrawalRequest;
+import com.westflow.seeds_manager_api.api.dto.request.LotWithdrawalUpdateRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotWithdrawalResponse;
 import com.westflow.seeds_manager_api.application.usecase.lot.DeleteLotWithdrawUseCase;
+import com.westflow.seeds_manager_api.application.usecase.lot.UpdateLotWithdrawalUseCase;
 import com.westflow.seeds_manager_api.application.usecase.lot.WithdrawLotUseCase;
 import com.westflow.seeds_manager_api.domain.model.User;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +27,7 @@ public class LotWithdrawalController {
 
     private final WithdrawLotUseCase withdrawLotUseCase;
     private final DeleteLotWithdrawUseCase deleteLotWithdrawUseCase;
+    private final UpdateLotWithdrawalUseCase updateLotWithdrawalUseCase;
 
     @Operation(
             summary = "Baixa de lotes",
@@ -41,6 +44,26 @@ public class LotWithdrawalController {
 
         LotWithdrawalResponse response = withdrawLotUseCase.execute(request, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @Operation(
+            summary = "Atualiza uma baixa de lote",
+            description = "Atualiza os dados de uma baixa de lote existente (quantidade, data e estado) e ajusta o saldo do lote",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Baixa de lote atualizada com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+                    @ApiResponse(responseCode = "404", description = "Baixa de lote não encontrada")
+            }
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<LotWithdrawalResponse> update(
+            @Parameter(description = "ID da baixa de lote", required = true)
+            @PathVariable Long id,
+            @Valid @RequestBody LotWithdrawalUpdateRequest request
+    ) {
+        LotWithdrawalResponse response = updateLotWithdrawalUseCase.execute(id, request);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(

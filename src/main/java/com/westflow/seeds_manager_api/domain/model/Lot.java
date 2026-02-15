@@ -225,10 +225,6 @@ public class Lot {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void applyAllocations(List<LotInvoice> allocations) {
-        allocations.forEach(a -> decreaseBalance(a.getAllocatedQuantityLot()));
-    }
-
     public void deactivate() {
         this.active = false;
         this.updatedAt = LocalDateTime.now();

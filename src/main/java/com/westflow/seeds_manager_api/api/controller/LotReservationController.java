@@ -5,6 +5,7 @@ import com.westflow.seeds_manager_api.api.dto.request.LotReservationRequest;
 import com.westflow.seeds_manager_api.api.dto.response.LotReservationResponse;
 import com.westflow.seeds_manager_api.application.usecase.lot.ReserveLotUseCase;
 import com.westflow.seeds_manager_api.application.usecase.lot.CancelLotReservationUseCase;
+import com.westflow.seeds_manager_api.application.usecase.lot.FindLotReservationsByLotIdUseCase;
 import com.westflow.seeds_manager_api.domain.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,14 +13,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "LotReservations", description = "Operações de reserva de lotes")
 @RestController
@@ -29,6 +29,7 @@ public class LotReservationController {
 
     private final ReserveLotUseCase reserveLotUseCase;
     private final CancelLotReservationUseCase cancelLotReservationUseCase;
+    private final FindLotReservationsByLotIdUseCase findLotReservationsByLotIdUseCase;
 
     @Operation(
             summary = "Cria uma nova reserva de lote",
@@ -45,6 +46,23 @@ public class LotReservationController {
 
         LotReservationResponse response = reserveLotUseCase.execute(request, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @Operation(
+            summary = "Lista reservas de um lote",
+            description = "Retorna uma lista paginada de reservas associadas a um lote específico.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista retornada")
+            }
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'STANDARD')")
+    @GetMapping("/lot/{lotId}")
+    public ResponseEntity<Page<LotReservationResponse>> listByLot(
+            @PathVariable Long lotId,
+            @ParameterObject Pageable pageable
+    ) {
+        Page<LotReservationResponse> page = findLotReservationsByLotIdUseCase.execute(lotId, pageable);
+        return ResponseEntity.ok(page);
     }
 
     @Operation(

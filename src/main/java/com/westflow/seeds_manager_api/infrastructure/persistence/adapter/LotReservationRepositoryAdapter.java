@@ -6,6 +6,8 @@ import com.westflow.seeds_manager_api.domain.repository.LotReservationRepository
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.LotReservationEntity;
 import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.LotReservationPersistenceMapper;
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaLotReservationRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import java.util.Optional;
 
@@ -38,5 +40,11 @@ public class LotReservationRepositoryAdapter implements LotReservationRepository
     public Optional<LotReservation> findById(Long id) {
         return jpaRepository.findById(id)
                 .map(mapper::toDomain);
+    }
+
+    @Override
+    public Page<LotReservation> findByLotId(Long lotId, Pageable pageable) {
+        Page<LotReservationEntity> page = jpaRepository.findByLot_IdAndStatus(lotId, LotStatus.RESERVED, pageable);
+        return page.map(mapper::toDomain);
     }
 }

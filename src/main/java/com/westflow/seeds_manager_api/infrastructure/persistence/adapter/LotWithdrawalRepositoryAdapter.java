@@ -5,6 +5,8 @@ import com.westflow.seeds_manager_api.domain.repository.LotWithdrawalRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.entity.LotWithdrawalEntity;
 import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.LotWithdrawalPersistenceMapper;
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaLotWithdrawalRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -37,5 +39,11 @@ public class LotWithdrawalRepositoryAdapter implements LotWithdrawalRepository {
     @Override
     public Optional<LotWithdrawal> findById(Long id) {
         return jpaRepository.findById(id).map(mapper::toDomain);
+    }
+
+    @Override
+    public Page<LotWithdrawal> findByLotId(Long lotId, Pageable pageable) {
+        Page<LotWithdrawalEntity> page = jpaRepository.findByLot_IdAndActiveTrue(lotId, pageable);
+        return page.map(mapper::toDomain);
     }
 }

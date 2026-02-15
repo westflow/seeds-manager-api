@@ -7,6 +7,7 @@ import com.westflow.seeds_manager_api.api.dto.response.LotWithdrawalResponse;
 import com.westflow.seeds_manager_api.application.usecase.lot.DeleteLotWithdrawUseCase;
 import com.westflow.seeds_manager_api.application.usecase.lot.UpdateLotWithdrawalUseCase;
 import com.westflow.seeds_manager_api.application.usecase.lot.WithdrawLotUseCase;
+import com.westflow.seeds_manager_api.application.usecase.lot.FindLotWithdrawalsByLotIdUseCase;
 import com.westflow.seeds_manager_api.domain.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,6 +15,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +32,7 @@ public class LotWithdrawalController {
     private final WithdrawLotUseCase withdrawLotUseCase;
     private final DeleteLotWithdrawUseCase deleteLotWithdrawUseCase;
     private final UpdateLotWithdrawalUseCase updateLotWithdrawalUseCase;
+    private final FindLotWithdrawalsByLotIdUseCase findLotWithdrawalsByLotIdUseCase;
 
     @Operation(
             summary = "Baixa de lotes",
@@ -44,6 +49,23 @@ public class LotWithdrawalController {
 
         LotWithdrawalResponse response = withdrawLotUseCase.execute(request, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @Operation(
+            summary = "Lista baixas de um lote",
+            description = "Retorna uma lista paginada de baixas associadas a um lote específico.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista retornada")
+            }
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/lot/{lotId}")
+    public ResponseEntity<Page<LotWithdrawalResponse>> listByLot(
+            @PathVariable Long lotId,
+            @ParameterObject Pageable pageable
+    ) {
+        Page<LotWithdrawalResponse> page = findLotWithdrawalsByLotIdUseCase.execute(lotId, pageable);
+        return ResponseEntity.ok(page);
     }
 
     @Operation(

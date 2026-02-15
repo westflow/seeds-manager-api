@@ -102,4 +102,46 @@ public class User {
     public void updateLastLogin() {
         this.lastLogin = LocalDateTime.now();
     }
+
+    public void updateProfile(String name, String position) {
+        if (name == null || name.isBlank()) {
+            throw new ValidationException("Nome é obrigatório");
+        }
+
+        this.name = name;
+        this.position = position;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void adminUpdate(String email, String name, String position, AccessLevel accessLevel) {
+        if (this.accessLevel == AccessLevel.ADMIN) {
+            throw new ValidationException("Não é permitido alterar usuário ADMIN");
+        }
+
+        if (email != null && email.isBlank()) {
+            throw new ValidationException("Email é obrigatório quando informado");
+        }
+
+        if (name != null && name.isBlank()) {
+            throw new ValidationException("Nome é obrigatório quando informado");
+        }
+
+        if (email != null) {
+            this.email = email;
+        }
+
+        if (name != null) {
+            this.name = name;
+        }
+
+        if (position != null) {
+            this.position = position;
+        }
+
+        if (accessLevel != null) {
+            this.accessLevel = accessLevel;
+        }
+
+        this.updatedAt = LocalDateTime.now();
+    }
 }

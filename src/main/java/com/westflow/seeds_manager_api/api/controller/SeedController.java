@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/seeds")
+@RequestMapping("/seeds")
 @Tag(name = "Seeds", description = "Operações de sementes")
 public class SeedController {
 

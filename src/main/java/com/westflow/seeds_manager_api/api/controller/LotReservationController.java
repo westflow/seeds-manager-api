@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "LotReservations", description = "Operações de reserva de lotes")
 @RestController
-@RequestMapping("/api/reservations")
+@RequestMapping("/lot/reservations")
 @RequiredArgsConstructor
 public class LotReservationController {
 

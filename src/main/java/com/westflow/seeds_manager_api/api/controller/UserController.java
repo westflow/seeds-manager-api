@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Users", description = "Operações de usuários")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
 
     private final RegisterUserUseCase registerUserUseCase;

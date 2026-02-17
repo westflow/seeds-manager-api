@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/bag-types")
+@RequestMapping("/bag-types")
 @Tag(name = "BagTypes", description = "Operações de tipo de sacaria")
 public class BagTypeController {
 

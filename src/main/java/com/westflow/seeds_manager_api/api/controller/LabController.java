@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/labs")
+@RequestMapping("/labs")
 @Tag(name = "Labs", description = "Operações de laboratórios credenciados")
 public class LabController {
 

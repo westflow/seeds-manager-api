@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "LotWithdrawals", description = "Operações de baixa de lotes")
 @RestController
-@RequestMapping("/api/lot/withdrawals")
+@RequestMapping("/lot/withdrawals")
 @RequiredArgsConstructor
 public class LotWithdrawalController {
 

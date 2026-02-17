@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/invoices")
+@RequestMapping("/invoices")
 @Tag(name = "Invoices", description = "Operações de notas fiscais")
 public class InvoiceController {
 

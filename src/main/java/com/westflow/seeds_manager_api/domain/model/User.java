@@ -1,6 +1,7 @@
 package com.westflow.seeds_manager_api.domain.model;
 
-import com.westflow.seeds_manager_api.domain.enums.AccessLevel;
+import com.westflow.seeds_manager_api.domain.enums.SystemRole;
+import com.westflow.seeds_manager_api.domain.enums.TenantRole;
 import com.westflow.seeds_manager_api.domain.exception.ValidationException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,20 +19,23 @@ public class User {
     private String password;
     private String name;
     private String position;
-    private AccessLevel accessLevel;
+    private TenantRole tenantRole;
+    private SystemRole systemRole;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime lastLogin;
     private Boolean active = true;
 
-    public static User newUser(String email, String password, String name, String position, AccessLevel accessLevel) {
-        validateStatic(email, password, name, accessLevel);
+    public static User newUser(String email, String password, String name, String position,
+                               TenantRole tenantRole, SystemRole systemRole) {
+        validateStatic(email, password, name, tenantRole);
         User u = new User();
         u.email = email;
         u.password = password;
         u.name = name;
         u.position = position;
-        u.accessLevel = accessLevel;
+        u.tenantRole = tenantRole;
+        u.systemRole = systemRole;
         u.createdAt = LocalDateTime.now();
         u.updatedAt = LocalDateTime.now();
         u.active = true;
@@ -39,7 +43,8 @@ public class User {
     }
 
     public static User restore(Long id, String email, String password, String name, String position,
-                               AccessLevel accessLevel, LocalDateTime createdAt,
+                               TenantRole tenantRole, SystemRole systemRole,
+                               LocalDateTime createdAt,
                                LocalDateTime updatedAt, LocalDateTime lastLogin, Boolean active) {
         return new User(
                 id,
@@ -47,7 +52,8 @@ public class User {
                 password,
                 name,
                 position,
-                accessLevel,
+                tenantRole,
+                systemRole,
                 createdAt,
                 updatedAt,
                 lastLogin,
@@ -62,7 +68,8 @@ public class User {
                 encodedPassword,
                 this.name,
                 this.position,
-                this.accessLevel,
+                this.tenantRole,
+                this.systemRole,
                 this.createdAt,
                 this.updatedAt,
                 this.lastLogin,
@@ -74,7 +81,7 @@ public class User {
         this.lastLogin = LocalDateTime.now();
     }
 
-    private static void validateStatic(String email, String password, String name, AccessLevel accessLevel) {
+    private static void validateStatic(String email, String password, String name, TenantRole tenantRole) {
         if (email == null || email.isBlank()) {
             throw new ValidationException("Email é obrigatório");
         }
@@ -87,8 +94,8 @@ public class User {
             throw new ValidationException("Nome é obrigatório");
         }
 
-        if (accessLevel == null) {
-            throw new ValidationException("Nível de acesso é obrigatório");
+        if (tenantRole == null) {
+            throw new ValidationException("Perfil é obrigatório");
         }
     }
 
@@ -113,10 +120,7 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void adminUpdate(String email, String name, String position, AccessLevel accessLevel) {
-        if (this.accessLevel == AccessLevel.ADMIN) {
-            throw new ValidationException("Não é permitido alterar usuário ADMIN");
-        }
+    public void adminUpdate(String email, String name, String position, TenantRole tenantRole) {
 
         if (email != null && email.isBlank()) {
             throw new ValidationException("Email é obrigatório quando informado");
@@ -138,8 +142,8 @@ public class User {
             this.position = position;
         }
 
-        if (accessLevel != null) {
-            this.accessLevel = accessLevel;
+        if (tenantRole != null) {
+            this.tenantRole = tenantRole;
         }
 
         this.updatedAt = LocalDateTime.now();

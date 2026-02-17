@@ -1,6 +1,7 @@
 package com.westflow.seeds_manager_api.infrastructure.persistence.entity;
 
-import com.westflow.seeds_manager_api.domain.enums.AccessLevel;
+import com.westflow.seeds_manager_api.domain.enums.SystemRole;
+import com.westflow.seeds_manager_api.domain.enums.TenantRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,8 +28,12 @@ public class UserEntity {
     private String position;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "access_level", nullable = false)
-    private AccessLevel accessLevel;
+    @Column(name = "tenant_role", nullable = false)
+    private TenantRole tenantRole;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "system_role")
+    private SystemRole systemRole;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();

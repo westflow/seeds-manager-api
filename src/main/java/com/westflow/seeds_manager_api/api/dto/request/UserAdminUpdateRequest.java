@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.api.dto.request;
 
-import com.westflow.seeds_manager_api.domain.enums.AccessLevel;
+import com.westflow.seeds_manager_api.domain.enums.TenantRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
@@ -30,6 +30,6 @@ public class UserAdminUpdateRequest {
     @Pattern(regexp = "^[\\p{L}\\s0-9.,'-]*$", message = "Cargo contém caracteres inválidos")
     private String position;
 
-    @Schema(description = "Nível de acesso do usuário", example = "STANDARD")
-    private AccessLevel accessLevel;
+    @Schema(description = "Perfil do usuário no tenant", example = "STANDARD")
+    private TenantRole tenantRole;
 }

@@ -1,6 +1,7 @@
 package com.westflow.seeds_manager_api.infrastructure.seed.admin;
 
-import com.westflow.seeds_manager_api.domain.enums.AccessLevel;
+import com.westflow.seeds_manager_api.domain.enums.SystemRole;
+import com.westflow.seeds_manager_api.domain.enums.TenantRole;
 import com.westflow.seeds_manager_api.domain.model.User;
 import com.westflow.seeds_manager_api.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +49,8 @@ public class AdminSeedService {
                     passwordEncoder.encode(seedPassword),
                     "Administrador",
                     "Admin",
-                    AccessLevel.ADMIN
+                    TenantRole.OWNER,
+                    SystemRole.SUPER_ADMIN
             );
 
             repository.save(admin);

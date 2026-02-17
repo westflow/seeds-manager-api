@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.security;
 
-import com.westflow.seeds_manager_api.domain.enums.AccessLevel;
+import com.westflow.seeds_manager_api.domain.enums.TenantRole;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -25,5 +25,5 @@ public class TestUserCreateRequest {
     private String position;
     
     @NotNull
-    private AccessLevel accessLevel;
+    private TenantRole tenantRole;
 }

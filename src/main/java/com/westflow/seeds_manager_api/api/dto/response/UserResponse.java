@@ -1,10 +1,10 @@
 package com.westflow.seeds_manager_api.api.dto.response;
 
-import com.westflow.seeds_manager_api.domain.enums.AccessLevel;
+import com.westflow.seeds_manager_api.domain.enums.SystemRole;
+import com.westflow.seeds_manager_api.domain.enums.TenantRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +34,9 @@ public class UserResponse {
     @Pattern(regexp = "^[\\p{L}\\s0-9.,'-]*$", message = "Cargo contém caracteres inválidos")
     private String position;
 
-    @Schema(description = "Nível de acesso do usuário", example = "ADMIN")
-    private AccessLevel accessLevel;
+    @Schema(description = "Perfil do usuário no tenant", example = "ADMIN")
+    private TenantRole tenantRole;
+
+    @Schema(description = "Papel global do usuário no sistema (quando aplicável)", example = "SUPER_ADMIN")
+    private SystemRole systemRole;
 }

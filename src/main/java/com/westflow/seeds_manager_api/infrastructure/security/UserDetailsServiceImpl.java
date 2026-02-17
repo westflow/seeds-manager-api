@@ -23,10 +23,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         user.updateLastLogin();
         userRepository.save(user);
 
+        String tenantRole = user.getTenantRole() != null ? user.getTenantRole().name() : "STANDARD";
+        String[] roles;
+        if (user.getSystemRole() != null) {
+            roles = new String[]{tenantRole, user.getSystemRole().name()};
+        } else {
+            roles = new String[]{tenantRole};
+        }
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail()) // aqui é o login
                 .password(user.getPassword())
-                .roles(user.getAccessLevel().name())
+                .roles(roles)
                 .build();
     }
 }

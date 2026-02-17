@@ -1,6 +1,7 @@
 package com.westflow.seeds_manager_api.domain.enums;
 
-public enum AccessLevel {
+public enum TenantRole {
+    OWNER,
     ADMIN,
     STANDARD,
     READ_ONLY

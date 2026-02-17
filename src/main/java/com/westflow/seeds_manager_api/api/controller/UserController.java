@@ -6,6 +6,9 @@ import com.westflow.seeds_manager_api.api.dto.request.UserChangePasswordRequest;
 import com.westflow.seeds_manager_api.api.dto.request.UserCreateRequest;
 import com.westflow.seeds_manager_api.api.dto.request.UserProfileUpdateRequest;
 import com.westflow.seeds_manager_api.api.dto.response.UserResponse;
+import com.westflow.seeds_manager_api.domain.enums.SystemRole;
+import com.westflow.seeds_manager_api.domain.enums.TenantRole;
+import com.westflow.seeds_manager_api.domain.exception.ValidationException;
 import com.westflow.seeds_manager_api.application.usecase.user.AdminUpdateUserUseCase;
 import com.westflow.seeds_manager_api.application.usecase.user.ChangeUserPasswordUseCase;
 import com.westflow.seeds_manager_api.application.usecase.user.RegisterUserUseCase;
@@ -43,15 +46,39 @@ public class UserController {
                     @ApiResponse(responseCode = "400", description = "Dados inválidos")
             }
     )
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('OWNER','ADMIN','SUPER_ADMIN')")
     @PostMapping
-    public ResponseEntity<UserResponse> create(@Valid @RequestBody UserCreateRequest request) {
+    public ResponseEntity<UserResponse> create(
+            @Parameter(hidden = true) @CurrentUser User currentUser,
+            @Valid @RequestBody UserCreateRequest request
+    ) {
+        TenantRole targetRole = request.getTenantRole();
+
+        boolean isSuperAdmin = currentUser.getSystemRole() == SystemRole.SUPER_ADMIN;
+
+        if (!isSuperAdmin) {
+            TenantRole actorRole = currentUser.getTenantRole();
+
+            if (actorRole == TenantRole.OWNER) {
+                if (!(targetRole == TenantRole.ADMIN || targetRole == TenantRole.STANDARD || targetRole == TenantRole.READ_ONLY)) {
+                    throw new ValidationException("OWNER só pode criar usuários ADMIN, STANDARD ou READ_ONLY");
+                }
+            } else if (actorRole == TenantRole.ADMIN) {
+                if (!(targetRole == TenantRole.STANDARD || targetRole == TenantRole.READ_ONLY)) {
+                    throw new ValidationException("ADMIN só pode criar usuários STANDARD ou READ_ONLY");
+                }
+            } else {
+                throw new ValidationException("Usuário sem permissão para criar outros usuários");
+            }
+        }
+
         User user = User.newUser(
                 request.getEmail(),
                 request.getPassword(),
                 request.getName(),
                 request.getPosition(),
-                request.getAccessLevel()
+                targetRole,
+                null
         );
 
         User saved = registerUserUseCase.execute(user);
@@ -116,13 +143,14 @@ public class UserController {
                     @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
             }
     )
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('OWNER','ADMIN','SUPER_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> adminUpdate(
+            @Parameter(hidden = true) @CurrentUser User currentUser,
             @PathVariable Long id,
             @Valid @RequestBody UserAdminUpdateRequest request
     ) {
-        UserResponse response = adminUpdateUserUseCase.execute(id, request);
+        UserResponse response = adminUpdateUserUseCase.execute(currentUser, id, request);
         return ResponseEntity.ok(response);
     }
 }

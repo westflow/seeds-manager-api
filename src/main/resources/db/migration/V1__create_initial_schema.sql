@@ -32,7 +32,8 @@ CREATE TABLE users (
     password VARCHAR(100) NOT NULL,
     name VARCHAR(100) NOT NULL,
     position VARCHAR(100),
-    access_level VARCHAR(20) NOT NULL, -- ADMIN, STANDARD, READ_ONLY
+    tenant_role VARCHAR(20) NOT NULL, -- OWNER, ADMIN, STANDARD, READ_ONLY
+    system_role VARCHAR(20),          -- SUPER_ADMIN
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
     last_login TIMESTAMP,
@@ -176,7 +177,8 @@ CREATE INDEX idx_clients_active ON clients(active);
 
 -- Índices para users
 CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_users_access_level ON users(access_level);
+CREATE INDEX idx_users_tenant_role ON users(tenant_role);
+CREATE INDEX idx_users_system_role ON users(system_role);
 CREATE INDEX idx_users_active ON users(active);
 
 -- Índices para invoices

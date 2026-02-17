@@ -1,6 +1,6 @@
 package com.westflow.seeds_manager_api.api.dto.request;
 
-import com.westflow.seeds_manager_api.domain.enums.AccessLevel;
+import com.westflow.seeds_manager_api.domain.enums.TenantRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
@@ -55,10 +55,10 @@ public class UserCreateRequest {
     private String position;
 
     @Schema(
-            description = "Nível de acesso do usuário",
+            description = "Perfil do usuário no tenant",
             example = "ADMIN",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    @NotNull(message = "Nível de acesso é obrigatório")
-    private AccessLevel accessLevel;
+    @NotNull(message = "Perfil do tenant é obrigatório")
+    private TenantRole tenantRole;
 }

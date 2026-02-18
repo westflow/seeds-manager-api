@@ -21,6 +21,7 @@ public class User {
     private String position;
     private TenantRole tenantRole;
     private SystemRole systemRole;
+    private Long companyId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime lastLogin;
@@ -36,6 +37,7 @@ public class User {
         u.position = position;
         u.tenantRole = tenantRole;
         u.systemRole = systemRole;
+        u.companyId = null;
         u.createdAt = LocalDateTime.now();
         u.updatedAt = LocalDateTime.now();
         u.active = true;
@@ -43,7 +45,7 @@ public class User {
     }
 
     public static User restore(Long id, String email, String password, String name, String position,
-                               TenantRole tenantRole, SystemRole systemRole,
+                               TenantRole tenantRole, SystemRole systemRole, Long companyId,
                                LocalDateTime createdAt,
                                LocalDateTime updatedAt, LocalDateTime lastLogin, Boolean active) {
         return new User(
@@ -54,6 +56,7 @@ public class User {
                 position,
                 tenantRole,
                 systemRole,
+                companyId,
                 createdAt,
                 updatedAt,
                 lastLogin,
@@ -70,6 +73,24 @@ public class User {
                 this.position,
                 this.tenantRole,
                 this.systemRole,
+                this.companyId,
+                this.createdAt,
+                this.updatedAt,
+                this.lastLogin,
+                this.active
+        );
+    }
+
+    public User withCompanyId(Long companyId) {
+        return new User(
+                this.id,
+                this.email,
+                this.password,
+                this.name,
+                this.position,
+                this.tenantRole,
+                this.systemRole,
+                companyId,
                 this.createdAt,
                 this.updatedAt,
                 this.lastLogin,

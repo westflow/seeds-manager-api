@@ -1,6 +1,27 @@
 -- Ativa a extensão unaccent
 CREATE EXTENSION IF NOT EXISTS unaccent;
 
+-- Tabela de Empresas
+CREATE TABLE companies (
+    id BIGSERIAL PRIMARY KEY,
+    legal_name VARCHAR(200) NOT NULL,   -- Razão Social
+    trade_name VARCHAR(200),             -- Nome Fantasia
+    cnpj VARCHAR(18) UNIQUE,             -- CNPJ
+    logo_url TEXT,
+    primary_color VARCHAR(20),
+    secondary_color VARCHAR(20),
+    email VARCHAR(150),
+    phone VARCHAR(20),
+    address VARCHAR(200),
+    city VARCHAR(100),
+    state VARCHAR(2),
+    zip_code VARCHAR(10),
+    tenant_code VARCHAR(50) UNIQUE NOT NULL, -- usado em URLs customizadas
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    active BOOLEAN NOT NULL DEFAULT TRUE
+);
+
 -- Tabela de Sementes
 CREATE TABLE seeds (
     id BIGSERIAL PRIMARY KEY,
@@ -37,7 +58,8 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
     last_login TIMESTAMP,
-    active BOOLEAN NOT NULL DEFAULT TRUE
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    company_id BIGINT REFERENCES companies(id)
 );
 
 -- Tabela de Notas Fiscais de entrada
@@ -180,6 +202,7 @@ CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_tenant_role ON users(tenant_role);
 CREATE INDEX idx_users_system_role ON users(system_role);
 CREATE INDEX idx_users_active ON users(active);
+CREATE INDEX idx_users_company_id ON users(company_id);
 
 -- Índices para invoices
 CREATE INDEX idx_invoices_invoice_number ON invoices(invoice_number);
@@ -225,6 +248,15 @@ CREATE INDEX idx_lot_reservations_reservation_date ON lot_reservations(reservati
 -- Índices para lot_invoices
 CREATE INDEX idx_lot_invoices_lot_id ON lot_invoices(lot_id);
 CREATE INDEX idx_lot_invoices_invoice_id ON lot_invoices(invoice_id);
+
+-- Índices para companies
+CREATE UNIQUE INDEX idx_companies_tenant_code ON companies(tenant_code);
+CREATE UNIQUE INDEX idx_companies_cnpj ON companies(cnpj);
+CREATE INDEX idx_companies_trade_name ON companies(trade_name);
+CREATE INDEX idx_companies_legal_name ON companies(legal_name);
+CREATE INDEX idx_companies_email ON companies(email);
+CREATE INDEX idx_companies_active ON companies(active);
+CREATE INDEX idx_companies_active_trade ON companies(active, trade_name);
 
 -- Criação do trigger normalização sementes
 CREATE OR REPLACE FUNCTION normalize_seed_fields()

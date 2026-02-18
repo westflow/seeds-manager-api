@@ -35,6 +35,9 @@ public class UserEntity {
     @Column(name = "system_role")
     private SystemRole systemRole;
 
+    @Column(name = "company_id")
+    private Long companyId;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 

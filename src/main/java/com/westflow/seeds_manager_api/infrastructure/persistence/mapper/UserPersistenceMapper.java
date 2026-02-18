@@ -19,6 +19,7 @@ public interface UserPersistenceMapper {
                 entity.getPosition(),
                 entity.getTenantRole(),
                 entity.getSystemRole(),
+                entity.getCompanyId(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),
                 entity.getLastLogin(),

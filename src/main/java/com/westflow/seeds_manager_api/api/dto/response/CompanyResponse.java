@@ -25,6 +25,30 @@ public class CompanyResponse {
     @Schema(description = "CNPJ", example = "12345678000190")
     private String cnpj;
 
-    @Schema(description = "Código do tenant", example = "westflow")
-    private String tenantCode;
+    @Schema(description = "URL do logo da empresa", example = "https://cdn.empresa.com/logo.png")
+    private String logoUrl;
+
+    @Schema(description = "Cor primária da identidade visual", example = "#00A86B")
+    private String primaryColor;
+
+    @Schema(description = "Cor secundária da identidade visual", example = "#004225")
+    private String secondaryColor;
+
+    @Schema(description = "Email de contato da empresa", example = "contato@empresa.com")
+    private String email;
+
+    @Schema(description = "Telefone da empresa", example = "5511999999999")
+    private String phone;
+
+    @Schema(description = "Endereço", example = "Rua X, 123")
+    private String address;
+
+    @Schema(description = "Cidade", example = "São Paulo")
+    private String city;
+
+    @Schema(description = "Estado (UF)", example = "SP")
+    private String state;
+
+    @Schema(description = "CEP", example = "12345-678")
+    private String zipCode;
 }

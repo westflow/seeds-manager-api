@@ -6,6 +6,7 @@ import com.westflow.seeds_manager_api.api.dto.response.CompanyResponse;
 import com.westflow.seeds_manager_api.api.mapper.CompanyMapper;
 import com.westflow.seeds_manager_api.application.usecase.company.RegisterCompanyUseCase;
 import com.westflow.seeds_manager_api.application.usecase.company.UpdateCompanyUseCase;
+import com.westflow.seeds_manager_api.application.usecase.company.FindCompanyByIdUseCase;
 import com.westflow.seeds_manager_api.domain.model.Company;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,6 +26,7 @@ public class CompanyController {
 
     private final RegisterCompanyUseCase registerCompanyUseCase;
     private final UpdateCompanyUseCase updateCompanyUseCase;
+    private final FindCompanyByIdUseCase findCompanyByIdUseCase;
     private final CompanyMapper companyMapper;
 
     @Operation(
@@ -61,6 +63,22 @@ public class CompanyController {
 
         CompanyResponse response = companyMapper.toResponse(saved);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @Operation(
+            summary = "Busca empresa por ID",
+            description = "Retorna os dados de uma empresa a partir do seu identificador",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Empresa encontrada"),
+                    @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
+            }
+    )
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @GetMapping("/{id}")
+    public ResponseEntity<CompanyResponse> getById(@PathVariable Long id) {
+        Company company = findCompanyByIdUseCase.execute(id);
+        CompanyResponse response = companyMapper.toResponse(company);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(

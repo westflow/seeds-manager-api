@@ -134,4 +134,12 @@ public class Company {
         this.secondaryColor = secondaryColor;
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void deactivate() {
+        if (Boolean.FALSE.equals(this.active)) {
+            throw new ValidationException("Empresa já está deletada");
+        }
+        this.active = false;
+        this.updatedAt = LocalDateTime.now();
+    }
 }

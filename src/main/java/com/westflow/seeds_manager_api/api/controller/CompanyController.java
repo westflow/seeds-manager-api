@@ -8,6 +8,7 @@ import com.westflow.seeds_manager_api.application.usecase.company.RegisterCompan
 import com.westflow.seeds_manager_api.application.usecase.company.UpdateCompanyUseCase;
 import com.westflow.seeds_manager_api.application.usecase.company.FindCompanyByIdUseCase;
 import com.westflow.seeds_manager_api.application.usecase.company.FindPagedCompaniesUseCase;
+import com.westflow.seeds_manager_api.application.usecase.company.DeleteCompanyUseCase;
 import com.westflow.seeds_manager_api.domain.model.Company;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -32,6 +33,7 @@ public class CompanyController {
     private final UpdateCompanyUseCase updateCompanyUseCase;
     private final FindCompanyByIdUseCase findCompanyByIdUseCase;
     private final FindPagedCompaniesUseCase findPagedCompaniesUseCase;
+    private final DeleteCompanyUseCase deleteCompanyUseCase;
     private final CompanyMapper companyMapper;
 
     @Operation(
@@ -132,5 +134,21 @@ public class CompanyController {
         );
         CompanyResponse response = companyMapper.toResponse(updated);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Remove uma empresa",
+            description = "Remove logicamente uma empresa (marca como inativa)",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Empresa removida com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Empresa não encontrada"),
+                    @ApiResponse(responseCode = "400", description = "Empresa já está deletada")
+            }
+    )
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        deleteCompanyUseCase.execute(id);
+        return ResponseEntity.noContent().build();
     }
 }

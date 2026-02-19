@@ -104,4 +104,34 @@ public class Company {
             throw new ValidationException("tenant_code é obrigatório");
         }
     }
+
+    public void update(String legalName,
+                       String tradeName,
+                       String email,
+                       String phone,
+                       String address,
+                       String city,
+                       String state,
+                       String zipCode,
+                       String logoUrl,
+                       String primaryColor,
+                       String secondaryColor) {
+
+        if (legalName == null || legalName.isBlank()) {
+            throw new ValidationException("Razão social é obrigatória");
+        }
+
+        this.legalName = legalName;
+        this.tradeName = tradeName;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.zipCode = zipCode;
+        this.logoUrl = logoUrl;
+        this.primaryColor = primaryColor;
+        this.secondaryColor = secondaryColor;
+        this.updatedAt = LocalDateTime.now();
+    }
 }

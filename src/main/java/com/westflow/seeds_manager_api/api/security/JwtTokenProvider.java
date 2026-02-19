@@ -22,13 +22,27 @@ public class JwtTokenProvider {
     private long jwtExpirationInMs;
 
     public String generateToken(UserDetails userDetails) {
+        return generateToken(userDetails, null, null);
+    }
+
+    public String generateToken(UserDetails userDetails, Long tenantId, String tenantCode) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + jwtExpirationInMs);
 
-        return Jwts.builder()
+        io.jsonwebtoken.JwtBuilder builder = Jwts.builder()
                 .setSubject(userDetails.getUsername()) // geralmente o e-mail
                 .setIssuedAt(now)
-                .setExpiration(expiry)
+                .setExpiration(expiry);
+
+        if (tenantId != null) {
+            builder.claim("tenantId", tenantId);
+        }
+
+        if (tenantCode != null && !tenantCode.isBlank()) {
+            builder.claim("tenantCode", tenantCode);
+        }
+
+        return builder
                 .signWith(getSigningKey())
                 .compact();
     }

@@ -1,9 +1,11 @@
 package com.westflow.seeds_manager_api.api.controller;
 
 import com.westflow.seeds_manager_api.api.dto.request.CompanyCreateRequest;
+import com.westflow.seeds_manager_api.api.dto.request.CompanyUpdateRequest;
 import com.westflow.seeds_manager_api.api.dto.response.CompanyResponse;
 import com.westflow.seeds_manager_api.api.mapper.CompanyMapper;
 import com.westflow.seeds_manager_api.application.usecase.company.RegisterCompanyUseCase;
+import com.westflow.seeds_manager_api.application.usecase.company.UpdateCompanyUseCase;
 import com.westflow.seeds_manager_api.domain.model.Company;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,10 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CompanyController {
 
     private final RegisterCompanyUseCase registerCompanyUseCase;
+    private final UpdateCompanyUseCase updateCompanyUseCase;
     private final CompanyMapper companyMapper;
 
     @Operation(
@@ -61,5 +61,38 @@ public class CompanyController {
 
         CompanyResponse response = companyMapper.toResponse(saved);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @Operation(
+            summary = "Atualiza dados de uma empresa",
+            description = "Atualiza dados cadastrais, de contato e branding da empresa (CNPJ e tenant_code são imutáveis)",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Empresa atualizada com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+                    @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
+            }
+    )
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<CompanyResponse> update(
+            @PathVariable Long id,
+            @Valid @RequestBody CompanyUpdateRequest request
+    ) {
+        Company updated = updateCompanyUseCase.execute(
+                id,
+                request.getLegalName(),
+                request.getTradeName(),
+                request.getEmail(),
+                request.getPhone(),
+                request.getAddress(),
+                request.getCity(),
+                request.getState(),
+                request.getZipCode(),
+                request.getLogoUrl(),
+                request.getPrimaryColor(),
+                request.getSecondaryColor()
+        );
+        CompanyResponse response = companyMapper.toResponse(updated);
+        return ResponseEntity.ok(response);
     }
 }

@@ -9,3 +9,4 @@ public interface JpaLotWithdrawalRepository extends JpaRepository<LotWithdrawalE
     boolean existsByLot_IdAndActiveTrue(Long lotId);
     Page<LotWithdrawalEntity> findByLot_IdAndActiveTrue(Long lotId, Pageable pageable);
 }
+

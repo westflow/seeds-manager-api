@@ -11,7 +11,7 @@ public class ResetLotSequenceUseCase {
 
     private final LotSequenceRepository lotSequenceRepository;
 
-    public LotSequence execute() {
-        return lotSequenceRepository.resetPreviousAndCreateCurrent();
+    public LotSequence execute(Long companyId) {
+        return lotSequenceRepository.resetPreviousAndCreateCurrent(companyId);
     }
 }

@@ -19,12 +19,14 @@ public class LotSequence {
     private boolean resetDone;
     private LocalDateTime resetDate;
     private LocalDateTime createdAt;
+    private Long companyId;
 
     public static LotSequence newLotSequence(
             Integer year,
             Integer lastNumber,
             boolean resetDone,
-            LocalDateTime resetDate
+            LocalDateTime resetDate,
+            Long companyId
     ) {
         validate(year, lastNumber);
 
@@ -35,6 +37,7 @@ public class LotSequence {
         sequence.resetDone = resetDone;
         sequence.resetDate = resetDate;
         sequence.createdAt = LocalDateTime.now();
+        sequence.companyId = companyId;
         return sequence;
     }
 
@@ -44,7 +47,8 @@ public class LotSequence {
             Integer lastNumber,
             boolean resetDone,
             LocalDateTime resetDate,
-            LocalDateTime createdAt
+            LocalDateTime createdAt,
+            Long companyId
     ) {
         validate(year, lastNumber);
 
@@ -55,6 +59,7 @@ public class LotSequence {
         sequence.resetDone = resetDone;
         sequence.resetDate = resetDate;
         sequence.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
+        sequence.companyId = companyId;
         return sequence;
     }
 

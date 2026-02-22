@@ -20,7 +20,8 @@ public interface LotSequencePersistenceMapper {
                 entity.getLastNumber(),
                 Boolean.TRUE.equals(entity.getResetDone()),
                 entity.getResetDate(),
-                entity.getCreatedAt()
+                entity.getCreatedAt(),
+                entity.getCompanyId()
         );
     }
 }

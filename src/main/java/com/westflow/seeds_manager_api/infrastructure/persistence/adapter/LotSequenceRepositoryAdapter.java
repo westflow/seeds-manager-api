@@ -26,8 +26,8 @@ public class LotSequenceRepositoryAdapter implements LotSequenceRepository {
 
     @Override
     @Transactional
-    public String generateFormattedLotNumber() {
-        Optional<LotSequenceEntity> optionalEntity = jpaRepository.findTopByResetDoneFalseOrderByYearDesc();
+    public String generateFormattedLotNumber(Long companyId) {
+        Optional<LotSequenceEntity> optionalEntity = jpaRepository.findTopByCompanyIdAndResetDoneFalseOrderByYearDesc(companyId);
 
         LotSequenceEntity entity = optionalEntity.orElseGet(() -> {
             int currentYear = LocalDate.now().getYear();
@@ -36,6 +36,7 @@ public class LotSequenceRepositoryAdapter implements LotSequenceRepository {
             newEntity.setLastNumber(0);
             newEntity.setResetDone(false);
             newEntity.setCreatedAt(LocalDateTime.now());
+            newEntity.setCompanyId(companyId);
             return newEntity;
         });
 
@@ -47,10 +48,10 @@ public class LotSequenceRepositoryAdapter implements LotSequenceRepository {
 
     @Override
     @Transactional
-    public LotSequence resetPreviousAndCreateCurrent() {
+    public LotSequence resetPreviousAndCreateCurrent(Long companyId) {
         int currentYear = LocalDate.now().getYear();
 
-        LotSequenceEntity previous = jpaRepository.findTopByResetDoneFalseOrderByYearDesc()
+        LotSequenceEntity previous = jpaRepository.findTopByCompanyIdAndResetDoneFalseOrderByYearDesc(companyId)
                 .orElseThrow(() -> new IllegalStateException("Nenhuma sequência anterior encontrada para reset."));
 
         if (previous.getYear() == currentYear) {
@@ -66,14 +67,15 @@ public class LotSequenceRepositoryAdapter implements LotSequenceRepository {
         newEntity.setLastNumber(0);
         newEntity.setResetDone(false);
         newEntity.setCreatedAt(LocalDateTime.now());
+        newEntity.setCompanyId(companyId);
 
         LotSequenceEntity saved = jpaRepository.save(newEntity);
         return mapper.toDomain(saved);
     }
 
     @Override
-    public boolean existsByResetDoneFalse() {
-        return jpaRepository.existsByResetDoneFalse();
+    public boolean existsByResetDoneFalse(Long companyId) {
+        return jpaRepository.existsByCompanyIdAndResetDoneFalse(companyId);
     }
 
     @Override

@@ -16,7 +16,12 @@ public class LotFactory {
 
     public Lot create(LotRequest request, LotContext ctx, User user) {
 
-        String lotNumber = generateNextLotNumberUseCase.execute();
+        Long companyId = user != null ? user.getCompanyId() : null;
+        if (companyId == null) {
+            throw new IllegalStateException("Company context is missing for the user when creating a lot");
+        }
+
+        String lotNumber = generateNextLotNumberUseCase.execute(companyId);
 
         return Lot.newLot(
                 lotNumber,

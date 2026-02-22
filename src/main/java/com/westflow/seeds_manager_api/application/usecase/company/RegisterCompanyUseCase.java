@@ -4,12 +4,16 @@ import com.westflow.seeds_manager_api.domain.enums.TenantRole;
 import com.westflow.seeds_manager_api.domain.exception.ValidationException;
 import com.westflow.seeds_manager_api.domain.model.Company;
 import com.westflow.seeds_manager_api.domain.model.User;
+import com.westflow.seeds_manager_api.domain.model.LotSequence;
 import com.westflow.seeds_manager_api.domain.repository.CompanyRepository;
 import com.westflow.seeds_manager_api.domain.repository.UserRepository;
+import com.westflow.seeds_manager_api.domain.repository.LotSequenceRepository;
 import com.westflow.seeds_manager_api.application.usecase.user.RegisterUserUseCase;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
 
 @Component
 @RequiredArgsConstructor
@@ -18,6 +22,7 @@ public class RegisterCompanyUseCase {
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
     private final RegisterUserUseCase registerUserUseCase;
+    private final LotSequenceRepository lotSequenceRepository;
 
     @Transactional
     public Company execute(Company company,
@@ -58,6 +63,15 @@ public class RegisterCompanyUseCase {
         );
 
         Company savedCompany = companyRepository.save(normalizedCompany);
+
+        LotSequence seq = LotSequence.newLotSequence(
+                LocalDate.now().getYear(),
+                0,
+                false,
+                null,
+                savedCompany.getId()
+        );
+        lotSequenceRepository.save(seq);
 
         User owner = User.newUser(
                 ownerEmail,

@@ -11,14 +11,16 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "lot_sequences")
+@Table(name = "lot_sequences", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"year", "company_id"})
+})
 public class LotSequenceEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "year", nullable = false, unique = true)
+    @Column(name = "year", nullable = false)
     private Integer year;
 
     @Column(name = "last_number", nullable = false)
@@ -32,6 +34,7 @@ public class LotSequenceEntity {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "company_id", nullable = false)
+    private Long companyId;
 }
-
-

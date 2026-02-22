@@ -11,8 +11,8 @@ import java.util.Optional;
 public interface JpaLotSequenceRepository extends JpaRepository<LotSequenceEntity,Long> {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT l FROM LotSequenceEntity l WHERE l.resetDone = false ORDER BY l.year DESC")
-    Optional<LotSequenceEntity> findTopByResetDoneFalseOrderByYearDesc();
+    @Query("SELECT l FROM LotSequenceEntity l WHERE l.companyId = :companyId AND l.resetDone = false ORDER BY l.year DESC")
+    Optional<LotSequenceEntity> findTopByCompanyIdAndResetDoneFalseOrderByYearDesc(Long companyId);
 
-    boolean existsByResetDoneFalse();
+    boolean existsByCompanyIdAndResetDoneFalse(Long companyId);
 }

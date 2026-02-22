@@ -10,7 +10,7 @@ public class GenerateNextLotNumberUseCase {
 
     private final LotSequenceRepository lotSequenceRepository;
 
-    public String execute() {
-        return lotSequenceRepository.generateFormattedLotNumber();
+    public String execute(Long companyId) {
+        return lotSequenceRepository.generateFormattedLotNumber(companyId);
     }
 }

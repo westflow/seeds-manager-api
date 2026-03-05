@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface TechnicalResponsibleRepository {
     TechnicalResponsible save(TechnicalResponsible technicalResponsible);
-    Optional<TechnicalResponsible> findById(Long id);
+    Optional<TechnicalResponsible> findByIdAndCompanyId(Long id, Long companyId);
     Page<TechnicalResponsible> findByCompanyId(Long companyId, Pageable pageable);
     Optional<TechnicalResponsible> findPrimaryByCompanyId(Long companyId);
     Optional<TechnicalResponsible> findByCompanyIdAndCpf(Long companyId, String cpf);

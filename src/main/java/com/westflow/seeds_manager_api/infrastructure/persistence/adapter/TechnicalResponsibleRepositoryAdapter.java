@@ -38,8 +38,8 @@ public class TechnicalResponsibleRepositoryAdapter implements TechnicalResponsib
     }
 
     @Override
-    public Optional<TechnicalResponsible> findById(Long id) {
-        return jpaRepository.findById(id).map(mapper::toDomain);
+    public Optional<TechnicalResponsible> findByIdAndCompanyId(Long id, Long companyId) {
+        return jpaRepository.findByIdAndCompanyId(id, companyId).map(mapper::toDomain);
     }
 
     @Override

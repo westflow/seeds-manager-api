@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.Optional;
 
 public interface JpaTechnicalResponsibleRepository extends JpaRepository<TechnicalResponsibleEntity, Long>, JpaSpecificationExecutor<TechnicalResponsibleEntity> {
+    Optional<TechnicalResponsibleEntity> findByIdAndCompanyId(Long id, Long companyId);
     Optional<TechnicalResponsibleEntity> findByCompanyIdAndIsPrimaryTrue(Long companyId);
     Optional<TechnicalResponsibleEntity> findByCompanyIdAndCpf(Long companyId, String cpf);
 }

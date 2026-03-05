@@ -110,6 +110,7 @@ public class TechnicalResponsible {
 
     public void update(
             String name,
+            String cpf,
             String renasemNumber,
             String creaNumber,
             String address,
@@ -128,15 +129,24 @@ public class TechnicalResponsible {
             this.name = name.trim();
         }
 
-        this.renasemNumber = renasemNumber;
-        this.creaNumber = creaNumber;
-        this.address = address;
-        this.city = city;
-        this.state = state;
-        this.zipCode = zipCode;
-        this.phone = phone;
-        this.email = email;
-        this.isPrimary = Boolean.TRUE.equals(isPrimary);
+        if (cpf != null && !cpf.isBlank()) {
+            String normalized = CPFUtils.normalize(cpf);
+            if (normalized.length() != 11) {
+                throw new ValidationException("CPF must have 11 digits");
+            }
+            this.cpf = normalized;
+        }
+
+        if (renasemNumber != null) this.renasemNumber = renasemNumber;
+        if (creaNumber != null) this.creaNumber = creaNumber;
+        if (address != null) this.address = address;
+        if (city != null) this.city = city;
+        if (state != null) this.state = state;
+        if (zipCode != null) this.zipCode = zipCode;
+        if (phone != null) this.phone = phone;
+        if (email != null) this.email = email;
+        if (isPrimary != null) this.isPrimary = isPrimary;
+
         this.updatedAt = LocalDateTime.now();
     }
 

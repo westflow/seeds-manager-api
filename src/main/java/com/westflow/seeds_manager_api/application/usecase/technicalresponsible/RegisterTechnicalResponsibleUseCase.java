@@ -5,6 +5,7 @@ import com.westflow.seeds_manager_api.application.support.CurrentUserContext;
 import com.westflow.seeds_manager_api.domain.exception.BusinessException;
 import com.westflow.seeds_manager_api.domain.model.TechnicalResponsible;
 import com.westflow.seeds_manager_api.domain.repository.TechnicalResponsibleRepository;
+import com.westflow.seeds_manager_api.domain.util.CPFUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,24 +25,16 @@ public class RegisterTechnicalResponsibleUseCase {
         }
 
         String rawCpf = request.getCpf();
-        String digitsCpf = rawCpf != null ? rawCpf.replaceAll("[^0-9]", "") : null;
+        String normalizedCpf = CPFUtils.normalize(rawCpf);
 
-        boolean exists = false;
-        if (rawCpf != null && technicalResponsibleRepository.findByCompanyIdAndCpf(companyId, rawCpf).isPresent()) {
-            exists = true;
-        }
-        if (!exists && digitsCpf != null && technicalResponsibleRepository.findByCompanyIdAndCpf(companyId, digitsCpf).isPresent()) {
-            exists = true;
-        }
-
-        if (exists) {
+        if (normalizedCpf != null && technicalResponsibleRepository.findByCompanyIdAndCpf(companyId, normalizedCpf).isPresent()) {
             throw new BusinessException("CPF já cadastrado");
         }
 
         TechnicalResponsible tr = TechnicalResponsible.newTechnicalResponsible(
                 companyId,
                 request.getName(),
-                request.getCpf(),
+                normalizedCpf,
                 request.getRenasemNumber(),
                 request.getCreaNumber(),
                 request.getAddress(),

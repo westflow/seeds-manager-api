@@ -199,7 +199,8 @@ CREATE TABLE technical_responsibles (
     id BIGSERIAL PRIMARY KEY,
     company_id BIGINT NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
-    cpf VARCHAR(14) NOT NULL,
+    cpf VARCHAR(11) NOT NULL,
+    CONSTRAINT chk_tr_cpf_format CHECK (cpf ~ '^[0-9]{11}$'),
     renasem_number VARCHAR(50),
     crea_number VARCHAR(50),
     address TEXT,
@@ -303,7 +304,7 @@ CREATE INDEX idx_companies_active_trade ON companies(active, trade_name);
 
 -- Índices para technical_responsibles
 CREATE INDEX idx_technical_responsibles_name ON technical_responsibles(name);
-CREATE INDEX idx_technical_responsibles_cpf ON technical_responsibles(cpf);
+CREATE INDEX idx_tr_company_cpf ON technical_responsibles(company_id, cpf);
 CREATE INDEX idx_technical_responsibles_company_id ON technical_responsibles(company_id);
 CREATE INDEX idx_technical_responsibles_active ON technical_responsibles(active);
 CREATE INDEX idx_tr_company_active ON technical_responsibles(company_id, active);

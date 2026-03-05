@@ -6,6 +6,7 @@ import com.westflow.seeds_manager_api.infrastructure.persistence.entity.Technica
 import com.westflow.seeds_manager_api.infrastructure.persistence.mapper.TechnicalResponsiblePersistenceMapper;
 import com.westflow.seeds_manager_api.infrastructure.persistence.repository.JpaTechnicalResponsibleRepository;
 import com.westflow.seeds_manager_api.infrastructure.persistence.specification.TechnicalResponsibleSpecifications;
+import com.westflow.seeds_manager_api.domain.util.CPFUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -30,6 +31,9 @@ public class TechnicalResponsibleRepositoryAdapter implements TechnicalResponsib
     @Override
     public TechnicalResponsible save(TechnicalResponsible technicalResponsible) {
         TechnicalResponsibleEntity entity = mapper.toEntity(technicalResponsible);
+        if (entity.getCpf() != null) {
+            entity.setCpf(CPFUtils.normalize(entity.getCpf()));
+        }
         return mapper.toDomain(jpaRepository.save(entity));
     }
 
@@ -52,6 +56,7 @@ public class TechnicalResponsibleRepositoryAdapter implements TechnicalResponsib
 
     @Override
     public Optional<TechnicalResponsible> findByCompanyIdAndCpf(Long companyId, String cpf) {
-        return jpaRepository.findByCompanyIdAndCpf(companyId, cpf).map(mapper::toDomain);
+        String normalizedCpf = CPFUtils.normalize(cpf);
+        return jpaRepository.findByCompanyIdAndCpf(companyId, normalizedCpf).map(mapper::toDomain);
     }
 }

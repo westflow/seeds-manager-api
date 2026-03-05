@@ -2,6 +2,7 @@ package com.westflow.seeds_manager_api.domain.model;
 
 import com.westflow.seeds_manager_api.domain.exception.BusinessException;
 import com.westflow.seeds_manager_api.domain.exception.ValidationException;
+import com.westflow.seeds_manager_api.domain.util.CPFUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,7 +52,7 @@ public class TechnicalResponsible {
         tr.id = null;
         tr.companyId = companyId;
         tr.name = name.trim();
-        tr.cpf = cpf.trim();
+        tr.cpf = CPFUtils.normalize(cpf);
         tr.renasemNumber = renasemNumber;
         tr.creaNumber = creaNumber;
         tr.address = address;
@@ -172,4 +173,3 @@ public class TechnicalResponsible {
         }
     }
 }
-

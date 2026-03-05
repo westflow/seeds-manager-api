@@ -21,8 +21,5 @@ public class TechnicalResponsibleResponse {
     private String phone;
     private String email;
     private Boolean isPrimary;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private Boolean active;
 }
 

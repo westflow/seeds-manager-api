@@ -11,5 +11,5 @@ public interface TechnicalResponsibleRepository {
     Optional<TechnicalResponsible> findById(Long id);
     Page<TechnicalResponsible> findByCompanyId(Long companyId, Pageable pageable);
     Optional<TechnicalResponsible> findPrimaryByCompanyId(Long companyId);
+    Optional<TechnicalResponsible> findByCompanyIdAndCpf(Long companyId, String cpf);
 }
-

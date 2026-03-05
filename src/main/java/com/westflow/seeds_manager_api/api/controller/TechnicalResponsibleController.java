@@ -26,26 +26,13 @@ public class TechnicalResponsibleController {
 
     @Operation(summary = "Cria um responsável técnico")
     @ApiResponse(responseCode = "201", description = "Responsável criado")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @PostMapping
-    public ResponseEntity<TechnicalResponsibleResponse> create(@Valid @RequestBody TechnicalResponsibleRequest request) {
-        TechnicalResponsible tr = TechnicalResponsible.newTechnicalResponsible(
-                request.getCompanyId(),
-                request.getName(),
-                request.getCpf(),
-                request.getRenasemNumber(),
-                request.getCreaNumber(),
-                request.getAddress(),
-                request.getCity(),
-                request.getState(),
-                request.getZipCode(),
-                request.getPhone(),
-                request.getEmail(),
-                request.getIsPrimary()
-        );
-
-        TechnicalResponsible saved = registerTechnicalResponsibleUseCase.execute(tr);
+    public ResponseEntity<TechnicalResponsibleResponse> create(
+            @Valid @RequestBody TechnicalResponsibleRequest request,
+            @RequestParam(value = "companyId", required = false) Long companyId
+    ) {
+        TechnicalResponsible saved = registerTechnicalResponsibleUseCase.execute(request, companyId);
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toResponse(saved));
     }
 }
-

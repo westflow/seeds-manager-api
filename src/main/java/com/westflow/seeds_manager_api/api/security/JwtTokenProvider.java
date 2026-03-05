@@ -69,6 +69,23 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
+    public Long getTenantIdFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        Object tenant = claims.get("tenantId");
+        if (tenant == null) return null;
+        if (tenant instanceof Number) return ((Number) tenant).longValue();
+        try {
+            return Long.valueOf(tenant.toString());
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
     public String getResetEmailFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())

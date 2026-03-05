@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface JpaTechnicalResponsibleRepository extends JpaRepository<TechnicalResponsibleEntity, Long>, JpaSpecificationExecutor<TechnicalResponsibleEntity> {
     Optional<TechnicalResponsibleEntity> findByCompanyIdAndIsPrimaryTrue(Long companyId);
+    Optional<TechnicalResponsibleEntity> findByCompanyIdAndCpf(Long companyId, String cpf);
 }
-

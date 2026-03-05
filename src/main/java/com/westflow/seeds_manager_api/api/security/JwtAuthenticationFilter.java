@@ -1,6 +1,7 @@
 package com.westflow.seeds_manager_api.api.security;
 
 import com.westflow.seeds_manager_api.infrastructure.security.UserDetailsServiceImpl;
+import com.westflow.seeds_manager_api.application.support.TenantContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,23 +30,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain chain) throws ServletException, IOException {
 
         String token = resolveToken(request);
-        if (token != null) {
-            try {
-                String email = jwtTokenProvider.getEmailFromToken(token);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        try {
+            if (token != null) {
+                try {
+                    String email = jwtTokenProvider.getEmailFromToken(token);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-                if (jwtTokenProvider.isTokenValid(token, userDetails)) {
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(auth);
+                    if (jwtTokenProvider.isTokenValid(token, userDetails)) {
+                        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(auth);
+
+                        Long tenantId = jwtTokenProvider.getTenantIdFromToken(token);
+                        if (tenantId != null) {
+                            TenantContext.setTenantId(tenantId);
+                        }
+                    }
+
+                } catch (Exception ex) {
+                    logger.error("Falha na autenticação JWT: " + ex.getMessage());
                 }
-
-            } catch (Exception ex) {
-                logger.error("Falha na autenticação JWT: " + ex.getMessage());
             }
-        }
 
-        chain.doFilter(request, response);
+            chain.doFilter(request, response);
+        } finally {
+            // sempre limpar o contexto ao final do request
+            TenantContext.clear();
+        }
     }
 
     private String resolveToken(HttpServletRequest request) {

@@ -49,5 +49,9 @@ public class TechnicalResponsibleRepositoryAdapter implements TechnicalResponsib
     public Optional<TechnicalResponsible> findPrimaryByCompanyId(Long companyId) {
         return jpaRepository.findByCompanyIdAndIsPrimaryTrue(companyId).map(mapper::toDomain);
     }
-}
 
+    @Override
+    public Optional<TechnicalResponsible> findByCompanyIdAndCpf(Long companyId, String cpf) {
+        return jpaRepository.findByCompanyIdAndCpf(companyId, cpf).map(mapper::toDomain);
+    }
+}

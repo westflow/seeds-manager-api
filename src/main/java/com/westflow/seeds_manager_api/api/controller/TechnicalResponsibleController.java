@@ -6,12 +6,16 @@ import com.westflow.seeds_manager_api.api.dto.response.TechnicalResponsibleRespo
 import com.westflow.seeds_manager_api.api.mapper.TechnicalResponsibleMapper;
 import com.westflow.seeds_manager_api.application.usecase.technicalresponsible.RegisterTechnicalResponsibleUseCase;
 import com.westflow.seeds_manager_api.application.usecase.technicalresponsible.UpdateTechnicalResponsibleUseCase;
+import com.westflow.seeds_manager_api.application.usecase.technicalresponsible.FindTechnicalResponsiblesByCompanyIdUseCase;
 import com.westflow.seeds_manager_api.domain.model.TechnicalResponsible;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,10 +30,11 @@ public class TechnicalResponsibleController {
     private final TechnicalResponsibleMapper mapper;
     private final RegisterTechnicalResponsibleUseCase registerTechnicalResponsibleUseCase;
     private final UpdateTechnicalResponsibleUseCase updateTechnicalResponsibleUseCase;
+    private final FindTechnicalResponsiblesByCompanyIdUseCase findTechnicalResponsiblesByCompanyIdUseCase;
 
     @Operation(summary = "Cria um responsável técnico")
     @ApiResponse(responseCode = "201", description = "Responsável criado")
-    @PreAuthorize("hasAnyRole('OWNER', 'ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @PostMapping
     public ResponseEntity<TechnicalResponsibleResponse> create(
             @Valid @RequestBody TechnicalResponsibleRequest request,
@@ -49,5 +54,17 @@ public class TechnicalResponsibleController {
     ) {
         TechnicalResponsible updated = updateTechnicalResponsibleUseCase.execute(id, request);
         return ResponseEntity.ok(mapper.toResponse(updated));
+    }
+
+    @Operation(summary = "Lista responsáveis técnicos ativos da empresa")
+    @ApiResponse(responseCode = "200", description = "Lista paginada de responsáveis")
+    @PreAuthorize("hasAnyRole('OWNER','ADMIN','SUPER_ADMIN')")
+    @GetMapping
+    public ResponseEntity<Page<TechnicalResponsibleResponse>> listAll(
+            @ParameterObject Pageable pageable,
+            @RequestParam(value = "companyId", required = false) Long companyId
+    ) {
+        Page<TechnicalResponsibleResponse> page = findTechnicalResponsiblesByCompanyIdUseCase.execute(companyId, pageable);
+        return ResponseEntity.ok(page);
     }
 }

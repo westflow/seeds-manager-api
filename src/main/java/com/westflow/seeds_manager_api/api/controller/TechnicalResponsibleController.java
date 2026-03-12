@@ -33,6 +33,7 @@ public class TechnicalResponsibleController {
     private final UpdateTechnicalResponsibleUseCase updateTechnicalResponsibleUseCase;
     private final FindTechnicalResponsiblesByCompanyIdUseCase findTechnicalResponsiblesByCompanyIdUseCase;
     private final FindTechnicalResponsibleByIdUseCase findTechnicalResponsibleByIdUseCase;
+    private final com.westflow.seeds_manager_api.application.usecase.technicalresponsible.DeleteTechnicalResponsibleUseCase deleteTechnicalResponsibleUseCase;
 
     @Operation(summary = "Cria um responsável técnico")
     @ApiResponse(responseCode = "201", description = "Responsável criado")
@@ -82,5 +83,18 @@ public class TechnicalResponsibleController {
     ) {
         Page<TechnicalResponsibleResponse> page = findTechnicalResponsiblesByCompanyIdUseCase.execute(companyId, pageable);
         return ResponseEntity.ok(page);
+    }
+
+    @Operation(summary = "Exclui (deleção lógica) um responsável técnico")
+    @ApiResponse(responseCode = "204", description = "Responsável excluído")
+    @ApiResponse(responseCode = "404", description = "Responsável não encontrado")
+    @PreAuthorize("hasAnyRole('OWNER','ADMIN','SUPER_ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(
+            @PathVariable("id") Long id,
+            @RequestParam(value = "companyId", required = false) Long companyId
+    ) {
+        deleteTechnicalResponsibleUseCase.execute(id, companyId);
+        return ResponseEntity.noContent().build();
     }
 }

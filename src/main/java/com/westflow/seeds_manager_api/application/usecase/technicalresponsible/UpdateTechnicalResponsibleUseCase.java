@@ -6,10 +6,9 @@ import com.westflow.seeds_manager_api.domain.exception.ResourceNotFoundException
 import com.westflow.seeds_manager_api.domain.exception.ValidationException;
 import com.westflow.seeds_manager_api.domain.model.TechnicalResponsible;
 import com.westflow.seeds_manager_api.domain.repository.TechnicalResponsibleRepository;
-import com.westflow.seeds_manager_api.application.support.CurrentUserContext;
+import com.westflow.seeds_manager_api.application.support.TenantResolver;
 import com.westflow.seeds_manager_api.domain.util.CPFUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +21,9 @@ public class UpdateTechnicalResponsibleUseCase {
     private final TechnicalResponsibleRepository technicalResponsibleRepository;
 
     @Transactional
-    public TechnicalResponsible execute(Long id, TechnicalResponsibleUpdateRequest request) {
-        TechnicalResponsible tr = technicalResponsibleRepository.findByIdAndCompanyId(id, CurrentUserContext.getCompanyId())
+    public TechnicalResponsible execute(Long id, TechnicalResponsibleUpdateRequest request, Long optionalCompanyId) {
+        Long companyId = TenantResolver.resolveCompanyIdOrThrow(optionalCompanyId, "atualizar responsável técnico");
+        TechnicalResponsible tr = technicalResponsibleRepository.findByIdAndCompanyId(id, companyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Responsável técnico", id));
 
         String normalizedCpf = CPFUtils.normalize(request.getCpf());
@@ -65,4 +65,3 @@ public class UpdateTechnicalResponsibleUseCase {
         return technicalResponsibleRepository.save(tr);
     }
 }
-

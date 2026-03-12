@@ -2,6 +2,7 @@ package com.westflow.seeds_manager_api.application.usecase.technicalresponsible;
 
 import com.westflow.seeds_manager_api.api.dto.request.TechnicalResponsibleRequest;
 import com.westflow.seeds_manager_api.application.support.CurrentUserContext;
+import com.westflow.seeds_manager_api.application.support.TenantResolver;
 import com.westflow.seeds_manager_api.domain.exception.BusinessException;
 import com.westflow.seeds_manager_api.domain.model.TechnicalResponsible;
 import com.westflow.seeds_manager_api.domain.repository.TechnicalResponsibleRepository;
@@ -17,12 +18,7 @@ public class RegisterTechnicalResponsibleUseCase {
 
     public TechnicalResponsible execute(TechnicalResponsibleRequest request, Long optionalCompanyId) {
 
-        Long companyId;
-        if (CurrentUserContext.isSuperAdmin() && optionalCompanyId != null) {
-            companyId = optionalCompanyId;
-        } else {
-            companyId = CurrentUserContext.getCompanyId();
-        }
+        Long companyId = TenantResolver.resolveCompanyIdOrThrow(optionalCompanyId, "criar responsável técnico");
 
         String rawCpf = request.getCpf();
         String normalizedCpf = CPFUtils.normalize(rawCpf);
